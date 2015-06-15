@@ -9,7 +9,7 @@ uses
 {$ELSE}
   VCL.ActnList,
 {$IFEND}
-  System.SysUtils, FMX.ActnList;
+  System.SysUtils;
 
 type
   TioViewModel = class(TioViewModelBase)

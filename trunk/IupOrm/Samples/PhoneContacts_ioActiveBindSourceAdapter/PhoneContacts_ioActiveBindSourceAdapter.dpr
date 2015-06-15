@@ -18,7 +18,7 @@ begin
 
   // ============ IupOrm initialization ====================
   // Set the directory name (under the Documents folder)
-  TIupOrm.ConnectionManager.NewSQLiteConnectionDef(TPath.Combine(TPath.GetDocumentsPath, 'Contacts.db')).Apply;
+  TIupOrm.ConnectionManager.NewSQLiteConnectionDef(TPath.Combine(TPath.GetDocumentsPath, 'ContactsObj.db')).Apply;
   // AutoCreation and AutoUpdate of the database
 //  TIupOrm.AutoCreateDatabase;
   // Check for sample data creation

@@ -32,13 +32,16 @@ type
     property PhoneNumber:String read FPhoneNumber write FPhoneNumber;
   end;
 
-  [ioTable('Persons')]
+  [ioTable('Persons', ioFields)]
   [ioClassFromField]
   TPerson = class(TInterfacedObject, IPerson)
   private
     FID: Integer;
+    [ioField('LAST_NAME')]          // Not necessary if property has the same name of the field
     FLastName: String;
+    [ioField('FIRST_NAME')]         // Not necessary if property has the same name of the field
     FFirstName: String;
+    [ioHasMany('IPhoneNumber', 'PersonID', ioLazyLoad)]
     FPhones: IioList<IPhoneNumber>;
   protected
     procedure SetID(AValue:Integer);
@@ -55,21 +58,21 @@ type
     constructor Create; overload;
     constructor Create(NewFirstName, NewLastName: String; NewID: Integer = 0); overload;
     destructor Destroy; override;
-    [ioOID]                         // Not necessary if property is exactly named "ID" as in this case
+//    [ioOID]                         // Not necessary if property is exactly named "ID" as in this case
     property ID:Integer read GetID write SetID;
-    [ioField('FIRST_NAME')]         // Not necessary if property has the same name of the field
+//    [ioField('FIRST_NAME')]         // Not necessary if property has the same name of the field
     property FirstName:String read GetFirstName write SetFirstName;
-    [ioField('LAST_NAME')]          // Not necessary if property has the same name of the field
+//    [ioField('LAST_NAME')]          // Not necessary if property has the same name of the field
     property LastName:String read GetLastName write SetLastName;
-    [ioHasMany('IPhoneNumber', 'PersonID', ioLazyLoad)]
+//    [ioHasMany('IPhoneNumber', 'PersonID', ioLazyLoad)]
     property Phones:IioList<IPhoneNumber> read GetPhones write SetPhones;
-    [ioSkip]
+//    [ioSkip]
     property FullName:String read GetFullName;
-    [ioSkip]
+//    [ioSkip]
     property ClassNameProp:String read GetClassNameProp;
   end;
 
-  [ioTable('Persons')]
+  [ioTable('Persons', ioFields)]
   [ioClassFromField]
   TEmployee = class(TPerson)
   private
@@ -82,7 +85,7 @@ type
     property BranchOffice:String read GetBranchOffice write SetBranchOffice;
   end;
 
-  [ioTable('Persons')]
+  [ioTable('Persons', ioFields)]
   [ioClassFromField]
   TCustomer = class(TPerson, ICustomer)
   private
@@ -95,7 +98,7 @@ type
     property FidelityCardCode:String read GetFidelityCardCode write SetFidelityCardCode;
   end;
 
-  [ioTable('Persons')]
+  [ioTable('Persons', ioFields)]
   [ioClassFromField]
   TVipCustomer = class(TCustomer, IVipCustomer)
   private

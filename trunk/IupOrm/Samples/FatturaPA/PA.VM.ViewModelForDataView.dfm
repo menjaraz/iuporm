@@ -1,0 +1,2 @@
+inherited paViewModelForDataView: TpaViewModelForDataView
+end

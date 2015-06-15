@@ -19,6 +19,9 @@ type
 
 implementation
 
+uses
+  System.SysUtils;
+
 { TioBindSourceHelperTools }
 
 constructor TioBindSourceHelperTools.Create(ABindSource: TioBaseBindSource);
@@ -29,8 +32,13 @@ end;
 
 function TioBindSourceHelperTools.GetDetailBindSourceAdapter(AOwner:TComponent;
   AMasterPropertyName: String): TBindSourceAdapter;
+var
+  AContainedBSA: IioContainedBindSourceAdapter;
 begin
-  Result := (FBindSource.InternalAdapter as IioContainedBindSourceAdapter).GetDetailBindSourceAdapter(AOwner, AMasterPropertyName);
+  Result := nil;
+//  Result := (FBindSource.InternalAdapter as IioContainedBindSourceAdapter).GetDetailBindSourceAdapter(AOwner, AMasterPropertyName);
+  if Supports(FBindSource.InternalAdapter, IioContainedBindSourceAdapter, AContainedBSA) then
+    Result := AContainedBSA.GetDetailBindSourceAdapter(AOwner, AMasterPropertyName);
 end;
 
 function TioBindSourceHelperTools.GetNaturalObjectBindSourceAdapter(

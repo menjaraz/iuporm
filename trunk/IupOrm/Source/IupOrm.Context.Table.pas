@@ -71,19 +71,22 @@ type
   // Classe che incapsula le info sulla tabella
   TioContextTable = class (TioSqlItem, IioContextTable)
   strict private
+    FMapMode: TioMapModeType;
     FClassFromField: IioClassFromField;
     FJoins: IioJoins;
     FGroupBy: IioGroupBy;
     FConnectionDefName: String;
   public
     constructor Create(const ASqlText:String; const AClassFromField:IioClassFromField;
-    const AJoins:IioJoins; const AGroupBy:IioGroupBy; const AConnectionDefName:String); overload;
+    const AJoins:IioJoins; const AGroupBy:IioGroupBy; const AConnectionDefName:String;
+    const AMapMode:TioMapModeType); overload;
     function GetClassFromField: IioClassFromField;
     function IsClassFromField: Boolean;
     function TableName: String;
     function GetJoin: IioJoins;
     function GetGroupBy: IioGroupBy;
     function GetConnectionDefName: String;
+    function GetMapMode: TioMapModeType;
   end;
 
 implementation
@@ -94,13 +97,15 @@ uses
 { TioContextTable }
 
 constructor TioContextTable.Create(const ASqlText:String; const AClassFromField:IioClassFromField;
-    const AJoins:IioJoins; const AGroupBy:IioGroupBy; const AConnectionDefName:String);
+    const AJoins:IioJoins; const AGroupBy:IioGroupBy; const AConnectionDefName:String;
+    const AMapMode:TioMapModeType);
 begin
   inherited Create(ASqlText);
   FClassFromField := AClassFromField;
   FJoins := AJoins;
   FGroupBy := AGroupBy;
   FConnectionDefName := AConnectionDefName;
+  FMapMode := AMapMode;
 end;
 
 function TioContextTable.GetClassFromField: IioClassFromField;
@@ -121,6 +126,11 @@ end;
 function TioContextTable.GetJoin: IioJoins;
 begin
   Result := FJoins;
+end;
+
+function TioContextTable.GetMapMode: TioMapModeType;
+begin
+  Result := FMapMode;
 end;
 
 function TioContextTable.IsClassFromField: Boolean;

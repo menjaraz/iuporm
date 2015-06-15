@@ -7,6 +7,9 @@ uses
 
 type
 
+  // Type of class mapping
+  TioMapModeType = (ioProperties, ioFields);
+
   // Relation types
   TioRelationType = (ioRTNone, ioRTBelongsTo, ioRTHasMany, ioRTHasOne, ioRTEmbeddedHasMany, ioRTEmbeddedHasOne);
 
@@ -29,7 +32,7 @@ type
   strict private
     FValue: String;
   public
-    constructor Create(const AValue:String);
+    constructor Create(const AValue:String='');
     property Value:String read FValue;
   end;
 
@@ -39,7 +42,7 @@ type
     FChildTypeName: String;
     FChildTypeAlias: String;
   public
-    constructor Create(const AChildClassRef:TioClassRef); overload;
+    constructor Create(AChildClassRef:TioClassRef); overload;
     constructor Create(const AChildTypeName:String; const AChildTypeAlias:String=''); overload;
     property ChildTypeName: String read FChildTypeName;
     property ChildTypeAlias: String read FChildTypeAlias;
@@ -140,8 +143,15 @@ type
   // START CLASS ATTRIBUTES
   // ---------------------------------------------------------------------------
 
-  // Table attribute
+  // Table & Entity attribute
   ioTable = class(TioCustomStringAttribute)
+  strict private
+    FMapMode: TioMapModeType;
+  public
+    constructor Create(const AValue:String=''; const AMapMode:TioMapModeType=ioProperties); overload;
+    property MapMode: TioMapModeType read FMapMode;
+  end;
+  ioEntity = class(ioTable)
   end;
 
   // ConnectionDefName attribute
@@ -181,12 +191,12 @@ type
   // ---------------------------------------------------------------------------
 
   // EmbeddedHasMany attribute
-  ioEmbeddedHasMany = class(TioCustomAttribute)
+  ioEmbeddedHasMany = class(TCustomRelationAttribute)
 
   end;
 
   // EmbeddedHasOne attribute
-  ioEmbeddedHasOne = class(TioCustomAttribute)
+  ioEmbeddedHasOne = class(TCustomRelationAttribute)
 
   end;
 
@@ -217,7 +227,7 @@ end;
 
 { TCustomRelationAttribute }
 
-constructor TCustomRelationAttribute.Create(const AChildClassRef: TioClassRef);
+constructor TCustomRelationAttribute.Create(AChildClassRef: TioClassRef);
 begin
   Create(AChildClassRef.ClassName, '');
 end;
@@ -260,6 +270,14 @@ begin
   FJoinType := AJoinType;
   FJoinClassRef := AJoinClassRef;
   FJoinCondition := AJoinCondition;
+end;
+
+{ ioTable }
+
+constructor ioTable.Create(const AValue:String; const AMapMode: TioMapModeType);
+begin
+  inherited Create(AValue);
+  FMapMode := AMapMode;
 end;
 
 end.

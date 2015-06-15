@@ -76,10 +76,18 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             end
             object Button8: TButton
               Height = 44.000000000000000000
-              Position.X = 32.000000000000000000
-              TabOrder = 1
-              Text = 'Post'
+              TabOrder = 2
+              Text = 'Clear'
               Width = 73.000000000000000000
+              OnClick = Button8Click
+            end
+            object Button9: TButton
+              Height = 44.000000000000000000
+              Position.X = 73.000000000000000000
+              TabOrder = 1
+              Text = 'Load'
+              Width = 73.000000000000000000
+              OnClick = Button9Click
             end
           end
           object DetailListView: TListView
@@ -357,14 +365,18 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
       end>
     ScopeMappings = <>
     ioTypeName = 'IPerson'
+    ioAutoLoadData = True
+    ioAutoPersist = True
+    ioViewDataType = dtList
     ioAutoRefreshOnNotification = arEnabledNoReload
+    ioVM_UseBSPropsOnCreate = True
     Left = 256
     Top = 112
   end
   object BindingsList1: TBindingsList
     Methods = <>
     OutputConverters = <>
-    Left = 20
+    Left = 300
     Top = 5
     object LinkListControlToField1: TLinkListControlToField
       Category = 'Quick Bindings'
@@ -414,9 +426,13 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
       end>
     ScopeMappings = <>
     ioTypeName = 'IPhoneNumber'
+    ioAutoLoadData = True
+    ioAutoPersist = True
+    ioViewDataType = dtList
     ioMasterBindSource = BSMaster
     ioMasterPropertyName = 'Phones'
     ioAutoRefreshOnNotification = arEnabledNoReload
+    ioVM_UseBSPropsOnCreate = True
     Left = 256
     Top = 176
   end

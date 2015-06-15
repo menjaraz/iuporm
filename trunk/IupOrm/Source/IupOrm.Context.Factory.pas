@@ -16,18 +16,18 @@ type
   TioContextFactory = class
   public
     // I primi due metodi di classe dovranno essere spostati come protetti o privati
-    class function GetProperty(const ARttiProperty:TRttiProperty; const ATypeAlias, ASqlFieldName, ALoadSql, AFieldType:String;
+    class function GetProperty(const AMapMode:TioMapModeType; const ARttiPropField:TRttiMember; const ATypeAlias, ASqlFieldName, ALoadSql, AFieldType:String;
       const AReadWrite:TioReadWrite; const ARelationType:TioRelationType; const ARelationChildTypeName, ARelationChildTypeAlias,
       ARelationChildPropertyName:String; const ARelationLoadType:TioLoadType): IioContextProperty;
-    class function Properties(Typ: TRttiInstanceType): IioContextProperties;
-    class function ClassFromField(Typ: TRttiInstanceType; ASqlFieldName:String=IO_CLASSFROMFIELD_FIELDNAME): IioClassFromField;
+    class function Properties(const Typ: TRttiInstanceType; const AMapMode: TioMapModeType): IioContextProperties;
+    class function ClassFromField(Typ: TRttiInstanceType; const ASqlFieldName:String=IO_CLASSFROMFIELD_FIELDNAME): IioClassFromField;
     class function Joins: IioJoins;
     class function JoinItem(const AJoinAttribute:ioJoin): IioJoinItem;
-    class function GroupBy(ASqlText:String): IioGroupBy;
-    class function Table(Typ: TRttiInstanceType): IioContextTable;
+    class function GroupBy(const ASqlText:String): IioGroupBy;
+    class function Table(const Typ: TRttiInstanceType): IioContextTable;
     class function Where: TioWhere;
-    class function Map(AClassRef: TioClassRef): IioMap;
-    class function Context(AClassName: String; AioWhere:TioWhere=nil; ADataObject:TObject=nil): IioContext;
+    class function Map(const AClassRef: TioClassRef): IioMap;
+    class function Context(const AClassName: String; const AioWhere:TioWhere=nil; const ADataObject:TObject=nil): IioContext;
   end;
 
 implementation
@@ -35,12 +35,13 @@ implementation
 uses
   IupOrm.Context, IupOrm.Context.Properties,
   System.SysUtils, IupOrm.Context.Table,
-  IupOrm.RttiContext.Factory, IupOrm.Context.Container, IupOrm.Context.Map;
+  IupOrm.RttiContext.Factory, IupOrm.Context.Container, IupOrm.Context.Map,
+  System.StrUtils;
 
 { TioBuilderProperties }
 
 class function TioContextFactory.ClassFromField(Typ: TRttiInstanceType;
-  ASqlFieldName: String): IioClassFromField;
+  const ASqlFieldName: String): IioClassFromField;
 var
   Ancestors, QualifiedClassName, ClassName:String;
 begin
@@ -58,8 +59,8 @@ begin
   Result := TioClassFromField.Create(ASqlFieldName, ClassName, QualifiedClassName, Ancestors);
 end;
 
-class function TioContextFactory.Context(AClassName: String;
-  AioWhere: TioWhere; ADataObject: TObject): IioContext;
+class function TioContextFactory.Context(const AClassName: String;
+  const AioWhere: TioWhere; const ADataObject: TObject): IioContext;
 begin
   // Get the Context from the ContextContainer
   Result := TioContext.Create(AClassName,
@@ -69,25 +70,45 @@ begin
                               );
 end;
 
-class function TioContextFactory.GetProperty(const ARttiProperty: TRttiProperty; const ATypeAlias, ASqlFieldName, ALoadSql,
+class function TioContextFactory.GetProperty(const AMapMode:TioMapModeType; const ARttiPropField: TRttiMember; const ATypeAlias, ASqlFieldName, ALoadSql,
   AFieldType: String; const AReadWrite: TioReadWrite; const ARelationType: TioRelationType; const ARelationChildTypeName,
   ARelationChildTypeAlias, ARelationChildPropertyName: String; const ARelationLoadType: TioLoadType): IioContextProperty;
 begin
-  Result :=  TioProperty.Create(ARttiProperty
-                               ,ATypeAlias
-                               ,ASqlFieldName
-                               ,ALoadSql
-                               ,AFieldType
-                               ,AReadWrite
-                               ,ARelationType
-                               ,ARelationChildTypeName
-                               ,ARelationChildTypeAlias
-                               ,ARelationChildPropertyName
-                               ,ARelationLoadType
-                               );
+  case AMapMode of
+    // Properties map mode
+    ioProperties:
+      Result := TioProperty.Create(
+         ARttiPropField as TRttiProperty
+        ,ATypeAlias
+        ,ASqlFieldName
+        ,ALoadSql
+        ,AFieldType
+        ,AReadWrite
+        ,ARelationType
+        ,ARelationChildTypeName
+        ,ARelationChildTypeAlias
+        ,ARelationChildPropertyName
+        ,ARelationLoadType
+      );
+    // Fields map mode
+    ioFields:
+      Result := TioField.Create(
+         ARttiPropField as TRttiField
+        ,ATypeAlias
+        ,ASqlFieldName
+        ,ALoadSql
+        ,AFieldType
+        ,AReadWrite
+        ,ARelationType
+        ,ARelationChildTypeName
+        ,ARelationChildTypeAlias
+        ,ARelationChildPropertyName
+        ,ARelationLoadType
+      );
+  end;
 end;
 
-class function TioContextFactory.GroupBy(ASqlText:String): IioGroupBy;
+class function TioContextFactory.GroupBy(const ASqlText:String): IioGroupBy;
 begin
   Result := TioGroupBy.Create(ASqlText);
 end;
@@ -105,27 +126,31 @@ begin
   Result := TioJoins.Create;
 end;
 
-class function TioContextFactory.Map(AClassRef: TioClassRef): IioMap;
+class function TioContextFactory.Map(const AClassRef: TioClassRef): IioMap;
 var
   ARttiContext: TRttiContext;
   ARttiType: TRttiInstanceType;
+  ATable: IioContextTable;
 begin
   // Rtti init
   ARttiContext := TioRttiContextFactory.RttiContext;
   ARttiType := ARttiContext.GetType(AClassRef).AsInstance;
+  // Get the table
+  ATable := Self.Table(ARttiType);
   // Create the context
   Result := TioMap.Create(AClassRef,
                           ARttiContext,
                           ARttiType,
-                          Self.Table(ARttiType),
-                          Self.Properties(ARttiType)
+                          ATable,
+                          Self.Properties(ARttiType, ATable.GetMapMode)
                          );
 end;
 
 class function TioContextFactory.Properties(
-  Typ: TRttiInstanceType): IioContextProperties;
+  const Typ: TRttiInstanceType; const AMapMode: TioMapModeType): IioContextProperties;
 var
-  Prop: TRttiProperty;
+  Prop: System.Rtti.TRttiMember;
+  PropsFields: TArray<System.Rtti.TRttiMember>;
   Attr: TCustomAttribute;
   PropID: Boolean;
   PropTypeAlias: String;
@@ -140,25 +165,35 @@ var
   PropRelationChildPropertyName: String;
   PropRelationChildLoadType: TioLoadType;
 begin
+  // Get members list (Properties or Fields)
+  case AMapMode of
+    ioProperties:
+      PropsFields := TArray<System.Rtti.TRttiMember>(TObject(Typ.AsInstance.GetProperties));
+    ioFields:
+      PropsFields := TArray<System.Rtti.TRttiMember>(TObject(Typ.AsInstance.GetFields));
+  end;
   // Create result Properties object
   Result := TioProperties.Create;
   // Loop all properties
-  for Prop in Typ.GetProperties do
+  for Prop in PropsFields do
   begin
+    // PropFieldName: if the MapMpde is ioFields then remove the first character ("F" usually)
+    PropFieldName := Prop.Name;
+    if (AMapMode = ioFields) then
+      PropFieldName := TioField.Remove_F_FromName(PropFieldName);  // Elimina il primo carattere (di solito la F)
     // Skip RefCount property from TInterfacedObject
-    if (Prop.Name = 'RefCount')
-    or (Prop.Name = 'Disposed')
+    if (PropFieldName = 'RefCount')
+    or (PropFieldName = 'Disposed')
       then Continue;
     // ObjStatus property
-    if Prop.Name = 'ObjStatus' then
+    if PropFieldName = 'ObjStatus' then
     begin
-      Result.ObjStatusProperty := Self.GetProperty(Prop, '', '', '', '', iorwReadOnly, ioRTNone, '', '', '', ioImmediateLoad);
+      Result.ObjStatusProperty := Self.GetProperty(AMapMode, Prop, '', '', '', '', iorwReadOnly, ioRTNone, '', '', '', ioImmediateLoad);
       Continue;
     end;
     // Prop Init
-    PropId := (Uppercase(Prop.Name) = 'ID');  // Is a OID property if the name of the property itself is 'ID'
+    PropId := (Uppercase(PropFieldName) = 'ID');  // Is a OID property if the name of the property itself is 'ID'
     PropTypeAlias := '';
-    PropFieldName := Prop.Name;
     PropFieldType := '';
     PropLoadSql := '';
     PropSkip := False;
@@ -181,9 +216,17 @@ begin
       if Attr is ioWriteOnly then PropReadWrite := iorwWriteOnly;
       // Relations
       if Attr is ioEmbeddedHasMany then
+      begin
         PropRelationType := ioRTEmbeddedHasMany;
+        PropRelationChildTypeName := ioEmbeddedHasMany(Attr).ChildTypeName;
+        PropRelationChildTypeAlias := ioEmbeddedHasMany(Attr).ChildTypeAlias;
+      end;
       if Attr is ioEmbeddedHasOne then
+      begin
         PropRelationType := ioRTEmbeddedHasOne;
+        PropRelationChildTypeName := ioEmbeddedHasOne(Attr).ChildTypeName;
+        PropRelationChildTypeAlias := ioEmbeddedHasOne(Attr).ChildTypeAlias;
+      end;
       if Attr is ioBelongsTo then
       begin
         PropRelationType := ioRTBelongsTo;
@@ -207,7 +250,8 @@ begin
       end;
     end;
     // Create and add property
-    if not PropSkip then Result.Add(Self.GetProperty(Prop
+    if not PropSkip then Result.Add(Self.GetProperty(AMapMode
+                                                    ,Prop
                                                     ,PropTypeAlias
                                                     ,PropFieldName
                                                     ,PropLoadSql
@@ -223,30 +267,36 @@ begin
   end;
 end;
 
-class function TioContextFactory.Table(Typ: TRttiInstanceType): IioContextTable;
+class function TioContextFactory.Table(const Typ: TRttiInstanceType): IioContextTable;
 var
   Attr: TCustomAttribute;
   TableName, ConnectionDefName: String;
   ClassFromField: IioClassFromField;
   AJoins: IioJoins;
   AGroupBy: IioGroupBy;
+  AMapMode: TioMapModeType;
 begin
   // Prop Init
   TableName := Typ.MetaclassType.ClassName.Substring(1);  // Elimina il primo carattere (di solito la T)
   ConnectionDefName := '';
   AJoins := Self.Joins;
   AGroupBy := nil;
+  AMapMode := ioProperties;
   // Check attributes
   for Attr in Typ.GetAttributes do
   begin
-    if Attr is ioTable then TableName := ioTable(Attr).Value;
+    if (Attr is ioTable) then
+    begin
+      if not ioTable(Attr).Value.IsEmpty then TableName := ioTable(Attr).Value;
+      AMapMode := ioTable(Attr).MapMode;
+    end;
     if Attr is ioConnectionDefName then ConnectionDefName := ioConnectionDefName(Attr).Value;
     if Attr is ioClassFromField then ClassFromField := Self.ClassFromField(Typ);
     if Attr is ioJoin then AJoins.Add(Self.JoinItem(   ioJoin(Attr)   ));
     if (Attr is ioGroupBy) and (not Assigned(AGroupBy)) then AGroupBy := Self.GroupBy(   ioGroupBy(Attr).Value   );
   end;
   // Create result Properties object
-  Result := TioContextTable.Create(TableName, ClassFromField, AJoins, AGroupBy, ConnectionDefName);
+  Result := TioContextTable.Create(TableName, ClassFromField, AJoins, AGroupBy, ConnectionDefName, AMapMode);
 end;
 
 class function TioContextFactory.Where: TioWhere;

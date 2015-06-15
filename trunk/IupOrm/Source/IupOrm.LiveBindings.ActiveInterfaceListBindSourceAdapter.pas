@@ -18,6 +18,7 @@ type
     FUseObjStatus: Boolean;  // Not use directly, use UseObjStatus function or property even for internal use
     FLocalOwnsObject: Boolean;
     FAutoLoadData: Boolean;
+    FAutoPersist: Boolean;
     FReloadDataOnRefresh: Boolean;
     FMasterPropertyName: String;
     FMasterAdaptersContainer: IioDetailBindSourceAdaptersContainer;
@@ -26,6 +27,9 @@ type
     FonNotify: TioBSANotificationEvent;
     FInsertObj_Enabled: Boolean;
     FInsertObj_NewObj: TObject;
+  private
+    function GetioAutoPersist: Boolean;
+    procedure SetioAutoPersist(const Value: Boolean);
   protected
     // =========================================================================
     // Part for the support of the IioNotifiableBindSource interfaces (Added by IupOrm)
@@ -59,8 +63,10 @@ type
     procedure Notify(Sender:TObject; ANotification:IioBSANotification); virtual;
     procedure Refresh(ReloadData:Boolean); overload;
     function GetDataObject: TObject;
-    procedure SetDataObject(const AObj: TObject);
+    procedure SetDataObject(const AObj: TObject; const AOwnsObject:Boolean=True);
+    procedure ClearDataObject;
 
+    property ioAutoPersist:Boolean read GetioAutoPersist write SetioAutoPersist;
     property ioOnNotify:TioBSANotificationEvent read FonNotify write FonNotify;
   end;
 
@@ -82,9 +88,15 @@ begin
   Self.Append;
 end;
 
+procedure TioActiveInterfaceListBindSourceAdapter.ClearDataObject;
+begin
+  Self.SetDataObject(nil, False);
+end;
+
 constructor TioActiveInterfaceListBindSourceAdapter.Create(const ATypeName, ATypeAlias, AWhereStr: String; const AOwner: TComponent;
   const AList: TObject; const AutoLoadData, AUseObjStatus, AOwnsObject: Boolean);
 begin
+  FAutoPersist := True;
   FAutoLoadData := AutoLoadData;
   FReloadDataOnRefresh := True;
   FUseObjStatus := AUseObjStatus;
@@ -152,9 +164,13 @@ end;
 procedure TioActiveInterfaceListBindSourceAdapter.DoAfterPost;
 begin
   inherited;
-  if Self.UseObjStatus
-    then Self.SetObjStatus(osDirty)
-    else TIupOrm.Persist(Self.Current);
+  // IF AutoPersist is enabled
+  if Self.FAutoPersist then
+  begin
+    if Self.UseObjStatus
+      then Self.SetObjStatus(osDirty)
+      else TIupOrm.Persist(Self.Current);
+  end;
   // Send a notification to other ActiveBindSourceAdapters & BindSource
   Notify(
          Self,
@@ -171,11 +187,15 @@ end;
 procedure TioActiveInterfaceListBindSourceAdapter.DoBeforeDelete;
 begin
 inherited;
-  if Self.UseObjStatus then
+  // IF AutoPersist is enabled
+  if Self.FAutoPersist then
   begin
-    Self.SetObjStatus(osDeleted);
-    Abort;
-  end else TIupOrm.Delete(Self.Current);
+    if Self.UseObjStatus then
+    begin
+      Self.SetObjStatus(osDeleted);
+      Abort;
+    end else TIupOrm.Delete(Self.Current);
+  end;
 end;
 
 procedure TioActiveInterfaceListBindSourceAdapter.DoBeforeOpen;
@@ -218,9 +238,13 @@ var
   AMasterProperty: IioContextProperty;
 begin
   ADetailObj := nil;
-  // Check parameter
-  if not Assigned(AMasterObj)
-    then Exit;
+  // Check parameter, if the MasterObject is not assigned
+  //  then close the BSA
+  if not Assigned(AMasterObj) then
+  begin
+    Self.SetDataObject(nil, False);  // 2° parameter false ABSOLUTELY!!!!!!!
+    Exit;
+  end;
   // Extract master property value
   AMap := TioContextFactory.Map(AMasterObj.ClassType);
   AMasterProperty := AMap.GetProperties.GetPropertyByName(FMasterPropertyName);
@@ -237,7 +261,7 @@ begin
   if Supports(ADetailObj, IioLazyLoadable, ALazyLoadableObj)
     then ADetailObj := ALazyLoadableObj.GetInternalObject;
   // Set it to the Adapter itself
-  Self.SetDataObject(ADetailObj);
+  Self.SetDataObject(ADetailObj, False);  // 2° parameter false ABSOLUTELY!!!!!!!
 end;
 
 function TioActiveInterfaceListBindSourceAdapter.GetDataObject: TObject;
@@ -251,6 +275,11 @@ begin
   // Return the requested DetailBindSourceAdapter and set the current master object
   Result := FDetailAdaptersContainer.GetBindSourceAdapter(AOwner, BaseObjectRttiType.Name, AMasterPropertyName);
   FDetailAdaptersContainer.SetMasterObject(Self.Current);
+end;
+
+function TioActiveInterfaceListBindSourceAdapter.GetioAutoPersist: Boolean;
+begin
+  Result := FAutoPersist;
 end;
 
 function TioActiveInterfaceListBindSourceAdapter.GetNaturalObjectBindSourceAdapter(
@@ -322,20 +351,39 @@ begin
   FBindSource := ANotifiableBindSource;
 end;
 
-procedure TioActiveInterfaceListBindSourceAdapter.SetDataObject(const AObj: TObject);
-var
-  ALazyLoadableObj: IioLazyLoadable;
+procedure TioActiveInterfaceListBindSourceAdapter.SetDataObject(const AObj:TObject; const AOwnsObject:Boolean);
 begin
+  // Disable the adapter
   Self.First;  // Bug
   Self.Active := False;
+  // AObj is assigned then set it as DataObject
+  //  else set DataObject to nil and set MasterObject to nil
+  //  to disable all Details adapters also
+  if Assigned(AObj) then
+  begin
+    Self.SetList(TList<IInterface>(AObj), AOwnsObject);
+    Self.FAutoLoadData := False;  // If the DataObject is externally provided then Set FAutoLoadData to false to prevent double values
+    Self.Active := True;
+  end
+  else
+  begin
+    Self.SetList(nil, AOwnsObject);
+    Self.FDetailAdaptersContainer.SetMasterObject(nil);
+  end;
+
+  // -------------------------------------------------------------------------------------------------------
   // If is a LazyLoadable list then set the internal List
   //  NB: Assegnare direttamente anche i LazyLoadable come se fossero delle liste
   //       normali dava dei problemi (non dava errori ma non usciva nulla)
 //  if Supports(AObj, IioLazyLoadable, ALazyLoadableObj)
 //    then AObj := TList<TObject>(ALazyLoadableObj.GetInternalObject);
 //  Self.SetList(AObj as TList<IInterface>, False);  // NB: AOwns (2° parameters) = False ABSOLUTELY!!!!!!
-  Self.SetList(TList<IInterface>(AObj), False);  // NB: AOwns (2° parameters) = False ABSOLUTELY!!!!!!
-  Self.Active := True;
+//// -------------------------------------------------------------------------------------------------------
+end;
+
+procedure TioActiveInterfaceListBindSourceAdapter.SetioAutoPersist(const Value: Boolean);
+begin
+  FAutoPersist := Value;
 end;
 
 procedure TioActiveInterfaceListBindSourceAdapter.SetMasterAdapterContainer(

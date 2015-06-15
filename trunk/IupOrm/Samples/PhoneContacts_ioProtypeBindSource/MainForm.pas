@@ -57,7 +57,11 @@ type
     LinkControlToField4: TLinkControlToField;
     LinkControlToField5: TLinkControlToField;
     LinkControlToField6: TLinkControlToField;
+    Button8: TButton;
+    Button9: TButton;
     procedure FormCreate(Sender: TObject);
+    procedure Button8Click(Sender: TObject);
+    procedure Button9Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -70,9 +74,22 @@ var
 implementation
 
 uses
-  Model, IupOrm;
+  Model, IupOrm, System.Generics.Collections;
 
 {$R *.fmx}
+
+procedure TForm1.Button8Click(Sender: TObject);
+begin
+  MasterBS.ClearDataObject;
+end;
+
+procedure TForm1.Button9Click(Sender: TObject);
+var
+  AList: TObjectList<TPerson>;
+begin
+  AList := TIupOrm.Load<TPerson>.ToList<TObjectList<TPerson>>;
+  MasterBS.SetDataObject(AList);
+end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin

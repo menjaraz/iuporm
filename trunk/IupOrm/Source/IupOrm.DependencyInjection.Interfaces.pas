@@ -9,11 +9,31 @@ uses
 
 type
 
+  // Default initial property value for an implementers Item
+  TioDIPropertyOnCreate = record
+    Name: String;
+    Value: TValue;
+  end;
   // Dependency Injection Container Implementers Item (SubContainer value)
-  TioDIContainerImplementersItem = record
+  TioDIContainerImplementersItem = class
+  strict private
+    // for singleton lifetime manager
+    ObjInstance: TObject;
+    IntfInstance: IInterface;
+  public
     ClassRef: TioClassref;
     ClassName: String;
     RttiType: TRttiInstanceType;
+    PropertiesOnCreate: TArray<TioDIPropertyOnCreate>;
+    DefaultConstructorMethod: String;
+    DefaultConstructorMarker: String;
+    DefaultConstructorParams: array of TValue;
+    // for singleton lifetime manager
+    IsSingleton: Boolean;
+    constructor Create;
+    function ObjInstanceExists: Boolean;
+    function GetObjInstance: TObject;
+    procedure SetObjInstance(AObj:TObject);
   end;
 
   IioDependencyInjectionLocator = interface
@@ -53,5 +73,41 @@ type
   end;
 
 implementation
+
+uses
+  System.SysUtils;
+
+{ TioDIContainerImplementersItem }
+
+constructor TioDIContainerImplementersItem.Create;
+begin
+  inherited;
+  ObjInstance := nil;
+  IntfInstance := nil;
+end;
+
+function TioDIContainerImplementersItem.GetObjInstance: TObject;
+begin
+  Result := Self.ObjInstance;
+end;
+
+
+function TioDIContainerImplementersItem.ObjInstanceExists: Boolean;
+begin
+  Result := Assigned(Self.ObjInstance);
+end;
+
+procedure TioDIContainerImplementersItem.SetObjInstance(AObj: TObject);
+var
+  AInterfacedObject: IInterface;
+begin
+  // Set the ObjInstance reference for the singleton object
+  Self.ObjInstance := AObj;
+  // If it is an interfaced object then set a reference (IInterface) to prevent someone else destroy it by RefCount
+  if Supports(AObj, IInterface, AInterfacedObject) then
+    Self.IntfInstance := AInterfacedObject
+  else
+    Self.IntfInstance := nil;
+end;
 
 end.

@@ -35,9 +35,9 @@ type
     procedure DoOnAfterSetDataObject; virtual;
     property BaseObjectRttiType:TRttiType read FBaseObjectRttiType;
   public
-    constructor Create(const AOwner: TComponent; const AObject: T; const ATypeAlias:String=''; const ATypeName:String=''; const AOwnsObject: Boolean = True); reintroduce; overload; virtual;
+    constructor Create(const AOwner: TComponent; const AObject: T; const ATypeAlias:String=''; const ATypeName:String=''); reintroduce; overload; virtual;
     destructor Destroy; override;
-    procedure SetDataObject(ADataObject: T; AOwnsObject: Boolean = True);
+    procedure SetDataObject(ADataObject: T; AOwnsObject: Boolean = False);
     property DataObject: T read FDataObject;
     property OnBeforeSetDataObject: TSetObjectEvent read FOnBeforeSetDataObject write FOnBeforeSetDataObject;
     property OnAfterSetDataObject: TAdapterNotifyEvent read FOnAfterSetDataObject write FOnAfterSetDataObject;
@@ -45,8 +45,8 @@ type
 
   TInterfaceObjectBindSourceAdapter = class(TInterfaceObjectBindSourceAdapter<IInterface>)
   public
-    constructor Create(const AOwner: TComponent; const AObject: TObject; const ATypeAlias:String=''; const ATypeName:String='';
-      const AOwnsObject: Boolean = True); reintroduce; overload; virtual;
+    constructor Create(const AOwner: TComponent; const AObject: TObject; const ATypeAlias:String=''; const ATypeName:String=''); reintroduce; overload; virtual;
+    procedure SetDataObject(ADataObject: TObject; AOwnsObject: Boolean = True);
   end;
 
 implementation
@@ -72,7 +72,7 @@ begin
   Assert(False);
 end;
 
-constructor TInterfaceObjectBindSourceAdapter<T>.Create(const AOwner: TComponent; const AObject: T; const ATypeAlias:String; const ATypeName:String; const AOwnsObject: Boolean);
+constructor TInterfaceObjectBindSourceAdapter<T>.Create(const AOwner: TComponent; const AObject: T; const ATypeAlias:String; const ATypeName:String);
 begin
   inherited Create(AOwner);
   // Set the BaseObjectType
@@ -82,7 +82,9 @@ begin
   FTypeAlias := ATypeAlias;
   FBaseObjectRttiType := TIupOrm.DependencyInjection.Locate(FTypeName).Alias(FTypeAlias).GetItem.RttiType;
   // Set the data object
-  SetDataObject(AObject, AOwnsObject);
+  //  NB: Force FOwnsObject := False because this BindSourceAdapter is for interface and his AutoRefCount
+  FOwnsObject := False;
+  SetDataObject(AObject, FOwnsObject);
 end;
 
 function TInterfaceObjectBindSourceAdapter<T>.DeleteAt(AIndex: Integer): Boolean;
@@ -172,6 +174,10 @@ end;
 
 procedure TInterfaceObjectBindSourceAdapter<T>.SetDataObject(ADataObject: T; AOwnsObject: Boolean);
 begin
+  // Force the  AOwnsObject to False because this is a BindSourceAdapter
+  //  for an interfaced object (AutoRefCount)
+  AOwnsObject := False;
+
   DoOnBeforeSetDataObject(ADataObject);
   Active := False;
   if FDataObject <> nil then
@@ -196,14 +202,32 @@ end;
 
 { TObjectBindSourceAdapter }
 
-constructor TInterfaceObjectBindSourceAdapter.Create(const AOwner: TComponent; const AObject: TObject; const ATypeAlias, ATypeName: String;
-  const AOwnsObject: Boolean);
+constructor TInterfaceObjectBindSourceAdapter.Create(const AOwner: TComponent; const AObject: TObject; const ATypeAlias, ATypeName: String);
 var
   AObjectInternal: IInterface;
 begin
-  if not Supports(AObject, IInterface, AObjectInternal) then
+  // Init
+  AObjectInternal := nil;
+  // Note: if AObject = nil then assign the object as is (nil) else verify if the
+  //  object supports IInterface
+  if Assigned(AObject) and not Supports(AObject, IInterface, AObjectInternal) then
     raise EIupOrmException.Create(Self.ClassName + ': AObject does not supports IInterface.');
-  inherited Create(AOwner, AObjectInternal, ATypeAlias, ATypeName, AOwnsObject);
+  // Call the inherited
+  inherited Create(AOwner, AObjectInternal, ATypeAlias, ATypeName);
+end;
+
+procedure TInterfaceObjectBindSourceAdapter.SetDataObject(ADataObject: TObject; AOwnsObject: Boolean);
+var
+  AObjectInternal: IInterface;
+begin
+  // Init
+  AObjectInternal := nil;
+  // Note: if AObject = nil then assign the object as is (nil) else verify if the
+  //  object supports IInterface
+  if Assigned(ADataObject) and not Supports(ADataObject, IInterface, AObjectInternal) then
+    raise EIupOrmException.Create(Self.ClassName + ': AObject does not supports IInterface.');
+  // Call the inherited
+  inherited SetDataObject(AObjectInternal, AOwnsObject);
 end;
 
 end.

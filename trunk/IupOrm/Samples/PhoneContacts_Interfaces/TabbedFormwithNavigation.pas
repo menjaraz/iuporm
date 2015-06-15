@@ -54,6 +54,7 @@ type
     LinkControlToField1: TLinkControlToField;
     BSDetail: TioPrototypeBindSource;
     LinkListControlToField2: TLinkListControlToField;
+    Button9: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
@@ -66,6 +67,8 @@ type
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
+    procedure Button8Click(Sender: TObject);
+    procedure Button9Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -80,7 +83,7 @@ implementation
 uses
   Model, IupOrm, Interfaces, System.Generics.Collections, IupOrm.Containers.List,
   IupOrm.Containers.Interfaces, IupOrm.LiveBindings.InterfaceListBindSourceAdapter,
-  IupOrm.Rtti.Utilities;
+  IupOrm.Rtti.Utilities, IupOrm.LiveBindings.Interfaces;
 
 {$R *.fmx}
 
@@ -142,6 +145,19 @@ var
 begin
   AList := TIupOrm.Load<IPerson>('Customer').ToInterfacedList;
   ShowMessage(AList.Count.ToString + ' IPerson (as Customer)');
+end;
+
+procedure TTabbedwithNavigationForm.Button8Click(Sender: TObject);
+begin
+  BSMaster.ClearDataObject;
+end;
+
+procedure TTabbedwithNavigationForm.Button9Click(Sender: TObject);
+var
+  AList: TList<IPerson>;
+begin
+  AList := TIupOrm.Load<IPerson>.ToList<TList<IPerson>>;
+  BSMaster.SetDataObject(AList);
 end;
 
 procedure TTabbedwithNavigationForm.FormCreate(Sender: TObject);

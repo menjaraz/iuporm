@@ -42,6 +42,7 @@ type
     function GetJoin: IioJoins;
     function GetGroupBy: IioGroupBy;
     function GetConnectionDefName: String;
+    function GetMapMode: TioMapModeType;
   end;
 
 implementation

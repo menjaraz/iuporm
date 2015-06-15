@@ -4,8 +4,8 @@ interface
 
 uses
   System.Classes, IupOrm.MVVM.Interfaces,
-  IupOrm.LiveBindings.PrototypeBindSource, IupOrm.LiveBindings.Interfaces,
-  IupOrm.CommonTypes, System.Rtti, IupOrm.Attributes;
+  IupOrm.LiveBindings.PrototypeBindSource, IupOrm.LiveBindings.Interfaces, System.Rtti, IupOrm.Attributes,
+  IupOrm.CommonTypes;
 
 type
   TioViewModelBase = class(TDataModule, IioViewModel)
@@ -13,11 +13,28 @@ type
     { Private declarations }
     FViewData: IioViewData;
     FioTypeName, FioTypeAlias: String;
+    FioMasterViewModelTypeName, FioMasterViewModelTypeAlias: String;
+    FioMasterViewModel: IioViewModel;
     FIoMasterBindSource: TioMasterBindSource;
+    FioMasterBindSourceAdapter: IioActiveBindSourceAdapter;
     FIoMasterPropertyName: String;
     FIoWhere: String;
     FioAutoLoadData: Boolean;
     FioViewDataType: TioViewDataType;
+    function GetAutoLoadData: Boolean;
+    function GetMasterBindSource: TObject;
+    function GetMasterPropertyName: String;
+    function GetTypeAlias: String;
+    function GetTypeName: String;
+    function GetViewDataType: TioViewDataType;
+    function GetWhere: String;
+    procedure SetAutoLoadData(const Value: Boolean);
+    procedure SetMasterBindSource(const Value: TObject);
+    procedure SetMasterPropertyName(const Value: String);
+    procedure SetTypeAlias(const Value: String);
+    procedure SetTypeName(const Value: String);
+    procedure SetViewDataType(const Value: TioViewDataType);
+    procedure SetWhere(const Value: String);
   protected
 // ---------------- Start: section added for IInterface support ---------------
 {$IFNDEF AUTOREFCOUNT}
@@ -30,6 +47,9 @@ type
     procedure ioLoadViewData;
   public
     { Public declarations }
+
+    // Constructors
+    constructor Create; overload;  // Non togliere assolutamente altrimenti non vengono più bindate le Actions
     [ioMarker('CreateByDataObject')]
     constructor Create(const ADataObj:TObject; const AViewDataType:TioViewDataType); overload;
     [ioMarker('CreateByDataInterface')]
@@ -42,6 +62,14 @@ type
     constructor Create(const ABindSourceAdapter:IioActiveBindSourceAdapter); overload;
     [ioMarker('CreateByMasterBindSource')]
     constructor Create(const AMasterBindSource:TioMasterBindSource; const AMasterPropertyName:String=''); overload;
+    [ioMarker('CreateByMasterBindSourceAdapter')]
+    constructor Create(const AMasterBindSourceAdapter:IioActiveBindSourceAdapter; const AMasterPropertyName:String=''); overload;
+    [ioMarker('CreateByMasterViewModel')]
+    constructor Create(const AMasterViewModel:IioViewModel; const AMasterPropertyName:String=''); overload;
+    [ioMarker('CreateByMasterViewModelFromDependencyInjection')]
+    constructor Create(const AMasterViewModelTypeName, AMasterViewModelTypeAlias:String; const AMasterViewModelMasterPropertyName:String=''); overload;
+    // End constructors
+
     function ViewData: IioViewData;
     function GetActionByName(AActionName: String): TBasicAction;
     procedure BindActions(const AView:IioView);
@@ -55,13 +83,13 @@ type
 {$ENDIF}
 // ---------------- End: section added for IInterface support ---------------
   published
-    property ioTypeName:String read FioTypeName write FioTypeName;
-    property ioTypeAlias:String read FioTypeAlias write FioTypeAlias;
-    property ioWhere:String read FIoWhere write FIoWhere;
-    property ioMasterBindSource:TioMasterBindSource read FIoMasterBindSource write FIoMasterBindSource;
-    property ioMasterPropertyName:String read FIoMasterPropertyName write FIoMasterPropertyName;
-    property ioAutoLoadData:Boolean read FioAutoLoadData write FioAutoLoadData;
-    property ioViewDataType:TioViewDataType read FioViewDataType write FioViewDataType;
+    property ioTypeName:String read GetTypeName write SetTypeName;
+    property ioTypeAlias:String read GetTypeAlias write SetTypeAlias;
+    property ioWhere:String read GetWhere write SetWhere;
+    property ioMasterBindSource:TObject read GetMasterBindSource write SetMasterBindSource;
+    property ioMasterPropertyName:String read GetMasterPropertyName write SetMasterPropertyName;
+    property ioAutoLoadData:Boolean read GetAutoLoadData write SetAutoLoadData;
+    property ioViewDataType:TioViewDataType read GetViewDataType write SetViewDataType;
   end;
 // ---------------- Start: section added for IInterface support ---------------
   {$IFNDEF SYSTEM_HPP_DEFINES_OBJECTS}
@@ -74,7 +102,7 @@ implementation
 
 uses System.SysUtils, IupOrm.Exceptions, IupOrm.RttiContext.Factory,
   IupOrm.MVVM.Factory, Data.Bind.ObjectScope,
-  IupOrm.LiveBindings.Factory;
+  IupOrm.LiveBindings.Factory, IupOrm, FMX.Dialogs;
 
 {%CLASSGROUP 'System.Classes.TPersistent'}
 
@@ -122,14 +150,50 @@ var
 begin
   // Init
   Result := nil;
-  if AActionName.Trim = '' then raise EIupOrmException.Create(Self.ClassName + ': invalid action name!');
+  AObj := nil;
+  if AActionName.Trim = '' then raise EIupOrmException.Create(ClassName + ': invalid action name!');
   // Find the action
-  AObj := Self.FindComponent(AActionName);
+  AObj := FindComponent(AActionName);
   // If found then return the action itself
   if Assigned(AObj) and (AObj is TBasicAction) then
     Exit(AObj as TBasicAction);
   // Else raise an exception
-  raise EIupOrmException.Create(Self.ClassName + ': action not found!');
+  raise EIupOrmException.Create(ClassName + ': action "' + AActionName + '" not found!');
+end;
+
+function TioViewModelBase.GetAutoLoadData: Boolean;
+begin
+  Result := FioAutoLoadData;
+end;
+
+function TioViewModelBase.GetMasterBindSource: TObject;
+begin
+  Result := FIoMasterBindSource;
+end;
+
+function TioViewModelBase.GetMasterPropertyName: String;
+begin
+  Result := FIoMasterPropertyName;
+end;
+
+function TioViewModelBase.GetTypeAlias: String;
+begin
+  Result := FioTypeAlias;
+end;
+
+function TioViewModelBase.GetTypeName: String;
+begin
+  Result := FioTypeName;
+end;
+
+function TioViewModelBase.GetViewDataType: TioViewDataType;
+begin
+  Result := FioViewDataType;
+end;
+
+function TioViewModelBase.GetWhere: String;
+begin
+  Result := FIoWhere;
 end;
 
 procedure TioViewModelBase.BindAction(const AType:TRttiType; const AView:IioView; const AComponentName, AActionName: String);
@@ -195,9 +259,47 @@ begin
     Result := E_NOINTERFACE;
 end;
 
+procedure TioViewModelBase.SetAutoLoadData(const Value: Boolean);
+begin
+  FioAutoLoadData := Value;
+end;
+
+procedure TioViewModelBase.SetMasterBindSource(const Value: TObject);
+begin
+  FIoMasterBindSource := Value as TioMasterBindSource;
+end;
+
+procedure TioViewModelBase.SetMasterPropertyName(const Value: String);
+begin
+  FIoMasterPropertyName := Value;
+end;
+
+procedure TioViewModelBase.SetTypeAlias(const Value: String);
+begin
+  FioTypeAlias := Value;
+end;
+
+procedure TioViewModelBase.SetTypeName(const Value: String);
+begin
+  FioTypeName := Value;
+end;
+
+procedure TioViewModelBase.SetViewDataType(const Value: TioViewDataType);
+begin
+  FioViewDataType := Value;
+end;
+
+procedure TioViewModelBase.SetWhere(const Value: String);
+begin
+  FIoWhere := Value;
+end;
+
 function TioViewModelBase.ViewData: IioViewData;
 begin
-  if not Assigned(FViewData) then Self.ioLoadViewData;
+  if not Assigned(FViewData) then
+  begin
+    Self.ioLoadViewData;
+  end;
   Result := FViewData;
 end;
 
@@ -256,23 +358,69 @@ end;
 
 procedure TioViewModelBase.ioLoadViewData;
 var
+  AObj: TObject;
   ABindSourceAdapter: TBindSourceAdapter;
   AActiveBindSourceAdapter: IioActiveBindSourceAdapter;
 begin
   // Checks
-  if Assigned(FViewData)
-  then raise EIupOrmException.Create(Self.ClassName + ': "ViewData" is already assigned!')
-  else if (Self.FioTypeName = '') and (not Assigned(Self.FIoMasterBindSource))
-  then raise EIupOrmException.Create(Self.ClassName + ': "ioTypeName" or "ioMasterBindSource" property is required!');
-
+  if Assigned(FViewData) then
+    raise EIupOrmException.Create(Self.ClassName + ': "ViewData" is already assigned!');
+  // If there is a MasterViewModel...
+  if Assigned(FioMasterViewModel) then
+    FViewData := TioMVVMFactory.ViewData(FioMasterViewModel, FIoMasterPropertyName)
+  // If  FioMasterViewModelTypeName is specified (retrieve the MasterVM by Dependency Injection)
+  else if not FioMasterViewModelTypeName.IsEmpty then
+  begin
+    AObj := TIupOrm.DependencyInjection.Locate(FioMasterViewModelTypeName, FioMasterViewModelTypeAlias).Get;
+    if not Supports(AObj, IioViewModel, FioMasterViewModel) then
+      raise EIupOrmException.Create(Self.ClassName + ': The "IioViewModel" interface is not implemented by object.');
+    FViewData := TioMVVMFactory.ViewData(FioMasterViewModel, FIoMasterPropertyName)
+  end
   // If there is a MasterBindSource then create the ViewData by MasterBindSource
   //  else create it by TypeName, TypeAlias.........
-  if Assigned(Self.FIoMasterBindSource) then
+  else if Assigned(FIoMasterBindSource) then
     FViewData := TioMVVMFactory.ViewData(FIoMasterBindSource, FIoMasterPropertyName)
-  else
+  // If there is a MasterBindSourceAdapter...
+  else if Assigned(FioMasterBindSourceAdapter) then
+    FViewData := TioMVVMFactory.ViewData(FioMasterBindSourceAdapter, FIoMasterPropertyName)
+  // If there is a TypeName
+  else if not FioTypeName.IsEmpty then
     FViewData := TioMVVMFactory.ViewData(FioTypeName, FioTypeAlias, FIoWhere, FioViewDataType, FioAutoLoadData);
 end;
 
 
+
+constructor TioViewModelBase.Create(const AMasterBindSourceAdapter: IioActiveBindSourceAdapter; const AMasterPropertyName: String);
+begin
+  inherited Create(nil);
+  FioMasterBindSourceAdapter := AMasterBindSourceAdapter;
+  FIoMasterPropertyName := AMasterPropertyName;
+end;
+
+constructor TioViewModelBase.Create(const AMasterViewModel: IioViewModel; const AMasterPropertyName: String);
+begin
+  inherited Create(nil);
+  FioMasterViewModel := AMasterViewModel;
+  FIoMasterPropertyName := AMasterPropertyName;
+end;
+
+constructor TioViewModelBase.Create(const AMasterViewModelTypeName, AMasterViewModelTypeAlias,
+  AMasterViewModelMasterPropertyName: String);
+var
+  AObj: TObject;
+  AMasterViewModel: IioViewModel;
+begin
+  inherited Create(nil);
+  FioMasterViewModelTypeName := AMasterViewModelTypeName;
+  FioMasterViewModelTypeAlias := AMasterViewModelTypeAlias;
+  FIoMasterPropertyName := AMasterViewModelMasterPropertyName;
+end;
+
+constructor TioViewModelBase.Create;
+begin
+  inherited Create(nil);
+  // Init
+  FViewData := nil;
+end;
 
 end.

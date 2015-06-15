@@ -66,9 +66,9 @@ begin
     Result := AProperty.GetValue(AContext.DataObject).AsObject;
     if not Assigned(Result) then
       if AProperty.GetRelationType = ioRTHasMany then
-        Result := Self.CreateListByRttiType(   AProperty.GetRttiProperty.PropertyType   )
+        Result := Self.CreateListByRttiType(   AProperty.GetRttiType   )
       else
-        Result := Self.CreateObjectByRttiType(   AProperty.GetRttiProperty.PropertyType   );
+        Result := Self.CreateObjectByRttiType(   AProperty.GetRttiType   );
   end;
 end;
 
@@ -175,7 +175,7 @@ var
   AStream: TStream;
 begin
   // Create the object
-  Result := Self.CreateObjectByRttiType(   AProperty.GetRttiProperty.PropertyType   );
+  Result := Self.CreateObjectByRttiType(   AProperty.GetRttiType   );
   // If the field is null then exit
   if AQuery.Fields.FieldByName(AProperty.GetSqlFieldAlias).IsNull then Exit;
   // Wrap the object into a DuckTypedStreamObject
@@ -266,7 +266,6 @@ class function TioObjectMakerIntf.LoadPropertyHasMany(AContext:IioContext;
 var
   ALazyLoadableObj: IioLazyLoadable;
   AResolvedTypeList: IioResolvedTypeList;
-  AInterface: IInterface;
 begin
   // Check if the result child relation object is alreaady created in the master object (by constructor); if it isn't
   //  then create it

@@ -11,7 +11,6 @@ type
   // Forward declaration
   IioContainedBindSourceAdapter = interface;
 
-
   // Bind source adapters notification type
   TioBSANotificationType = (ntAfterPost, ntAfterDelete);
 
@@ -49,17 +48,27 @@ type
 
   IioActiveBindSourceAdapter = interface
     ['{F407B515-AE0B-48FD-B8C3-0D0C81774A58}']
+    procedure Edit(AForce: Boolean = False);
+    procedure Post;
     procedure Persist(ReloadData:Boolean=False);
     procedure Notify(Sender:TObject; ANotification:IioBSANotification);
     procedure Refresh(ReloadData:Boolean);
     procedure SetBindSource(ANotifiableBindSource:IioNotifiableBindSource);
     procedure Append(AObject:TObject);
     procedure Insert(AObject:TObject);
-    function GetCurrent: TObject;
-    function GetDataObject: TObject;
-    procedure SetDataObject(const AObj:TObject);
     function UseObjStatus: Boolean;
+    function GetDetailBindSourceAdapter(AOwner:TComponent; AMasterPropertyName:String): TBindSourceAdapter;
     function GetNaturalObjectBindSourceAdapter(AOwner:TComponent): TBindSourceAdapter;
+    function GetDataObject: TObject;
+    procedure SetDataObject(const AObj:TObject; const AOwnsObject:Boolean=True);
+    procedure ClearDataObject;
+    // Current property
+    function GetCurrent: TObject;
+    property Current: TObject read GetCurrent;
+    // AutoPersist property
+    procedure SetioAutoPersist(const Value: Boolean);
+    function GetioAutoPersist: Boolean;
+    property ioAutoPersist:Boolean read GetioAutoPersist write SetioAutoPersist;
   end;
 
   IioContainedBindSourceAdapter = interface

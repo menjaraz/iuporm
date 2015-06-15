@@ -36,7 +36,7 @@ uses
   IupOrm.Context.Properties.Interfaces, IupOrm.Attributes,
   IupOrm.LiveBindings.ActiveObjectBindSourceAdapter,
   IupOrm.LiveBindings.ActiveListBindSourceAdapter, System.Generics.Collections,
-  IupOrm.Exceptions, IupOrm.LiveBindings.Factory;
+  IupOrm.Exceptions, IupOrm.LiveBindings.Factory, IupOrm;
 
 { TioDetailAdaptersContainer }
 
@@ -66,9 +66,9 @@ begin
   AMasterProperty := AMasterContext.GetProperties.GetPropertyByName(AMasterPropertyName);
   // Create the Adapter
   case AMasterProperty.GetRelationType of
-    ioRTBelongsTo, ioRTHasOne:
+    ioRTBelongsTo, ioRTHasOne, ioRTEmbeddedHasOne:
       NewAdapter := TioLiveBindingsFactory.ContainedObjectBindSourceAdapter(AOwner, AMasterProperty);
-    ioRTHasMany:
+    ioRTHasMany, ioRTEmbeddedHasMany:
       NewAdapter := TioLiveBindingsFactory.ContainedListBindSourceAdapter(AOwner, AMasterProperty);
     else raise EIupOrmException.Create(Self.ClassName + ': Relation not found');
   end;
