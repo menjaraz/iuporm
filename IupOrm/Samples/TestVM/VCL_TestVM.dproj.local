@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2014/11/28 17:19:35.000.386,=C:\Users\Maurizio Del Magno\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2015/06/04 10:30:02.000.285,=C:\Users\Maurizio Del Magno\Documents\Embarcadero\Studio\Projects\Unit3.pas</Transaction>
+    <Transaction>2015/06/04 10:30:51.000.581,C:\Users\Maurizio Del Magno\Documents\Embarcadero\Studio\Projects\Unit3.dfm=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\formMain.dfm</Transaction>
+    <Transaction>2015/06/04 10:30:51.000.581,C:\Users\Maurizio Del Magno\Documents\Embarcadero\Studio\Projects\Unit3.pas=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\formMain.pas</Transaction>
+    <Transaction>2015/06/04 10:31:03.000.922,C:\Users\Maurizio Del Magno\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\TestVM_VCL.dproj</Transaction>
+    <Transaction>2015/06/04 10:31:28.000.831,C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\formMain.dfm=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\VCL_FormMain.dfm</Transaction>
+    <Transaction>2015/06/04 10:31:28.000.831,C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\formMain.pas=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\VCL_FormMain.pas</Transaction>
+    <Transaction>2015/06/04 10:31:51.000.133,C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\TestVM_VCL.dproj=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\VCL_TestVM.dproj</Transaction>
+    <Transaction>2015/06/04 10:33:42.000.555,=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Source\IupOrm.MVVM.ALL.ViewModel.pas</Transaction>
+    <Transaction>2015/06/04 10:34:05.000.931,=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\Unit1.pas</Transaction>
+    <Transaction>2015/06/04 10:35:44.000.406,C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\Unit1.pas=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\VCL_ViewModelU.pas</Transaction>
+    <Transaction>2015/06/04 10:35:44.000.406,C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\Unit1.dfm=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\VCL_ViewModelU.dfm</Transaction>
+    <Transaction>2015/06/04 10:39:13.000.108,=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\Unit1.pas</Transaction>
+    <Transaction>2015/06/04 10:39:26.000.538,C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\Unit1.pas=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\VCL_InterfacesU.pas</Transaction>
+    <Transaction>2015/06/04 10:40:30.000.016,=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\Unit1.pas</Transaction>
+    <Transaction>2015/06/04 10:40:46.000.473,C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\Unit1.pas=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\TestVM\VCL_RegisterClasses.pas</Transaction>
+  </Transactions>
+</BorlandProject>

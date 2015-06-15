@@ -1,9 +1,9 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{780EBCA2-73DC-444D-AA55-0FF2ADF84877}</ProjectGuid>
+        <ProjectGuid>{437DCBB4-6862-4CEB-B8DB-4F16A34C4D85}</ProjectGuid>
         <ProjectVersion>15.4</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
-        <MainSource>TestVM.dpr</MainSource>
+        <MainSource>VCL_TestVM.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -40,13 +40,13 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <VerInfo_Locale>1040</VerInfo_Locale>
-        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <DCC_UnitSearchPath>..\..\source;..\..\packages\delphixe6\$(Platform)\$(Config);$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\..\source;..\..\packages\delphixe6\$(Platform)\$(Config);C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\ExtLibs\DMVC;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <VCL_Custom_Styles>Carbon|VCLSTYLE|$(PUBLIC)\Documents\Embarcadero\Studio\14.0\Styles\Carbon.vsf</VCL_Custom_Styles>
-        <SanitizedProjectName>TestVM</SanitizedProjectName>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <SanitizedProjectName>VCL_TestVM</SanitizedProjectName>
+        <DCC_Define>ioPresent;$(DCC_Define)</DCC_Define>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
+        <VerInfo_Locale>1040</VerInfo_Locale>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
@@ -56,15 +56,15 @@
         <DCC_K>false</DCC_K>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <DCC_UsePackage>Mitov_Runtime_DXE6;FireDACSqliteDriver;TimingLabBasicPkgDXE6;FireDACDSDriver;DBXSqliteDriver;TMSiCLPkgDXE6;SampleListViewMultiDetailAppearancePackage;FireDACPgDriver;fmx;IndySystem;TeeDB;tethering;inetdbbde;DBXInterBaseDriver;DataSnapClient;DataSnapServer;DataSnapCommon;AudioLabEssentialPkgDXE6;DataSnapProviderClient;DBXSybaseASEDriver;DbxCommonDriver;vclimg;dbxcds;DatasnapConnectorsFreePascal;MetropolisUILiveTile;DataBindingsVCL180;vcldb;vcldsnap;OpenWireBindingFmxPkgDXE6;fmxFireDAC;DBXDb2Driver;DBXOracleDriver;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;IndyCore;Mitov_BasicLab_DXE6;Mitov_FMX_BasicLab_DXE6;DBXMSSQLDriver;IndyIPCommon;CloudService;IupOrmProject;FireDACIBDriver;FmxTeeUI;CodeSiteExpressPkg;TextLabBasicPkgDXE6;DataSnapFireDAC;FireDACDBXDriver;FMX_MediaLabBasicPkgDXE6;FMX_SignalLabScopePkgDXE6;soapserver;fmx.gtxControlsDXE6;inetdbxpress;dsnapxml;FireDACInfxDriver;FireDACDb2Driver;SignalLabGenericBasicPkgDXE6;adortl;FireDACASADriver;OpenWirePkgDXE6;bindcompfmx;vcl.gtxDBControlsDXE6;vcldbx;FireDACODBCDriver;RESTBackendComponents;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;inetdb;OpenWireBindingPkgDXE6;Tee;DataBindings;DBXOdbcDriver;OpenWireBindingVclPkgDXE6;vclFireDAC;Mitov_VCL_Runtime_DXE6;xmlrtl;DataSnapNativeClient;svnui;SignalLabScopePkgDXE6;IndyProtocols;DBXMySQLDriver;MediaLabPkgDXE6;OpenWireBindingDatabasePkgDXE6;FireDACCommonDriver;vclactnband;bindengine;soaprtl;bindcompdbx;FMXTee;TeeUI;bindcompvcl;Mitov_VCL_BasicLab_DXE6;MediaLabBasicPkgDXE6;vclie;FireDACADSDriver;vcltouch;VclSmp;FireDAC;FireDACMSSQLDriver;DBXInformixDriver;Intraweb;VCLRESTComponents;DataSnapConnectors;DataSnapServerMidas;FMX.dclgtxControlsDXE6;gtPDFkitDXE6ProP;dsnapcon;DBXFirebirdDriver;inet;SignalLabAdditionalPkgDXE6;fmxobj;SignalLabBasicPkgDXE6;AudioLabPkgDXE6;FireDACMySQLDriver;soapmidas;vclx;AudioLabBasicPkgDXE6;vcl.gtxControlsDXE6;svn;DBXSybaseASADriver;AudioLabGenericBasicPkgDXE6;FireDACOracleDriver;fmxdae;RESTComponents;bdertl;dbexpress;FireDACMSAccDriver;DataSnapIndy10ServerTransport;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <DCC_UsePackage>Mitov_Runtime_DXE6;FireDACSqliteDriver;TimingLabBasicPkgDXE6;FireDACDSDriver;DBXSqliteDriver;SampleListViewMultiDetailAppearancePackage;FireDACPgDriver;fmx;IndySystem;TeeDB;tethering;inetdbbde;DBXInterBaseDriver;DataSnapClient;DataSnapServer;DataSnapCommon;AudioLabEssentialPkgDXE6;DataSnapProviderClient;DBXSybaseASEDriver;DbxCommonDriver;vclimg;dbxcds;DatasnapConnectorsFreePascal;MetropolisUILiveTile;DataBindingsVCL180;vcldb;vcldsnap;OpenWireBindingFmxPkgDXE6;fmxFireDAC;DBXDb2Driver;DBXOracleDriver;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;IndyCore;Mitov_BasicLab_DXE6;Mitov_FMX_BasicLab_DXE6;DBXMSSQLDriver;IndyIPCommon;CloudService;FmxTeeUI;FireDACIBDriver;CodeSiteExpressPkg;TextLabBasicPkgDXE6;FMX_MediaLabBasicPkgDXE6;DataSnapFireDAC;FireDACDBXDriver;FMX_SignalLabScopePkgDXE6;IupOrmProject;soapserver;inetdbxpress;dsnapxml;FireDACInfxDriver;FireDACDb2Driver;SignalLabGenericBasicPkgDXE6;adortl;FireDACASADriver;OpenWirePkgDXE6;bindcompfmx;vcldbx;FireDACODBCDriver;RESTBackendComponents;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;inetdb;OpenWireBindingPkgDXE6;Tee;DataBindings;DBXOdbcDriver;OpenWireBindingVclPkgDXE6;vclFireDAC;Mitov_VCL_Runtime_DXE6;xmlrtl;DataSnapNativeClient;svnui;SignalLabScopePkgDXE6;IndyProtocols;DBXMySQLDriver;MediaLabPkgDXE6;OpenWireBindingDatabasePkgDXE6;FireDACCommonDriver;bindcompdbx;bindengine;vclactnband;soaprtl;FMXTee;TeeUI;bindcompvcl;Mitov_VCL_BasicLab_DXE6;MediaLabBasicPkgDXE6;vclie;FireDACADSDriver;vcltouch;VclSmp;FireDACMSSQLDriver;FireDAC;DBXInformixDriver;Intraweb;VCLRESTComponents;DataSnapConnectors;DataSnapServerMidas;dsnapcon;DBXFirebirdDriver;inet;SignalLabAdditionalPkgDXE6;fmxobj;SignalLabBasicPkgDXE6;AudioLabPkgDXE6;FireDACMySQLDriver;soapmidas;vclx;AudioLabBasicPkgDXE6;svn;DBXSybaseASADriver;AudioLabGenericBasicPkgDXE6;FireDACOracleDriver;fmxdae;RESTComponents;bdertl;FireDACMSAccDriver;dbexpress;DataSnapIndy10ServerTransport;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
-        <DCC_UsePackage>Mitov_Runtime_DXE6;FireDACSqliteDriver;TimingLabBasicPkgDXE6;FireDACDSDriver;DBXSqliteDriver;FireDACPgDriver;fmx;IndySystem;TeeDB;tethering;DBXInterBaseDriver;DataSnapClient;DataSnapServer;DataSnapCommon;AudioLabEssentialPkgDXE6;DataSnapProviderClient;DBXSybaseASEDriver;DbxCommonDriver;vclimg;dbxcds;DatasnapConnectorsFreePascal;MetropolisUILiveTile;vcldb;vcldsnap;OpenWireBindingFmxPkgDXE6;fmxFireDAC;DBXDb2Driver;DBXOracleDriver;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;IndyCore;Mitov_BasicLab_DXE6;Mitov_FMX_BasicLab_DXE6;DBXMSSQLDriver;IndyIPCommon;CloudService;FmxTeeUI;FireDACIBDriver;TextLabBasicPkgDXE6;FMX_MediaLabBasicPkgDXE6;DataSnapFireDAC;FireDACDBXDriver;FMX_SignalLabScopePkgDXE6;soapserver;inetdbxpress;dsnapxml;FireDACInfxDriver;FireDACDb2Driver;SignalLabGenericBasicPkgDXE6;adortl;FireDACASADriver;OpenWirePkgDXE6;bindcompfmx;FireDACODBCDriver;RESTBackendComponents;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;inetdb;OpenWireBindingPkgDXE6;Tee;DataBindings;DBXOdbcDriver;OpenWireBindingVclPkgDXE6;vclFireDAC;Mitov_VCL_Runtime_DXE6;xmlrtl;DataSnapNativeClient;SignalLabScopePkgDXE6;IndyProtocols;DBXMySQLDriver;MediaLabPkgDXE6;OpenWireBindingDatabasePkgDXE6;FireDACCommonDriver;bindcompdbx;bindengine;vclactnband;soaprtl;FMXTee;TeeUI;bindcompvcl;Mitov_VCL_BasicLab_DXE6;MediaLabBasicPkgDXE6;vclie;FireDACADSDriver;vcltouch;VclSmp;FireDACMSSQLDriver;FireDAC;DBXInformixDriver;Intraweb;VCLRESTComponents;DataSnapConnectors;DataSnapServerMidas;dsnapcon;DBXFirebirdDriver;inet;SignalLabAdditionalPkgDXE6;fmxobj;SignalLabBasicPkgDXE6;AudioLabPkgDXE6;FireDACMySQLDriver;soapmidas;vclx;AudioLabBasicPkgDXE6;DBXSybaseASADriver;AudioLabGenericBasicPkgDXE6;FireDACOracleDriver;fmxdae;RESTComponents;FireDACMSAccDriver;dbexpress;DataSnapIndy10ServerTransport;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>Mitov_Runtime_DXE6;FireDACSqliteDriver;TimingLabBasicPkgDXE6;FireDACDSDriver;DBXSqliteDriver;FireDACPgDriver;fmx;IndySystem;TeeDB;tethering;DBXInterBaseDriver;DataSnapClient;DataSnapServer;DataSnapCommon;AudioLabEssentialPkgDXE6;DataSnapProviderClient;DBXSybaseASEDriver;DbxCommonDriver;vclimg;dbxcds;DatasnapConnectorsFreePascal;MetropolisUILiveTile;vcldb;vcldsnap;OpenWireBindingFmxPkgDXE6;fmxFireDAC;DBXDb2Driver;DBXOracleDriver;CustomIPTransport;vclribbon;dsnap;IndyIPServer;fmxase;vcl;IndyCore;Mitov_BasicLab_DXE6;Mitov_FMX_BasicLab_DXE6;DBXMSSQLDriver;IndyIPCommon;CloudService;FireDACIBDriver;FmxTeeUI;TextLabBasicPkgDXE6;DataSnapFireDAC;FireDACDBXDriver;FMX_MediaLabBasicPkgDXE6;FMX_SignalLabScopePkgDXE6;soapserver;inetdbxpress;dsnapxml;FireDACInfxDriver;FireDACDb2Driver;SignalLabGenericBasicPkgDXE6;adortl;FireDACASADriver;OpenWirePkgDXE6;bindcompfmx;FireDACODBCDriver;RESTBackendComponents;rtl;dbrtl;DbxClientDriver;FireDACCommon;bindcomp;inetdb;OpenWireBindingPkgDXE6;Tee;DataBindings;DBXOdbcDriver;OpenWireBindingVclPkgDXE6;vclFireDAC;Mitov_VCL_Runtime_DXE6;xmlrtl;DataSnapNativeClient;SignalLabScopePkgDXE6;IndyProtocols;DBXMySQLDriver;MediaLabPkgDXE6;OpenWireBindingDatabasePkgDXE6;FireDACCommonDriver;vclactnband;bindengine;soaprtl;bindcompdbx;FMXTee;TeeUI;bindcompvcl;Mitov_VCL_BasicLab_DXE6;MediaLabBasicPkgDXE6;vclie;FireDACADSDriver;vcltouch;VclSmp;FireDAC;FireDACMSSQLDriver;DBXInformixDriver;Intraweb;VCLRESTComponents;DataSnapConnectors;DataSnapServerMidas;dsnapcon;DBXFirebirdDriver;inet;SignalLabAdditionalPkgDXE6;fmxobj;SignalLabBasicPkgDXE6;AudioLabPkgDXE6;FireDACMySQLDriver;soapmidas;vclx;AudioLabBasicPkgDXE6;DBXSybaseASADriver;AudioLabGenericBasicPkgDXE6;FireDACOracleDriver;fmxdae;RESTComponents;dbexpress;FireDACMSAccDriver;DataSnapIndy10ServerTransport;IndyIPClient;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -75,8 +75,8 @@
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -89,36 +89,22 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="FormMain.pas">
-            <Form>frmMain</Form>
+        <DCCReference Include="VCL_FormMain.pas">
+            <Form>MainForm</Form>
             <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="DM1.pas">
-            <Form>DataModule1</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
-        <DCCReference Include="Interfaces.pas"/>
-        <DCCReference Include="DM2.pas">
-            <Form>DataModule2</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
-        <DCCReference Include="Form2.pas">
-            <Form>frm2</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="Dog.pas"/>
-        <DCCReference Include="ViewModel1.pas">
-            <Form>ioViewModel1</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="..\..\Source\IupOrm.MVVM.ALL.ViewModel.pas">
             <Form>ioViewModel</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="VCL_ViewModelU.pas">
+            <Form>VCL_ViewModel</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="VCL_InterfacesU.pas"/>
+        <DCCReference Include="VCL_RegisterClasses.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -137,7 +123,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">TestVM.dpr</Source>
+                    <Source Name="MainSource">VCL_TestVM.dpr</Source>
                 </Source>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k200.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
