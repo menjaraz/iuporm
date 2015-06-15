@@ -403,8 +403,7 @@ begin
   FTypeAlias := ATypeAlias;
 end;
 
-function TioWhere.ToActiveListBindSourceAdapter(const AOwner: TComponent; const AAutoLoadData:Boolean;
-  const AOwnsObject: Boolean): TBindSourceAdapter;
+function TioWhere.ToActiveListBindSourceAdapter(const AOwner: TComponent; const AAutoLoadData, AOwnsObject: Boolean): TBindSourceAdapter;
 var
   AResolvedTypeList: IioResolvedTypeList;
   AContext: IioContext;
@@ -451,7 +450,7 @@ end;
 
 
 
-function TioWhere.ToActiveObjectBindSourceAdapter(const AOwner: TComponent; const AAutoLoadData:Boolean; const AOwnsObject: Boolean): TBindSourceAdapter;
+function TioWhere.ToActiveObjectBindSourceAdapter(const AOwner: TComponent; const AAutoLoadData, AOwnsObject: Boolean): TBindSourceAdapter;
 var
   AResolvedTypeList: IioResolvedTypeList;
   AContext: IioContext;
@@ -470,9 +469,8 @@ begin
         Self.GetSql(AContext.GetProperties, False),
         AOwner,
         nil,   // AObject:TObject
-        AAutoLoadData,  // AutoLoadData := True
-        AContext.ObjStatusExist,  // Use ObjStatus async persist
-        False)
+        AAutoLoadData,  // AutoLoadData
+        AContext.ObjStatusExist);  // Use ObjStatus async persist
     end
     // else if the master property type is a class...
     else
@@ -678,8 +676,7 @@ begin
       AOwner,
       Self.ToObject,
       FTypeAlias,
-      FTypeName,
-      AOwnsObject)
+      FTypeName)
   // else if the master property type is a class...
   else
   begin

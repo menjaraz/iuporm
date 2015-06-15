@@ -32,13 +32,17 @@ type
     FReadWrite: TioReadWrite;
     // NB: Gli altri due attributes (ioEmbeddedSkip e ioEmbeddedStreamable) non sono necessari qui
     //      perchè li usa solo l'ObjectsMappers al suo interno, iupORM non li usa
+  strict protected
+    constructor Create(const ATypeAlias, AFieldDefinitionString, ALoadSql, AFieldType:String;
+      const AReadWrite:TioReadWrite; const ARelationType:TioRelationType; const ARelationChildTypeName, ARelationChildTypeAlias,
+      ARelationChildPropertyName:String; const ARelationLoadType:TioLoadType); overload;
   public
     constructor Create(const ARttiProperty:TRttiProperty; const ATypeAlias, AFieldDefinitionString, ALoadSql, AFieldType:String;
       const AReadWrite:TioReadWrite; const ARelationType:TioRelationType; const ARelationChildTypeName, ARelationChildTypeAlias,
-      ARelationChildPropertyName:String; const ARelationLoadType:TioLoadType);
+      ARelationChildPropertyName:String; const ARelationLoadType:TioLoadType); overload;
     function GetLoadSql: String;
     function LoadSqlExist: Boolean;
-    function GetName: String;
+    function GetName: String; virtual;
     function GetSqlQualifiedFieldName: String;
     function GetSqlFullQualifiedFieldName: String;
     function GetSqlFieldTableName: String;
@@ -48,11 +52,11 @@ type
     function GetFieldType: String;
     function IsBlob: Boolean;
     function IsStream: Boolean;
-    function GetValue(Instance: Pointer): TValue;
-    function GetValueAsObject(Instance: Pointer): TObject;
-    procedure SetValue(Instance: Pointer; AValue:TValue);
+    function GetValue(Instance: Pointer): TValue; virtual;
+    function GetValueAsObject(Instance: Pointer): TObject; virtual;
+    procedure SetValue(Instance: Pointer; AValue:TValue); virtual;
     function GetSqlValue(ADataObject:TObject): String;
-    function GetRttiProperty: TRttiProperty;
+    function GetRttiType: TRttiType; virtual;
     function GetTypeName: String;
     function GetTypeAlias: String;
     function IsInterface: Boolean;
@@ -71,7 +75,25 @@ type
     function IsID: Boolean;
     function IsWriteEnabled: Boolean;
     function IsReadEnabled: Boolean;
+    function IsInstance: Boolean;
   end;
+
+  // Classe che rappresenta un field della classe
+  TioField = class(TioProperty)
+  strict private
+    FRttiProperty: TRttiField;
+    FName: String;
+  public
+    constructor Create(const ARttiField:TRttiField; const ATypeAlias, AFieldDefinitionString, ALoadSql, AFieldType:String;
+      const AReadWrite:TioReadWrite; const ARelationType:TioRelationType; const ARelationChildTypeName, ARelationChildTypeAlias,
+      ARelationChildPropertyName:String; const ARelationLoadType:TioLoadType); overload;
+    class function Remove_F_FromName(AFieldName:String): String;
+    function GetName: String; override;
+    function GetValue(Instance: Pointer): TValue; override;
+    procedure SetValue(Instance: Pointer; AValue:TValue); override;
+    function GetRttiType: TRttiType; override;
+  end;
+
 
   // Classe con l'elenco delle proprietà della classe
   TioPropertiesGetSqlFunction = reference to function(AProperty:IioContextProperty):String;
@@ -121,7 +143,17 @@ constructor TioProperty.Create(const ARttiProperty: TRttiProperty; const ATypeAl
   AFieldType: String; const AReadWrite: TioReadWrite; const ARelationType: TioRelationType; const ARelationChildTypeName,
   ARelationChildTypeAlias, ARelationChildPropertyName: String; const ARelationLoadType: TioLoadType);
 begin
+  // NB: No inherited here
+  Self.Create(ATypeAlias, AFieldDefinitionString, ALoadSql, AFieldType, AReadWrite,
+    ARelationType, ARelationChildTypeName, ARelationChildTypeAlias, ARelationChildPropertyName, ARelationLoadType);
   FRttiProperty := ARttiProperty;
+end;
+
+constructor TioProperty.Create(const ATypeAlias, AFieldDefinitionString, ALoadSql, AFieldType: String;
+  const AReadWrite: TioReadWrite; const ARelationType: TioRelationType; const ARelationChildTypeName, ARelationChildTypeAlias,
+  ARelationChildPropertyName: String; const ARelationLoadType: TioLoadType);
+begin
+  inherited Create;
   FTypeAlias := ATypeAlias;
   FFieldDefinitionString := AFieldDefinitionString;
   FFieldType := AFieldType;
@@ -213,9 +245,9 @@ begin
   Result := FRelationType;
 end;
 
-function TioProperty.GetRttiProperty: TRttiProperty;
+function TioProperty.GetRttiType: TRttiType;
 begin
-  Result := FRttiProperty;
+  Result := FRttiProperty.PropertyType;
 end;
 
 function TioProperty.GetTypeAlias: String;
@@ -225,7 +257,7 @@ end;
 
 function TioProperty.GetTypeName: String;
 begin
-  Result := FRttiProperty.PropertyType.Name;
+  Result := Self.GetRttiType.Name;
 end;
 
 function TioProperty.GetSqlFieldAlias: String;
@@ -288,9 +320,14 @@ begin
   Result := FIsID;
 end;
 
+function TioProperty.IsInstance: Boolean;
+begin
+  Result := Self.GetRttiType.IsInstance;
+end;
+
 function TioProperty.IsInterface: Boolean;
 begin
-  Result := (FRttiProperty.PropertyType.TypeKind = tkInterface);
+  Result := (Self.GetRttiType.TypeKind = tkInterface);
 end;
 
 function TioProperty.IsReadEnabled: Boolean;
@@ -312,8 +349,8 @@ end;
 
 function TioProperty.IsStream: Boolean;
 begin
-  Result := (Self.GetRttiProperty.PropertyType.IsInstance)
-        and (Self.GetRttiProperty.PropertyType.AsInstance.InheritsFrom(TSTream));
+  Result := (Self.GetRttiType.IsInstance)
+        and (Self.GetRttiType.AsInstance.InheritsFrom(TSTream));
 end;
 
 function TioProperty.IsWriteEnabled: Boolean;
@@ -423,10 +460,13 @@ function TioProperties.GetPropertyByName(
 var
   CurrProp: IioContextProperty;
 begin
-  for CurrProp in FPropertyItems do if CurrProp.GetName.ToUpper.Equals(APropertyName.ToUpper) then
+  for CurrProp in FPropertyItems do
   begin
-      Result := CurrProp;
-      Exit;
+    if CurrProp.GetName.ToUpper.Equals(APropertyName.ToUpper) then
+    begin
+        Result := CurrProp;
+        Exit;
+    end;
   end;
   raise EIupOrmException.Create(Self.ClassName +  ': Context property "' + APropertyName + '" not found');
 end;
@@ -514,6 +554,49 @@ var
 begin
   for AProperty in FPropertyItems do
     AProperty.SetTable(ATable);
+end;
+
+{ TioField }
+
+constructor TioField.Create(const ARttiField: TRttiField; const ATypeAlias, AFieldDefinitionString, ALoadSql, AFieldType: String;
+  const AReadWrite: TioReadWrite; const ARelationType: TioRelationType; const ARelationChildTypeName, ARelationChildTypeAlias,
+  ARelationChildPropertyName: String; const ARelationLoadType: TioLoadType);
+begin
+  // NB: No inherited here
+  Self.Create(ATypeAlias, AFieldDefinitionString, ALoadSql, AFieldType, AReadWrite,
+    ARelationType, ARelationChildTypeName, ARelationChildTypeAlias, ARelationChildPropertyName, ARelationLoadType);
+  FRttiProperty := ARttiField;
+  FName := Self.Remove_F_FromName(ARttiField.Name);
+end;
+
+function TioField.GetName: String;
+begin
+  // No inherited
+  Result := FName;
+end;
+
+function TioField.GetRttiType: TRttiType;
+begin
+  // No inherited
+  Result := FRttiProperty.FieldType;
+end;
+
+function TioField.GetValue(Instance: Pointer): TValue;
+begin
+  // No inherited
+  Result := FRttiProperty.GetValue(Instance);
+end;
+
+class function TioField.Remove_F_FromName(AFieldName:String): String;
+begin
+  if Uppercase(AFieldName).StartsWith('F') then
+    Result := AFieldName.Substring(1);  // Elimina il primo carattere (di solito la F)
+end;
+
+procedure TioField.SetValue(Instance: Pointer; AValue: TValue);
+begin
+  // No inherited
+  FRttiProperty.SetValue(Instance, AValue);
 end;
 
 end.

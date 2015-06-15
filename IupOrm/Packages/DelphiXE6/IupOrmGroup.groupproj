@@ -4,7 +4,7 @@
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="..\..\Source\ImpOrm.MVVM.ALL.dproj">
-            <Dependencies/>
+            <Dependencies>IupOrmProject.dproj</Dependencies>
         </Projects>
         <Projects Include="..\..\Source\IupOrm.MVVM.VCL.dproj">
             <Dependencies>IupOrmProject.dproj</Dependencies>
@@ -19,7 +19,7 @@
             <Dependencies/>
         </Projects>
         <Projects Include="..\..\Samples\PhoneContacts_Interfaces\PhoneContacts_Interfaces.dproj">
-            <Dependencies/>
+            <Dependencies>IupOrmProject.dproj</Dependencies>
         </Projects>
         <Projects Include="..\..\Samples\PhoneContacts_ioProtypeBindSource\PhoneContacts_ioPrototypeBindSource.dproj">
             <Dependencies>IupOrmProject.dproj</Dependencies>
@@ -39,9 +39,6 @@
         <Projects Include="..\..\Samples\SpeedTest\SpeedTest.dproj">
             <Dependencies>IupOrmProject.dproj</Dependencies>
         </Projects>
-        <Projects Include="..\..\Samples\TestVM\TestVM.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="..\..\Samples\RVMan_Interface\RVMan_Interface.dproj">
             <Dependencies/>
         </Projects>
@@ -49,7 +46,10 @@
             <Dependencies/>
         </Projects>
         <Projects Include="..\..\Samples\FatturaPA\PA.dproj">
-            <Dependencies>IupOrmProject.dproj</Dependencies>
+            <Dependencies>..\..\Source\ImpOrm.MVVM.ALL.dproj;IupOrmProject.dproj</Dependencies>
+        </Projects>
+        <Projects Include="..\..\Samples\TestVM\VCL_TestVM.dproj">
+            <Dependencies>..\..\Source\ImpOrm.MVVM.ALL.dproj;IupOrmProject.dproj</Dependencies>
         </Projects>
     </ItemGroup>
     <ProjectExtensions>
@@ -59,13 +59,13 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="ImpOrm_MVVM_ALL">
+    <Target Name="ImpOrm_MVVM_ALL" DependsOnTargets="IupOrmProject">
         <MSBuild Projects="..\..\Source\ImpOrm.MVVM.ALL.dproj"/>
     </Target>
-    <Target Name="ImpOrm_MVVM_ALL:Clean">
+    <Target Name="ImpOrm_MVVM_ALL:Clean" DependsOnTargets="IupOrmProject:Clean">
         <MSBuild Projects="..\..\Source\ImpOrm.MVVM.ALL.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="ImpOrm_MVVM_ALL:Make">
+    <Target Name="ImpOrm_MVVM_ALL:Make" DependsOnTargets="IupOrmProject:Make">
         <MSBuild Projects="..\..\Source\ImpOrm.MVVM.ALL.dproj" Targets="Make"/>
     </Target>
     <Target Name="IupOrm_MVVM_VCL" DependsOnTargets="IupOrmProject">
@@ -104,13 +104,13 @@
     <Target Name="IupOrmProject:Make">
         <MSBuild Projects="IupOrmProject.dproj" Targets="Make"/>
     </Target>
-    <Target Name="PhoneContacts_Interfaces">
+    <Target Name="PhoneContacts_Interfaces" DependsOnTargets="IupOrmProject">
         <MSBuild Projects="..\..\Samples\PhoneContacts_Interfaces\PhoneContacts_Interfaces.dproj"/>
     </Target>
-    <Target Name="PhoneContacts_Interfaces:Clean">
+    <Target Name="PhoneContacts_Interfaces:Clean" DependsOnTargets="IupOrmProject:Clean">
         <MSBuild Projects="..\..\Samples\PhoneContacts_Interfaces\PhoneContacts_Interfaces.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="PhoneContacts_Interfaces:Make">
+    <Target Name="PhoneContacts_Interfaces:Make" DependsOnTargets="IupOrmProject:Make">
         <MSBuild Projects="..\..\Samples\PhoneContacts_Interfaces\PhoneContacts_Interfaces.dproj" Targets="Make"/>
     </Target>
     <Target Name="PhoneContacts_ioPrototypeBindSource" DependsOnTargets="IupOrmProject">
@@ -167,15 +167,6 @@
     <Target Name="SpeedTest:Make" DependsOnTargets="IupOrmProject:Make">
         <MSBuild Projects="..\..\Samples\SpeedTest\SpeedTest.dproj" Targets="Make"/>
     </Target>
-    <Target Name="TestVM">
-        <MSBuild Projects="..\..\Samples\TestVM\TestVM.dproj"/>
-    </Target>
-    <Target Name="TestVM:Clean">
-        <MSBuild Projects="..\..\Samples\TestVM\TestVM.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="TestVM:Make">
-        <MSBuild Projects="..\..\Samples\TestVM\TestVM.dproj" Targets="Make"/>
-    </Target>
     <Target Name="RVMan_Interface">
         <MSBuild Projects="..\..\Samples\RVMan_Interface\RVMan_Interface.dproj"/>
     </Target>
@@ -194,23 +185,32 @@
     <Target Name="RVMan:Make">
         <MSBuild Projects="..\..\Samples\RVMan\RVMan.dproj" Targets="Make"/>
     </Target>
-    <Target Name="PA" DependsOnTargets="IupOrmProject">
+    <Target Name="PA" DependsOnTargets="ImpOrm.MVVM.ALL;IupOrmProject">
         <MSBuild Projects="..\..\Samples\FatturaPA\PA.dproj"/>
     </Target>
-    <Target Name="PA:Clean" DependsOnTargets="IupOrmProject:Clean">
+    <Target Name="PA:Clean" DependsOnTargets="ImpOrm.MVVM.ALL:Clean;IupOrmProject:Clean">
         <MSBuild Projects="..\..\Samples\FatturaPA\PA.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="PA:Make" DependsOnTargets="IupOrmProject:Make">
+    <Target Name="PA:Make" DependsOnTargets="ImpOrm.MVVM.ALL:Make;IupOrmProject:Make">
         <MSBuild Projects="..\..\Samples\FatturaPA\PA.dproj" Targets="Make"/>
     </Target>
+    <Target Name="VCL_TestVM" DependsOnTargets="ImpOrm.MVVM.ALL;IupOrmProject">
+        <MSBuild Projects="..\..\Samples\TestVM\VCL_TestVM.dproj"/>
+    </Target>
+    <Target Name="VCL_TestVM:Clean" DependsOnTargets="ImpOrm.MVVM.ALL:Clean;IupOrmProject:Clean">
+        <MSBuild Projects="..\..\Samples\TestVM\VCL_TestVM.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VCL_TestVM:Make" DependsOnTargets="ImpOrm.MVVM.ALL:Make;IupOrmProject:Make">
+        <MSBuild Projects="..\..\Samples\TestVM\VCL_TestVM.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ImpOrm_MVVM_ALL;IupOrm_MVVM_VCL;IupOrm_MVVM_FMX;IupOrmProject_DesignTime;IupOrmProject;PhoneContacts_Interfaces;PhoneContacts_ioPrototypeBindSource;PhoneContacts_ioActiveBindSourceAdapter;Pizza_ioActiveBindSourceAdapter;Pizza_List;Pizza_ioPrototypeBindSource;SpeedTest;TestVM;RVMan_Interface;RVMan;PA"/>
+        <CallTarget Targets="ImpOrm_MVVM_ALL;IupOrm_MVVM_VCL;IupOrm_MVVM_FMX;IupOrmProject_DesignTime;IupOrmProject;PhoneContacts_Interfaces;PhoneContacts_ioPrototypeBindSource;PhoneContacts_ioActiveBindSourceAdapter;Pizza_ioActiveBindSourceAdapter;Pizza_List;Pizza_ioPrototypeBindSource;SpeedTest;RVMan_Interface;RVMan;PA;VCL_TestVM"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ImpOrm_MVVM_ALL:Clean;IupOrm_MVVM_VCL:Clean;IupOrm_MVVM_FMX:Clean;IupOrmProject_DesignTime:Clean;IupOrmProject:Clean;PhoneContacts_Interfaces:Clean;PhoneContacts_ioPrototypeBindSource:Clean;PhoneContacts_ioActiveBindSourceAdapter:Clean;Pizza_ioActiveBindSourceAdapter:Clean;Pizza_List:Clean;Pizza_ioPrototypeBindSource:Clean;SpeedTest:Clean;TestVM:Clean;RVMan_Interface:Clean;RVMan:Clean;PA:Clean"/>
+        <CallTarget Targets="ImpOrm_MVVM_ALL:Clean;IupOrm_MVVM_VCL:Clean;IupOrm_MVVM_FMX:Clean;IupOrmProject_DesignTime:Clean;IupOrmProject:Clean;PhoneContacts_Interfaces:Clean;PhoneContacts_ioPrototypeBindSource:Clean;PhoneContacts_ioActiveBindSourceAdapter:Clean;Pizza_ioActiveBindSourceAdapter:Clean;Pizza_List:Clean;Pizza_ioPrototypeBindSource:Clean;SpeedTest:Clean;RVMan_Interface:Clean;RVMan:Clean;PA:Clean;VCL_TestVM:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ImpOrm_MVVM_ALL:Make;IupOrm_MVVM_VCL:Make;IupOrm_MVVM_FMX:Make;IupOrmProject_DesignTime:Make;IupOrmProject:Make;PhoneContacts_Interfaces:Make;PhoneContacts_ioPrototypeBindSource:Make;PhoneContacts_ioActiveBindSourceAdapter:Make;Pizza_ioActiveBindSourceAdapter:Make;Pizza_List:Make;Pizza_ioPrototypeBindSource:Make;SpeedTest:Make;TestVM:Make;RVMan_Interface:Make;RVMan:Make;PA:Make"/>
+        <CallTarget Targets="ImpOrm_MVVM_ALL:Make;IupOrm_MVVM_VCL:Make;IupOrm_MVVM_FMX:Make;IupOrmProject_DesignTime:Make;IupOrmProject:Make;PhoneContacts_Interfaces:Make;PhoneContacts_ioPrototypeBindSource:Make;PhoneContacts_ioActiveBindSourceAdapter:Make;Pizza_ioActiveBindSourceAdapter:Make;Pizza_List:Make;Pizza_ioPrototypeBindSource:Make;SpeedTest:Make;RVMan_Interface:Make;RVMan:Make;PA:Make;VCL_TestVM:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

@@ -19,7 +19,7 @@ begin
   // Set the directory name (under the Documents folder)
   TIupOrm.ConnectionManager.NewSQLiteConnectionDef(TPath.Combine(TPath.GetDocumentsPath, 'Pizza.db')).Apply;
   // AutoCreation and AutoUpdate of the database
-  TIupOrm.AutoCreateDatabase;
+//  TIupOrm.AutoCreateDatabase;
   // ============ IupOrm initialization ====================
 
   Application.Initialize;

@@ -104,15 +104,20 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="..\ExtLibs\DMVC\ObjectsMappers.pas"/>
-        <DCCReference Include="..\ExtLibs\DMVC\DuckListU.pas"/>
-        <DCCReference Include="..\ExtLibs\DMVC\RTTIUtilsU.pas"/>
-        <DCCReference Include="..\ExtLibs\DMVC\DuckObjU.pas"/>
         <DCCReference Include="IupOrm.MVVM.ALL.ViewModel.pas">
             <Form>ioViewModel</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="..\ExtLibs\DMVC\DuckListU.pas"/>
+        <DCCReference Include="..\ExtLibs\DMVC\DuckObjU.pas"/>
+        <DCCReference Include="..\ExtLibs\DMVC\DuckPropFieldU.pas"/>
+        <DCCReference Include="..\ExtLibs\DMVC\ObjectsMappers.pas"/>
+        <DCCReference Include="..\ExtLibs\DMVC\ObjMapper.pas"/>
+        <DCCReference Include="..\ExtLibs\DMVC\ObjMapperAttributes.pas"/>
+        <DCCReference Include="..\ExtLibs\DMVC\ObjMapperEngine.pas"/>
+        <DCCReference Include="..\ExtLibs\DMVC\ObjMappers.pas"/>
+        <DCCReference Include="..\ExtLibs\DMVC\RTTIUtilsU.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

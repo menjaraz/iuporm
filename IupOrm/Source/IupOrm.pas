@@ -22,7 +22,7 @@ type
   TioTObjectHelper = class helper for TObject
   public
     function IupOrm: IioObjectHelperTools;
-    function ioAsInterface<T>: T;
+    function ioAsInterface<T:IInterface>: T;
   end;
 
   // TioBaseBindSource class helper (PrototypeBindSource and so on)
@@ -445,9 +445,13 @@ initialization
   // Register as default DuckTypedStreamObject invoker
   //  NB: L'ho messo qui perchè altrimenti nella unit dove è dichiarata la classe non
   //       venive eseguito
-  TIupOrm.DependencyInjection.RegisterClass<TioDuckTypedStreamObject>.Implements<IioDuckTypedStreamObject>.Execute;
-
+  TIupOrm.DependencyInjection.RegisterClass<TioDuckTypedStreamObject>
+                             .Implements<IioDuckTypedStreamObject>
+                             .Execute;
 end.
+
+
+
 
 
 

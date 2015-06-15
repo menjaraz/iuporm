@@ -16,6 +16,7 @@ type
     FUseObjStatus: Boolean;  // Not use directly, use UseObjStatus function or property even for internal use
     FLocalOwnsObject: Boolean;
     FAutoLoadData: Boolean;
+    FAutoPersist: Boolean;
     FReloadDataOnRefresh: Boolean;
     FMasterProperty: IioContextProperty;
     FMasterAdaptersContainer: IioDetailBindSourceAdaptersContainer;
@@ -25,7 +26,7 @@ type
 //    FNaturalBSA_MasterBindSourceAdapter: IioActiveBindSourceAdapter;  *** NB: Code presente (commented) in the unit body ***
     FInsertObj_Enabled: Boolean;
     FInsertObj_NewObj: TObject;
- strict protected
+  private
     // =========================================================================
     // Part for the support of the IioNotifiableBindSource interfaces (Added by IupOrm)
     //  because is not implementing IInterface (NB: RefCount DISABLED)
@@ -43,6 +44,8 @@ type
     procedure SetObjStatus(AObjStatus: TIupOrmObjectStatus);
     function UseObjStatus: Boolean;
     procedure DoNotify(ANotification:IioBSANotification);
+    function GetioAutoPersist: Boolean;
+    procedure SetioAutoPersist(const Value: Boolean); protected
   public
     constructor Create(AClassRef:TioClassRef; AWhereStr:String; AOwner: TComponent; AObject: TObject; AutoLoadData, AUseObjStatus: Boolean; AOwnsObject: Boolean = True); overload;
     destructor Destroy; override;
@@ -59,8 +62,10 @@ type
     procedure Refresh(ReloadData:Boolean); overload;
 //    procedure NaturalBSA_SetMasterBindSourceAdapter(AActiveBindSourceAdapter:IioActiveBindSourceAdapter);
     function GetDataObject: TObject;
-    procedure SetDataObject(const AObj: TObject);
+    procedure SetDataObject(const AObj: TObject; const AOwnsObject:Boolean=True);
+    procedure ClearDataObject;
 
+    property ioAutoPersist:Boolean read GetioAutoPersist write SetioAutoPersist;
     property ioOnNotify:TioBSANotificationEvent read FonNotify write FonNotify;
   end;
 
@@ -81,9 +86,15 @@ begin
   Self.Append;
 end;
 
+procedure TioActiveObjectBindSourceAdapter.ClearDataObject;
+begin
+  Self.SetDataObject(nil, False);
+end;
+
 constructor TioActiveObjectBindSourceAdapter.Create(AClassRef:TioClassRef; AWhereStr: String;
   AOwner: TComponent; AObject: TObject; AutoLoadData, AUseObjStatus: Boolean; AOwnsObject: Boolean);
 begin
+  FAutoPersist := True;
   FAutoLoadData := AutoLoadData;
   FReloadDataOnRefresh := True;
   FUseObjStatus := AUseObjStatus;
@@ -144,9 +155,13 @@ end;
 procedure TioActiveObjectBindSourceAdapter.DoAfterPost;
 begin
   inherited;
-  if Self.UseObjStatus
-    then Self.SetObjStatus(osDirty)
-    else TIupOrm.Persist(Self.Current);
+  // IF AutoPersist is enabled
+  if Self.FAutoPersist then
+  begin
+    if Self.UseObjStatus
+      then Self.SetObjStatus(osDirty)
+      else TIupOrm.Persist(Self.Current);
+  end;
   // Send a notification to other ActiveBindSourceAdapters & BindSource
   Notify(
          Self,
@@ -163,11 +178,15 @@ end;
 procedure TioActiveObjectBindSourceAdapter.DoBeforeDelete;
 begin
   inherited;
-  if Self.UseObjStatus then
+  // IF AutoPersist is enabled
+  if Self.FAutoPersist then
   begin
-    Self.SetObjStatus(osDeleted);
-    Abort;
-  end else TIupOrm.Delete(Self.Current);
+    if Self.UseObjStatus then
+    begin
+      Self.SetObjStatus(osDeleted);
+      Abort;
+    end else TIupOrm.Delete(Self.Current);
+  end;
 end;
 
 procedure TioActiveObjectBindSourceAdapter.DoBeforeOpen;
@@ -211,16 +230,20 @@ var
   AValue: TValue;
 begin
   ADetailObj := nil;
-  // Check parameter
-  if not Assigned(AMasterObj)
-    then Exit;
+  // Check parameter, if the MasterObject is not assigned
+  //  then close the BSA
+  if not Assigned(AMasterObj) then
+  begin
+    Self.SetDataObject(nil, False);  // 2° parameter false ABSOLUTELY!!!!!!!
+    Exit;
+  end;
   // Extract master property value
   AValue := FMasterProperty.GetValue(AMasterObj);
   // if not empty extract the detail object
   if not AValue.IsEmpty
     then ADetailObj := AValue.AsObject;
   // Set it to the Adapter itself
-  Self.SetDataObject(ADetailObj);
+  Self.SetDataObject(ADetailObj, False);  // 2° parameter false ABSOLUTELY!!!!!!!
 end;
 
 function TioActiveObjectBindSourceAdapter.GetDataObject: TObject;
@@ -234,6 +257,11 @@ begin
   // Return the requested DetailBindSourceAdapter and set the current master object
   Result := FDetailAdaptersContainer.GetBindSourceAdapter(AOwner, Self.FClassRef.ClassName, AMasterPropertyName);
   FDetailAdaptersContainer.SetMasterObject(Self.Current);
+end;
+
+function TioActiveObjectBindSourceAdapter.GetioAutoPersist: Boolean;
+begin
+  Result := FAutoPersist;
 end;
 
 function TioActiveObjectBindSourceAdapter.GetNaturalObjectBindSourceAdapter(
@@ -307,12 +335,30 @@ begin
   FBindSource := ANotifiableBindSource;
 end;
 
-procedure TioActiveObjectBindSourceAdapter.SetDataObject(const AObj: TObject);
+procedure TioActiveObjectBindSourceAdapter.SetDataObject(const AObj: TObject; const AOwnsObject:Boolean);
 begin
+  // Disable the adapter
   Self.First;  // Bug
   Self.Active := False;
-  Self.SetDataObject(AObj);
-  Self.Active := True;
+  // AObj is assigned then set it as DataObject
+  //  else set DataObject to nil and set MasterObject to nil
+  //  to disable all Details adapters also
+  if Assigned(AObj) then
+  begin
+    inherited SetDataObject(AObj, AOwnsObject);
+    Self.FAutoLoadData := False;  // If the DataObject is externally provided then Set FAutoLoadData to false to prevent double values
+    Self.Active := True;
+  end
+  else
+  begin
+    inherited SetDataObject(nil, AOwnsObject);
+    Self.FDetailAdaptersContainer.SetMasterObject(nil);
+  end;
+end;
+
+procedure TioActiveObjectBindSourceAdapter.SetioAutoPersist(const Value: Boolean);
+begin
+  FAutoPersist := Value;
 end;
 
 procedure TioActiveObjectBindSourceAdapter.SetMasterAdapterContainer(

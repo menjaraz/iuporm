@@ -36,7 +36,7 @@ type
     property FirstName:String read GetFirstName write SetFirstName;
     [ioField('LAST_NAME')]          // Not necessary if property has the same name of the field
     property LastName:String read GetLastName write SetLastName;
-    [ioEmbeddedHasMany]
+    [ioEmbeddedHasMany('IPhoneNumber')]
     [ioTypeAlias('Another')]
     property Phones:IioList<IPhoneNumber> read GetPhones write SetPhones;
     [ioSkip]

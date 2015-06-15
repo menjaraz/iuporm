@@ -42,8 +42,24 @@ object Form1: TForm1
           Height = 44.000000000000000000
           Position.X = 276.000000000000000000
           StyleLookup = 'nexttoolbutton'
-          TabOrder = 2
+          TabOrder = 3
           Width = 44.000000000000000000
+        end
+        object Button8: TButton
+          Height = 44.000000000000000000
+          Position.X = 8.000000000000000000
+          TabOrder = 2
+          Text = 'Clear'
+          Width = 73.000000000000000000
+          OnClick = Button8Click
+        end
+        object Button9: TButton
+          Height = 44.000000000000000000
+          Position.X = 73.000000000000000000
+          TabOrder = 1
+          Text = 'Load'
+          Width = 73.000000000000000000
+          OnClick = Button9Click
         end
       end
       object MasterListView: TListView
@@ -356,7 +372,11 @@ object Form1: TForm1
       end>
     ScopeMappings = <>
     ioTypeName = 'TPerson'
+    ioAutoLoadData = True
+    ioAutoPersist = True
+    ioViewDataType = dtList
     ioAutoRefreshOnNotification = arEnabledNoReload
+    ioVM_UseBSPropsOnCreate = True
     Left = 240
     Top = 120
   end
@@ -388,13 +408,17 @@ object Form1: TForm1
       end>
     ScopeMappings = <>
     ioTypeName = 'TPhoneNumber'
+    ioAutoLoadData = True
+    ioAutoPersist = True
+    ioViewDataType = dtList
     ioWhere.Strings = (
       '')
     ioMasterBindSource = MasterBS
     ioMasterPropertyName = 'Phones'
     ioAutoRefreshOnNotification = arEnabledNoReload
-    Left = 264
-    Top = 360
+    ioVM_UseBSPropsOnCreate = True
+    Left = 240
+    Top = 168
   end
   object BindingsList1: TBindingsList
     Methods = <>

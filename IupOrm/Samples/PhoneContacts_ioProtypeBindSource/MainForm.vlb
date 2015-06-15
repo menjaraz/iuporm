@@ -1,9 +1,9 @@
 ﻿[DetailBS]
-Coordinates=770,40,72,177
+Coordinates=770,40,86,188
 Visible=True
 
 [MasterBS]
-Coordinates=307,10,85,231
+Coordinates=307,10,102,262
 Visible=True
 
 []
@@ -13,92 +13,104 @@ Coordinates=0,0,115,51
 Coordinates=254,240,82,33
 
 [MasterListView]
-Coordinates=160,20,89,141
+Coordinates=160,20,107,168
 
 [Label1]
-Coordinates=94,77,46,51
+Coordinates=94,77,53,58
 
 [TabItem1]
-Coordinates=15,77,59,33
+Coordinates=15,77,69,36
 
 [TabItem2]
-Coordinates=175,207,59,33
+Coordinates=175,207,69,36
 
 [TabControl2]
-Coordinates=447,56,74,33
+Coordinates=447,56,85,36
 
 [DetailListView]
-Coordinates=590,30,89,159
+Coordinates=590,30,107,190
 
 [ToolBar1]
-Coordinates=447,111,58,33
+Coordinates=447,111,67,36
 
 [TabControl1]
-Coordinates=447,166,74,33
+Coordinates=447,166,85,36
 
 [Button1]
-Coordinates=371,311,53,51
+Coordinates=371,311,59,58
 
 [ToolBar2]
-Coordinates=290,240,58,33
+Coordinates=290,240,67,36
 
 [NextTabAction1]
 Coordinates=272,308,92,33
 
 [Button2]
-Coordinates=0,148,53,51
+Coordinates=0,148,59,58
 
 [PreviousTabAction1]
 Coordinates=153,308,113,33
 
 [ToolBar3]
-Coordinates=94,308,58,33
+Coordinates=94,308,67,36
 
 [ActionList1]
 Coordinates=15,308,70,33
 
 [Label2]
-Coordinates=430,288,46,51
+Coordinates=430,288,53,58
 
 [Grid1]
-Coordinates=970,0,53,87
+Coordinates=970,0,63,102
 
 [Panel1]
-Coordinates=238,199,47,33
+Coordinates=238,199,55,36
 
 [Label3]
-Coordinates=77,199,46,51
+Coordinates=77,199,53,58
 
 [Label4]
-Coordinates=445,218,46,51
+Coordinates=445,218,53,58
 
 [Label5]
-Coordinates=273,288,46,51
+Coordinates=273,288,53,58
 
 [EditID]
-Coordinates=126,199,44,51
+Coordinates=126,199,50,58
 
 [EditFirstname]
-Coordinates=445,1,83,51
+Coordinates=445,1,94,58
 
 [EditLastname]
-Coordinates=322,288,81,51
+Coordinates=322,288,93,58
 
 [EditBranchOffice]
-Coordinates=566,330,98,51
+Coordinates=566,330,111,58
 
 [EditFidelityCardCode]
-Coordinates=566,260,119,51
+Coordinates=566,260,137,58
 
 [EditVipCard]
-Coordinates=438,400,73,51
+Coordinates=438,400,83,58
 
 [Label6]
-Coordinates=517,400,46,51
+Coordinates=517,400,53,58
 
 [Label8]
-Coordinates=566,400,46,51
+Coordinates=566,400,53,58
 
 [Label7]
-Coordinates=566,190,46,51
+Coordinates=566,190,53,58
+
+[Button9]
+Coordinates=447,78,59,58
+
+[Button8]
+Coordinates=57,226,59,58
+
+[MasterBindNavigator]
+Coordinates=741,247,135,58
+
+[DetailBindNavigator]
+Coordinates=0,0,129,58
 

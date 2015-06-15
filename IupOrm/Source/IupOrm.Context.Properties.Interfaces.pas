@@ -34,7 +34,7 @@ type
     function GetValueAsObject(Instance: Pointer): TObject;
     procedure SetValue(Instance: Pointer; AValue: TValue);
     function GetSqlValue(ADataObject: TObject): string;
-    function GetRttiProperty: TRttiProperty;
+    function GetRttiType: TRttiType;
     function GetTypeName: String;
     function GetTypeAlias: String;
     function IsInterface: Boolean;
@@ -53,6 +53,7 @@ type
     function IsID: Boolean;
     function IsWriteEnabled: Boolean;
     function IsReadEnabled: Boolean;
+    function IsInstance: Boolean;
   end;
 
   IioContextProperties = interface(IioSqlItem)

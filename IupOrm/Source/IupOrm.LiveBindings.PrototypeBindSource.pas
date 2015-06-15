@@ -4,7 +4,7 @@ interface
 
 uses
   Data.Bind.ObjectScope, IupOrm.LiveBindings.Interfaces, System.Classes,
-  IupOrm.LiveBindings.Notification, IupOrm.MVVM.Interfaces, System.Rtti;
+  IupOrm.LiveBindings.Notification, System.Rtti, IupOrm.MVVM.Interfaces;
 
 type
 
@@ -16,21 +16,25 @@ type
   TioNeedViewModelEvent = procedure(Sender: TioPrototypeBindSource; var AViewModel: IioViewModel) of object;
 
   TioPrototypeBindSource = class (TPrototypeBindSource, IioNotifiableBindSource)
-  strict private
+  private
     FioTypeName: String;
     FioTypeAlias: String;
+    FioAutoLoadData: Boolean;
+    FioAutoPersist: Boolean;
+    FioViewDataType: TioViewDataType;
     FioMasterBindSource: TioMasterBindSource;
     FioMasterPropertyName: String;
     FioWhere: TStrings;
     FioAutoRefreshOnNotification: TioAutoRefreshType;
-    FioViewModelInterface, FioViewModelAlias: String;
+    FioVM_Interface, FioVM_Alias: String;
+    FioMasterVM_Interface, FioMasterVM_Alias: String;
+    FioVM_UseBSPropsOnCreate: Boolean;
     FioViewModel: IioViewModel;
     FonNotify: TioBSANotificationEvent;
     FOnNeedViewModel: TioNeedViewModelEvent;
     // FioLoaded flag for IupOrm DoCreateAdapter internal use only just before
     //  the real Loaded is call. See the Loaded and the DoCreateAdapter methods.
     FioLoaded: Boolean;
-  strict protected
     // =========================================================================
     // Part for the support of the IioNotifiableBindSource interfaces (Added by IupOrm)
     //  because is not implementing IInterface (NB: RefCount DISABLED)
@@ -40,36 +44,55 @@ type
     // =========================================================================
     function GetIsDetail: Boolean;
     procedure DoNeedViewModel;
+    function CheckForViewModel: Boolean;
     procedure DoCreateAdapter(var ADataObject: TBindSourceAdapter); override;
     procedure Loaded; override;
     procedure DoNotify(ANotification:IioBSANotification);
+    function GetAutoPersist: Boolean;
+    procedure SetAutoPersist(const Value: Boolean);
 //    procedure ioSetBindSourceAdapter(AAdapter: TBindSourceAdapter);
     property IsDetail:Boolean read GetIsDetail;
+    function GetAutoLoadData: Boolean;
+    function GetViewDataType: TioViewDataType;
+    procedure SetAutoLoadData(const Value: Boolean);
+    procedure SetViewDataType(const Value: TioViewDataType);
   public
-    procedure Append; overload;
-    procedure Append(AObject:TObject); overload;
-    procedure Persist(ReloadData:Boolean=False);
-    procedure BindVMActions(const AView:TComponent);
-    procedure BindVMAction(const AType:TRttiType; const AView:TComponent; const AComponentName, AActionName: String);
-    function Current: TObject;
-    property ioViewModel:IioViewModel read FioViewModel write FioViewModel;
-  published
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Notify(Sender:TObject; ANotification:IioBSANotification);
+    procedure BindVMActions(const AView:TComponent);
+    procedure BindVMAction(const AType:TRttiType; const AView:TComponent; const AComponentName, AActionName: String);
+    // ----------------------------------------------------------------------------------------------------------------------------
+    // BindSourceAdapter methods/properties published by TioPrototypeBindSource also
+    function Current: TObject;
     procedure Refresh(ReloadData:Boolean); overload;
-
+    procedure Persist(ReloadData:Boolean=False);
+    procedure Append; overload;
+    procedure Append(AObject:TObject); overload;
+    function GetActiveBindSourceAdapter: IioActiveBindSourceAdapter;
+    function GetDataObject: TObject;
+    procedure SetDataObject(const AObj: TObject; const AOwnsObject:Boolean=True);
+    procedure ClearDataObject;
+    // ----------------------------------------------------------------------------------------------------------------------------
+    property ioViewModel:IioViewModel read FioViewModel write FioViewModel;
+  published
     property ioOnNotify:TioBSANotificationEvent read FonNotify write FonNotify;
     property ioOnNeedViewModel:TioNeedViewModelEvent read FOnNeedViewModel write FOnNeedViewModel;
 
     property ioTypeName:String read FioTypeName write FioTypeName;
     property ioTypeAlias:String read FioTypeAlias write FioTypeAlias;
+    property ioAutoLoadData:Boolean read GetAutoLoadData write SetAutoLoadData;
+    property ioAutoPersist:Boolean read GetAutoPersist write SetAutoPersist;
+    property ioViewDataType:TioViewDataType read GetViewDataType write SetViewDataType;
     property ioWhere:TStrings read FIoWhere write FIoWhere;
     property ioMasterBindSource:TioMasterBindSource read FIoMasterBindSource write FIoMasterBindSource;
     property ioMasterPropertyName:String read FIoMasterPropertyName write FIoMasterPropertyName;
     property ioAutoRefreshOnNotification:TioAutoRefreshType read FioAutoRefreshOnNotification write FioAutoRefreshOnNotification;
-    property ioViewModelInterface:String read FioViewModelInterface write FioViewModelInterface;
-    property ioViewModelAlias:String read FioViewModelAlias write FioViewModelAlias;
+    property ioVM_Interface:String read FioVM_Interface write FioVM_Interface;
+    property ioVM_Alias:String read FioVM_Alias write FioVM_Alias;
+    property ioVM_UseBSPropsOnCreate:Boolean read FioVM_UseBSPropsOnCreate write FioVM_UseBSPropsOnCreate;
+    property ioMasterVM_Interface:String read FioMasterVM_Interface write FioMasterVM_Interface;
+    property ioMasterVM_Alias:String read FioMasterVM_Alias write FioMasterVM_Alias;
   end;
 
 implementation
@@ -83,8 +106,8 @@ uses
 
 procedure TioPrototypeBindSource.Append;
 begin
-  if CheckAdapter then
-    GetInternalAdapter.Append;
+  if not CheckAdapter then Exit;
+  GetInternalAdapter.Append;
 end;
 
 procedure TioPrototypeBindSource.Append(AObject: TObject);
@@ -135,19 +158,82 @@ begin
         Self.BindVMAction(Fld.FieldType, AView, Fld.Name, ioAction(Attr).Value);
 end;
 
+procedure TioPrototypeBindSource.ClearDataObject;
+begin
+  Self.GetActiveBindSourceAdapter.ClearDataObject;
+end;
+
 constructor TioPrototypeBindSource.Create(AOwner: TComponent);
 begin
   inherited;
   FioLoaded := False;
   FioAutoRefreshOnNotification := arEnabledNoReload;
+  FioAutoLoadData := True;
+  FioAutoPersist := True;
+  FioViewDataType := dtList;
   FioWhere := TStringList.Create;
   FioViewModel := nil;
+  FioVM_UseBSPropsOnCreate := True;
 end;
 
 destructor TioPrototypeBindSource.Destroy;
 begin
   FioWhere.Free;
   inherited;
+end;
+
+function TioPrototypeBindSource.CheckForViewModel: Boolean;
+begin
+  // Init
+  Result := False;
+  // If a ViewModel is already assigned then exit
+  if Assigned(ioViewModel) then Exit;
+  // ===============================================================================================================================
+  // LOCKED VIEW MODEL ALREADY CREATED IN THE DEPENDENCY INJECTION CONTAINER  (an external prepared ViewModel)
+  // -------------------------------------------------------------------------------------------------------------------------------
+  // If a LockedViewModel is present in the DIContainer (an external prepared ViewModel) and the BindSource is not
+  //  a detail (is Master) then Get that ViewModel  , assign it to itself (and to the View later during its creating),
+  //  and get the BindSourceAdapter from it.
+  if TioViewModelShuttle.Exist and not Self.IsDetail then
+    // Get the ViewModel
+    ioViewModel := TioViewModelShuttle.Get
+  // ===============================================================================================================================
+  // ===============================================================================================================================
+  // VIEW MODEL FROM THE DEPENDENCY INJECTION CONTAINER
+  // -------------------------------------------------------------------------------------------------------------------------------
+  // If a VM_Interface is specified then get the proper ViewModel from he Dependency Injection Container
+  else if not ioVM_Interface.IsEmpty then
+  begin
+    // ViewModel with a MasterViewModel
+    if FioVM_UseBSPropsOnCreate and not FioMasterVM_Interface.IsEmpty then
+      ioViewModel := TioDependencyInjection.Locate(FioVM_Interface).Alias(FioVM_Alias)
+        .ConstructorMarker('CreateByMasterViewModelFromDependencyInjection')
+        .ConstructorParams([FioMasterVM_Interface, FioMasterVM_Alias, FioMasterPropertyName])
+        .Get.ioAsInterface<IioViewModel>
+    // ViewModel with a MasterBindSource
+    else if FioVM_UseBSPropsOnCreate and Assigned(FioMasterBindSource) then
+      ioViewModel := TioDependencyInjection.Locate(FioVM_Interface).Alias(FioVM_Alias)
+        .ConstructorMarker('CreateByMasterBindSource')
+        .ConstructorParams([FioMasterBindSource, FioMasterPropertyName])
+        .Get.ioAsInterface<IioViewModel>
+    // ViewModel with TypeName+TypeAlias+Where BindSourceAdapterCreation
+    else if FioVM_UseBSPropsOnCreate and not FioTypeName.IsEmpty then
+      ioViewModel := TioDependencyInjection.Locate(FioVM_Interface).Alias(FioVM_Alias)
+        .ConstructorMarker('CreateByTypeName')
+        .ConstructorParams([FioTypeName, FioTypeAlias, FioWhere.Text, TValue.From<TioViewDataType>(FioViewDataType), FioAutoLoadData])
+        .Get.ioAsInterface<IioViewModel>
+    // Otherwise ViewModel only by ViewModelInterface and ViewModelAlias
+    //  NB: Even if the "ioVM_UseBSPropsOnCreate" property is False
+    else
+      ioViewModel := TioDependencyInjection.Locate(FioVM_Interface).Alias(FioVM_Alias)
+        .Get.ioAsInterface<IioViewModel>;
+  end;
+  // ===============================================================================================================================
+  // onNeedViewModel just after it has be assigned (for any changes/additions to the ViewModel itself)
+  //  or for retrieve an external created ViewModel
+  Self.DoNeedViewModel;
+  // If a ViewModel was created/retrieved then return True (False otherwise)
+  Result := Assigned(ioViewModel);
 end;
 
 procedure TioPrototypeBindSource.DoCreateAdapter(
@@ -159,32 +245,27 @@ begin
   // Init
   AActiveBSA  := nil;
   // If in DesignTime then Exit
-  // If a ClassName is not provided then exit
   // FioLoaded flag for IupOrm DoCreateAdapter internal use only just before
   //  the real Loaded is call. See the Loaded and the DoCreateAdapter methods.
   if (csDesigning in ComponentState)
   or (not FioLoaded)
     then Exit;
   // -------------------------------------------------------------------------------------------------------------------------------
-  // If a LockedViewModel is present in the DIContainer (an external prepared ViewModel) and the BindSource is not
-  //  a detail (is Master) then Get that ViewModel  , assign it to itself (and to the View later during its creating),
-  //  and get the BindSourceAdapter from it.
-  if TioViewModelShuttle.Exist and not Self.IsDetail then
-  begin
-    Self.ioViewModel := TioViewModelShuttle.Get;
+  // ViewModel create/retrieve
+  //  NB: If a ViewModel was created/retrieved then get the BindSourceAdapter from it
+  if Self.CheckForViewModel and Assigned(Self.ioViewModel.ViewData) then
     ADataObject := Self.ioViewModel.ViewData.BindSourceAdapter;
-  end;
   // -------------------------------------------------------------------------------------------------------------------------------
-  // If AdataObject is NOT already assigned (by onCreateAdapter event handler) then
+  // If AdataObject is NOT already assigned (by onCreateAdapter event handler or from a ViewModel) then
   //  retrieve a BindSourceAdapter automagically by iupORM
-  if  (not Assigned(ADataObject))
-  and (ioTypeName.Trim <> '') then
+  if (not Assigned(ADataObject)) and not ioTypeName.IsEmpty then
   begin
     // If this is a detail BindSource then retrieve the adapter from the master BindSource
     //  else get the adapter directly from IupOrm
-    if Assigned(Self.ioMasterBindSource)
-      then ADataObject := TioLiveBindingsFactory.GetBSAfromMasterBindSource(Self, Self.FioMasterBindSource, Self.ioMasterPropertyName)
-      else ADataObject := TioLiveBindingsFactory.GetBSAfromDB(Self, Self.FioTypeName, Self.FioTypeAlias, Self.FioWhere.Text);
+    if Assigned(Self.ioMasterBindSource) then
+      ADataObject := TioLiveBindingsFactory.GetBSAfromMasterBindSource(Self, Self.FioMasterBindSource, Self.ioMasterPropertyName)
+    else
+      ADataObject := TioLiveBindingsFactory.GetBSAfromDB(Self, FioTypeName, FioTypeAlias, FioWhere.Text, FioViewDataType, FioAutoLoadData);
   end;
   // -------------------------------------------------------------------------------------------------------------------------------
   // If Self is a Notifiable bind source then register a reference to itself
@@ -192,23 +273,11 @@ begin
   if  Assigned(ADataObject)
   and Supports(ADataObject, IioActiveBindSourceAdapter, AActiveBSA)
   and Supports(Self, IioNotifiableBindSource)
-    then AActiveBSA.SetBindSource(Self);
-  // If a ViewModel is not already present and the OnNeedViewModel is specified then
-  //  use it
-  // If a ViewModel interface is specified and the ioViewModel property is not
-  //  already assigned then create automatically a proper ViewModel instance
-  //  and use it
-  if (not Assigned(Self.ioViewModel)) then
-    Self.DoNeedViewModel;
-  if  (Self.ioViewModelInterface <> '')
-  and (not Assigned(Self.ioViewModel))
   then
-    Self.ioViewModel := TioDependencyInjection.Locate(Self.ioViewModelInterface)
-                                              .Alias(Self.ioViewModelAlias)
-                                              .ConstructorParams([TValue.From(AActiveBSA)])
-                                              .ConstructorMarker('CreateByBindSourceAdapter')
-                                              .Get
-                                              .ioAsInterface<IioViewModel>;
+  begin
+    AActiveBSA.ioAutoPersist := FioAutoPersist;
+    AActiveBSA.SetBindSource(Self);
+  end;
   // -------------------------------------------------------------------------------------------------------------------------------
 end;
 
@@ -231,12 +300,40 @@ end;
 function TioPrototypeBindSource.Current: TObject;
 begin
   Result := nil;
-  if Self.CheckAdapter then Result := Self.InternalAdapter.Current
+  if not CheckAdapter then Exit;
+  Result := Self.InternalAdapter.Current
+end;
+
+function TioPrototypeBindSource.GetActiveBindSourceAdapter: IioActiveBindSourceAdapter;
+begin
+  Result := nil;
+  Supports(Self.InternalAdapter, IioActiveBindSourceAdapter, Result);
+end;
+
+function TioPrototypeBindSource.GetAutoLoadData: Boolean;
+begin
+  Result := FioAutoLoadData;
+end;
+
+function TioPrototypeBindSource.GetAutoPersist: Boolean;
+begin
+  Result := FioAutoPersist;
+end;
+
+function TioPrototypeBindSource.GetDataObject: TObject;
+begin
+  Result := nil;
+  Result := Self.GetActiveBindSourceAdapter.GetDataObject;
 end;
 
 function TioPrototypeBindSource.GetIsDetail: Boolean;
 begin
   Result := Assigned(FioMasterBindSource);
+end;
+
+function TioPrototypeBindSource.GetViewDataType: TioViewDataType;
+begin
+  Result := FioViewDataType;
 end;
 
 //procedure TioPrototypeBindSource.ioSetBindSourceAdapter(
@@ -283,10 +380,12 @@ procedure TioPrototypeBindSource.Persist(ReloadData: Boolean);
 var
  AioActiveBindSourceAdapter: IioActiveBindSourceAdapter;
 begin
+  if not CheckAdapter then Exit;
   // If the InternalAdapter support the IioActiveBindSourceAdapter (is an ActiveBindSourceAdapter)
   //  then call the Adapter Persist method
-  if Supports(Self.InternalAdapter, IioActiveBindSourceAdapter, AioActiveBindSourceAdapter)
-    then AioActiveBindSourceAdapter.Persist(ReloadData);
+  AioActiveBindSourceAdapter := Self.GetActiveBindSourceAdapter;
+  if Assigned(AioActiveBindSourceAdapter) then
+    AioActiveBindSourceAdapter.Persist(ReloadData);
 end;
 
 function TioPrototypeBindSource.QueryInterface(const IID: TGUID;
@@ -307,6 +406,26 @@ begin
   if Supports(Self.GetInternalAdapter, IioActiveBindSourceAdapter, AnActiveBSA)
     then AnActiveBSA.Refresh(ReloadData)
     else GetInternalAdapter.Refresh;
+end;
+
+procedure TioPrototypeBindSource.SetAutoLoadData(const Value: Boolean);
+begin
+  FioAutoLoadData := Value;
+end;
+
+procedure TioPrototypeBindSource.SetAutoPersist(const Value: Boolean);
+begin
+  FioAutoPersist := Value;
+end;
+
+procedure TioPrototypeBindSource.SetDataObject(const AObj: TObject; const AOwnsObject: Boolean);
+begin
+  Self.GetActiveBindSourceAdapter.SetDataObject(AObj, AOwnsObject);
+end;
+
+procedure TioPrototypeBindSource.SetViewDataType(const Value: TioViewDataType);
+begin
+  FioViewDataType := Value;
 end;
 
 function TioPrototypeBindSource._AddRef: Integer;

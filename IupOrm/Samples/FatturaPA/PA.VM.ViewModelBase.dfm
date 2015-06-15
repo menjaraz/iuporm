@@ -1,0 +1,2 @@
+inherited paViewModelBase: TpaViewModelBase
+end

@@ -45,7 +45,7 @@ begin
   case AProp.GetRelationType of
     // Normal property, no relation, field type is by TypeKind of the property itself
     ioRTNone: begin
-      case AProp.GetRttiProperty.PropertyType.TypeKind of
+      case AProp.GetRttiType.TypeKind of
         tkInt64, tkInteger, tkEnumeration: Result := 'INTEGER';
         tkFloat: Result := 'REAL';
         tkString, tkUString, tkWChar, tkLString, tkWString, tkChar: Result := 'TEXT';
@@ -71,7 +71,7 @@ begin
 //  if AQuery.Fields.FieldByName(AProperty.GetSqlFieldAlias).IsNull
 //    then Exit;
   // Convert the field value to a TValue by TypeKind
-  case AProperty.GetRttiProperty.PropertyType.TypeKind of
+  case AProperty.GetRttiType.TypeKind of
     tkInt64, tkInteger:
       Result := AQuery.Fields.FieldByName(AProperty.GetSqlFieldAlias).AsInteger;
     tkFloat:
@@ -80,7 +80,7 @@ begin
       Result := AQuery.Fields.FieldByName(AProperty.GetSqlFieldAlias).AsString;
     tkEnumeration:
       Result := TValue.FromOrdinal(
-                                    AProperty.GetRttiProperty.PropertyType.Handle,  // This is the PTypeInfo of the PropertyType
+                                    AProperty.GetRttiType.Handle,  // This is the PTypeInfo of the PropertyType
                                     AQuery.Fields.FieldByName(AProperty.GetSqlFieldAlias).AsInteger  // This is the ordinal value
                                   );
   end;

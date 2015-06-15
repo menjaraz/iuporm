@@ -135,10 +135,14 @@ end;
 
 class function TioConnectionManager.GetConnectionDefByName(AConnectionName: String): IIoConnectionDef;
 begin
+  Result := nil;
   // If desired ConnectionName is empty then get then Default one.
   if AConnectionName = '' then Self.GetDefaultConnectionName;
   // Get the ConnectionDef info's
   Result := FDManager.ConnectionDefs.FindConnectionDef(AConnectionName);
+  // Connection not found
+  if not Assigned(Result) then
+    raise EIupOrmException.Create(Self.ClassName + ': ConnectionDef not found.');
 end;
 
 class function TioConnectionManager.GetDefaultConnectionName: String;

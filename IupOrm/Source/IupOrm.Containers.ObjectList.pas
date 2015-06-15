@@ -43,6 +43,14 @@ implementation
 
 { TioInterfacedList<T> }
 
+// ---------------- Start: section added for IInterface support ---------------
+{$IFNDEF AUTOREFCOUNT}
+class function TioInterfacedObjectList<T>.NewInstance: TObject;
+begin
+  Result := inherited NewInstance;
+  TioInterfacedObjectList<T>(Result).FRefCount := 1;
+end;
+
 procedure TioInterfacedObjectList<T>.AfterConstruction;
 begin
 // Release the constructor's implicit refcount
@@ -54,6 +62,8 @@ begin
   if RefCount <> 0 then
     System.Error(reInvalidPtr);
 end;
+{$ENDIF}
+// ---------------- End: section added for IInterface support ---------------
 
 function TioInterfacedObjectList<T>.GetCapacity: Integer;
 begin
@@ -68,12 +78,6 @@ end;
 function TioInterfacedObjectList<T>.GetItem(Index: Integer): T;
 begin
   Result := inherited Items[Index];
-end;
-
-class function TioInterfacedObjectList<T>.NewInstance: TObject;
-begin
-  Result := inherited NewInstance;
-  TioInterfacedObjectList<T>(Result).FRefCount := 1;
 end;
 
 function TioInterfacedObjectList<T>.QueryInterface(const IID: TGUID; out Obj): HResult;

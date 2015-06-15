@@ -4,7 +4,7 @@ interface
 
 uses
   IupOrm.DuckTyped.Interfaces, System.Classes, System.Rtti,
-  IupOrm.DMVC.ObjectsMappersAdapter;
+  IupOrm.DMVC.ObjectsMappersAdapter, IupOrm.Attributes;
 
 type
 

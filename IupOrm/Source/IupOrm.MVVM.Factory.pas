@@ -15,6 +15,8 @@ type
     class function ViewData(const ABindSourceAdapter:IioActiveBindSourceAdapter): IioViewData; overload;
     class function ViewData(const ATypeName, ATypeAlias, AWhere: String; const AViewDataType:TioViewDataType; const AAutoLoadData:Boolean=True): IioViewData; overload;
     class function ViewData(const AMasterBindSource:TioMasterBindSource; const AMasterPropertyName:String=''): IioViewData; overload;
+    class function ViewData(const AMasterBindSourceAdapter:IioActiveBindSourceAdapter; const AMasterPropertyName:String): IioViewData; overload;
+    class function ViewData(const AMasterViewModel:IioViewModel; const AMasterPropertyName:String): IioViewData; overload;
   end;
 
 implementation
@@ -49,6 +51,20 @@ class function TioMVVMFactory.ViewData(const ATypeName, ATypeAlias, AWhere: Stri
   const AAutoLoadData: Boolean): IioViewData;
 begin
   Result := TioViewData.Create(ATypeName, ATypeAlias, AWhere, AViewDataType, AAutoLoadData);
+end;
+
+class function TioMVVMFactory.ViewData(const AMasterBindSourceAdapter: IioActiveBindSourceAdapter;
+  const AMasterPropertyName: String): IioViewData;
+begin
+  Result := TioViewData.Create(AMasterBindSourceAdapter, AMasterPropertyName);
+end;
+
+class function TioMVVMFactory.ViewData(const AMasterViewModel: IioViewModel; const AMasterPropertyName: String): IioViewData;
+begin
+  Result := TioViewData.Create(
+    AMasterViewModel.ViewData.ActiveBindSourceAdapter,
+    AMasterPropertyName
+  );
 end;
 
 end.
