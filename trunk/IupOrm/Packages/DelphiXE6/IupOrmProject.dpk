@@ -38,8 +38,6 @@ requires
   FireDAC,
   FireDACCommonDriver,
   fmxFireDAC,
-  vcl,
-  vclFireDAC,
   DbxCommonDriver,
   soaprtl;
 
@@ -134,6 +132,8 @@ contains
   ObjMapperEngine in '..\..\ExtLibs\DMVC\ObjMapperEngine.pas',
   DuckPropFieldU in '..\..\ExtLibs\DMVC\DuckPropFieldU.pas',
   ObjMapper in '..\..\ExtLibs\DMVC\ObjMapper.pas',
-  ObjMapperAttributes in '..\..\ExtLibs\DMVC\ObjMapperAttributes.pas';
+  ObjMapperAttributes in '..\..\ExtLibs\DMVC\ObjMapperAttributes.pas',
+  IupOrm.DependencyInjection.ViewModelShuttleContainer in '..\..\Source\IupOrm.DependencyInjection.ViewModelShuttleContainer.pas',
+  IupOrm.DependencyInjection.Singletons in '..\..\Source\IupOrm.DependencyInjection.Singletons.pas';
 
 end.

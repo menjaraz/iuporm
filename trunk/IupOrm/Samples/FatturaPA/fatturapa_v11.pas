@@ -9,11 +9,24 @@
 {                                                                                }
 {********************************************************************************}
 
+
+
+// DA AGGIUNGERE A MANO:
+//  - Tutte le proprietà nelle classi (copiarle dalle interfacce)
+//  - Attributo [ioEntity] in ogni classe
+//  - Attributo [ioBelongsTo(...)] nelle proprietà oggetto di una relazione con un'altra classe figlia
+//  - Direttiva {$RTTI EXPLICIT METHODS([vcProtected, vcPublic, vcPublished]) PROPERTIES([vcProtected, vcPublic, vcPublished])}
+//      prima dello uses di questa Unit.
+
+
 unit fatturapa_v11;
 
 interface
 
+{$RTTI EXPLICIT METHODS([vcProtected, vcPublic, vcPublished]) PROPERTIES([vcProtected, vcPublic, vcPublished])}
+
 uses xmldom, XMLDoc, XMLIntf, IupOrm.Attributes;
+
 
 type
 
@@ -1668,6 +1681,7 @@ type
     property Versione: UnicodeString read Get_Versione write Set_Versione;
     [ioBelongsTo('IXMLFatturaElettronicaHeaderType')]
     property FatturaElettronicaHeader: IXMLFatturaElettronicaHeaderType read Get_FatturaElettronicaHeader;
+    [ioBelongsTo('IXMLFatturaElettronicaBodyTypeList')]
     property FatturaElettronicaBody: IXMLFatturaElettronicaBodyTypeList read Get_FatturaElettronicaBody;
     property Signature: IXMLSignatureType_ds read Get_Signature;
   end;
@@ -1967,6 +1981,12 @@ type
     function Get_Allegati: IXMLAllegatiTypeList;
   public
     procedure AfterConstruction; override;
+    [ioBelongsTo('IXMLDatiGeneraliType')]
+    property DatiGenerali: IXMLDatiGeneraliType read Get_DatiGenerali;
+    property DatiBeniServizi: IXMLDatiBeniServiziType read Get_DatiBeniServizi;
+    property DatiVeicoli: IXMLDatiVeicoliType read Get_DatiVeicoli;
+    property DatiPagamento: IXMLDatiPagamentoTypeList read Get_DatiPagamento;
+    property Allegati: IXMLAllegatiTypeList read Get_Allegati;
   end;
 
 { TXMLFatturaElettronicaBodyTypeList }
@@ -1979,6 +1999,10 @@ type
     function Insert(const Index: Integer): IXMLFatturaElettronicaBodyType;
 
     function Get_Item(Index: Integer): IXMLFatturaElettronicaBodyType;
+    property Items[Index: Integer]: IXMLFatturaElettronicaBodyType read Get_Item; default;
+
+    procedure Delete(Index: Integer);  // Redeclared for RTTI visibility
+    property Count;                    // Redeclared for RTTI visibility
   end;
 
 { TXMLDatiGeneraliType }
@@ -2007,6 +2031,17 @@ type
     function Get_FatturaPrincipale: IXMLFatturaPrincipaleType;
   public
     procedure AfterConstruction; override;
+    [ioBelongsTo('IXMLDatiGeneraliDocumentoType')]
+    property DatiGeneraliDocumento: IXMLDatiGeneraliDocumentoType read Get_DatiGeneraliDocumento;
+    property DatiOrdineAcquisto: IXMLDatiDocumentiCorrelatiTypeList read Get_DatiOrdineAcquisto;
+    property DatiContratto: IXMLDatiDocumentiCorrelatiTypeList read Get_DatiContratto;
+    property DatiConvenzione: IXMLDatiDocumentiCorrelatiTypeList read Get_DatiConvenzione;
+    property DatiRicezione: IXMLDatiDocumentiCorrelatiTypeList read Get_DatiRicezione;
+    property DatiFattureCollegate: IXMLDatiDocumentiCorrelatiTypeList read Get_DatiFattureCollegate;
+    property DatiSAL: IXMLDatiSALTypeList read Get_DatiSAL;
+    property DatiDDT: IXMLDatiDDTTypeList read Get_DatiDDT;
+    property DatiTrasporto: IXMLDatiTrasportoType read Get_DatiTrasporto;
+    property FatturaPrincipale: IXMLFatturaPrincipaleType read Get_FatturaPrincipale;
   end;
 
 { TXMLDatiGeneraliDocumentoType }
@@ -2040,6 +2075,18 @@ type
     procedure Set_Art73(Value: UnicodeString);
   public
     procedure AfterConstruction; override;
+    property TipoDocumento: UnicodeString read Get_TipoDocumento write Set_TipoDocumento;
+    property Divisa: UnicodeString read Get_Divisa write Set_Divisa;
+    property Data: UnicodeString read Get_Data write Set_Data;
+    property Numero: UnicodeString read Get_Numero write Set_Numero;
+    property DatiRitenuta: IXMLDatiRitenutaType read Get_DatiRitenuta;
+    property DatiBollo: IXMLDatiBolloType read Get_DatiBollo;
+    property DatiCassaPrevidenziale: IXMLDatiCassaPrevidenzialeTypeList read Get_DatiCassaPrevidenziale;
+    property ScontoMaggiorazione: IXMLScontoMaggiorazioneTypeList read Get_ScontoMaggiorazione;
+    property ImportoTotaleDocumento: UnicodeString read Get_ImportoTotaleDocumento write Set_ImportoTotaleDocumento;
+    property Arrotondamento: UnicodeString read Get_Arrotondamento write Set_Arrotondamento;
+    property Causale: IXMLString200LatinTypeList read Get_Causale;
+    property Art73: UnicodeString read Get_Art73 write Set_Art73;
   end;
 
 { TXMLDatiRitenutaType }
@@ -3709,6 +3756,11 @@ end;
 function TXMLFatturaElettronicaBodyTypeList.Insert(const Index: Integer): IXMLFatturaElettronicaBodyType;
 begin
   Result := AddItem(Index) as IXMLFatturaElettronicaBodyType;
+end;
+
+procedure TXMLFatturaElettronicaBodyTypeList.Delete(Index: Integer);
+begin
+  Inherited Delete(Index);
 end;
 
 function TXMLFatturaElettronicaBodyTypeList.Get_Item(Index: Integer): IXMLFatturaElettronicaBodyType;

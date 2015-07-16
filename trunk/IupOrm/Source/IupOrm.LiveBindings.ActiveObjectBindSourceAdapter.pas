@@ -13,7 +13,6 @@ type
   strict private
     FWhereStr: String;
     FClassRef: TioClassRef;
-    FUseObjStatus: Boolean;  // Not use directly, use UseObjStatus function or property even for internal use
     FLocalOwnsObject: Boolean;
     FAutoLoadData: Boolean;
     FAutoPersist: Boolean;
@@ -47,7 +46,7 @@ type
     function GetioAutoPersist: Boolean;
     procedure SetioAutoPersist(const Value: Boolean); protected
   public
-    constructor Create(AClassRef:TioClassRef; AWhereStr:String; AOwner: TComponent; AObject: TObject; AutoLoadData, AUseObjStatus: Boolean; AOwnsObject: Boolean = True); overload;
+    constructor Create(AClassRef:TioClassRef; AWhereStr:String; AOwner: TComponent; AObject: TObject; AutoLoadData: Boolean; AOwnsObject: Boolean = True); overload;
     destructor Destroy; override;
     procedure SetMasterAdapterContainer(AMasterAdapterContainer:IioDetailBindSourceAdaptersContainer);
     procedure SetMasterProperty(AMasterProperty: IioContextProperty);
@@ -64,6 +63,7 @@ type
     function GetDataObject: TObject;
     procedure SetDataObject(const AObj: TObject; const AOwnsObject:Boolean=True);
     procedure ClearDataObject;
+    function GetCurrentOID: Integer;
 
     property ioAutoPersist:Boolean read GetioAutoPersist write SetioAutoPersist;
     property ioOnNotify:TioBSANotificationEvent read FonNotify write FonNotify;
@@ -73,7 +73,7 @@ implementation
 
 uses
   IupOrm, System.Rtti, IupOrm.Context.Factory, System.SysUtils,
-  IupOrm.LiveBindings.Factory;
+  IupOrm.LiveBindings.Factory, IupOrm.Context.Map.Interfaces;
 
 { TioActiveListBindSourceAdapter<T> }
 
@@ -92,12 +92,11 @@ begin
 end;
 
 constructor TioActiveObjectBindSourceAdapter.Create(AClassRef:TioClassRef; AWhereStr: String;
-  AOwner: TComponent; AObject: TObject; AutoLoadData, AUseObjStatus: Boolean; AOwnsObject: Boolean);
+  AOwner: TComponent; AObject: TObject; AutoLoadData: Boolean; AOwnsObject: Boolean);
 begin
   FAutoPersist := True;
   FAutoLoadData := AutoLoadData;
   FReloadDataOnRefresh := True;
-  FUseObjStatus := AUseObjStatus;
   inherited Create(AOwner, AObject, AClassRef, AOwnsObject);
   FLocalOwnsObject := AOwnsObject;
   FWhereStr := AWhereStr;
@@ -155,13 +154,9 @@ end;
 procedure TioActiveObjectBindSourceAdapter.DoAfterPost;
 begin
   inherited;
-  // IF AutoPersist is enabled
-  if Self.FAutoPersist then
-  begin
-    if Self.UseObjStatus
-      then Self.SetObjStatus(osDirty)
-      else TIupOrm.Persist(Self.Current);
-  end;
+  Self.SetObjStatus(osDirty);
+  // If AutoPersist is enabled then persist
+  if Self.FAutoPersist then TIupOrm.Persist(Self.Current);
   // Send a notification to other ActiveBindSourceAdapters & BindSource
   Notify(
          Self,
@@ -178,15 +173,14 @@ end;
 procedure TioActiveObjectBindSourceAdapter.DoBeforeDelete;
 begin
   inherited;
-  // IF AutoPersist is enabled
-  if Self.FAutoPersist then
+  // If ObjectStatus exists in the class then set it as osDirty
+  if Self.UseObjStatus then
   begin
-    if Self.UseObjStatus then
-    begin
-      Self.SetObjStatus(osDeleted);
-      Abort;
-    end else TIupOrm.Delete(Self.Current);
+    Self.SetObjStatus(osDeleted);
+    Abort;
   end;
+  // If AutoPersist is enabled then persist
+  if Self.FAutoPersist then TIupOrm.Delete(Self.Current);
 end;
 
 procedure TioActiveObjectBindSourceAdapter.DoBeforeOpen;
@@ -244,6 +238,15 @@ begin
     then ADetailObj := AValue.AsObject;
   // Set it to the Adapter itself
   Self.SetDataObject(ADetailObj, False);  // 2° parameter false ABSOLUTELY!!!!!!!
+end;
+
+function TioActiveObjectBindSourceAdapter.GetCurrentOID: Integer;
+var
+  AMap: IioMap;
+begin
+  // Create context for current child object
+  AMap := TioContextFactory.Map(Self.Current.ClassType);
+  Result := AMap.GetProperties.GetIdProperty.GetValue(Self.Current).AsInteger;
 end;
 
 function TioActiveObjectBindSourceAdapter.GetDataObject: TObject;
@@ -381,7 +384,7 @@ end;
 
 function TioActiveObjectBindSourceAdapter.UseObjStatus: Boolean;
 begin
-  Result := FUseObjStatus;
+  Result := TioContextFactory.Context(Self.Current.ClassName, nil, Self.Current).ObjStatusExist;
 end;
 
 function TioActiveObjectBindSourceAdapter._AddRef: Integer;

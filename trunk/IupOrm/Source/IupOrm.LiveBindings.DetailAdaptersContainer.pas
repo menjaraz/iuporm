@@ -19,6 +19,7 @@ type
     function GetBindSourceAdapter(AOwner: TComponent; AMasterClassName: String; AMasterPropertyName:String): TBindSourceAdapter;
     procedure Notify(Sender:TObject; ANotification:IioBSANotification);
     procedure RemoveBindSourceAdapter(ABindSourceAdapter: IioContainedBindSourceAdapter);
+    function GetMasterBindSourceAdapter: IioActiveBindSourceAdapter;
 
     // =========================================================================
     // Part for the support of the IioNotifiableBindSource interfaces (Added by IupOrm)
@@ -36,7 +37,7 @@ uses
   IupOrm.Context.Properties.Interfaces, IupOrm.Attributes,
   IupOrm.LiveBindings.ActiveObjectBindSourceAdapter,
   IupOrm.LiveBindings.ActiveListBindSourceAdapter, System.Generics.Collections,
-  IupOrm.Exceptions, IupOrm.LiveBindings.Factory, IupOrm;
+  IupOrm.Exceptions, IupOrm.LiveBindings.Factory, IupOrm, System.SysUtils;
 
 { TioDetailAdaptersContainer }
 
@@ -78,6 +79,11 @@ begin
   Self.FDetailAdapters.Add(NewAdapter);
   // Return the new adapter
   Result := NewAdapter as TBindSourceAdapter;
+end;
+
+function TioDetailAdaptersContainer.GetMasterBindSourceAdapter: IioActiveBindSourceAdapter;
+begin
+  Supports(Self.FMasterAdapter, IioActiveBindSourceAdapter, Result);
 end;
 
 procedure TioDetailAdaptersContainer.Notify(Sender: TObject;

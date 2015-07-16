@@ -260,7 +260,7 @@ inherited paViewDataIdFiscaleType: TpaViewDataIdFiscaleType
     ioAutoPersist = False
     ioViewDataType = dtSingle
     ioAutoRefreshOnNotification = arEnabledNoReload
-    ioVM_Interface = 'IpaViewModelForDataView'
+    ioVM_Interface = 'IpaViewModelForViewData'
     ioVM_Alias = '1.2.1.1:IdFiscaleIVA'
     ioVM_UseBSPropsOnCreate = False
     Left = 416

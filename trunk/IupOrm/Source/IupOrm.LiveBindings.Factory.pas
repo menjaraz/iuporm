@@ -50,7 +50,6 @@ begin
       '',
       AOwner,
       TList<IInterface>.Create,
-      False,
       False)
   // else if the master property type is a class...
   else
@@ -61,8 +60,7 @@ begin
       ,''
       ,AOwner
       ,TList<TObject>.Create
-      ,False
-      ,True);
+      ,False);
   end;
   // Set MasterProperty for the adapter
   Result.SetMasterProperty(AMasterProperty);
@@ -80,7 +78,6 @@ begin
       '',
       AOwner,
       nil,     // AObject:TObject;
-      False,
       False)
   // else if the master property type is a class...
   else
@@ -91,7 +88,6 @@ begin
       ,''
       ,AOwner
       ,nil     // AObject:TObject;
-      ,False
       ,False);
   end;
   // Set MasterProperty for the adapter

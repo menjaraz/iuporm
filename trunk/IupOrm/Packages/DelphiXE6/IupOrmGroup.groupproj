@@ -51,6 +51,9 @@
         <Projects Include="..\..\Samples\TestVM\VCL_TestVM.dproj">
             <Dependencies>..\..\Source\ImpOrm.MVVM.ALL.dproj;IupOrmProject.dproj</Dependencies>
         </Projects>
+        <Projects Include="..\..\Samples\TestParent\Project1.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -203,14 +206,23 @@
     <Target Name="VCL_TestVM:Make" DependsOnTargets="ImpOrm.MVVM.ALL:Make;IupOrmProject:Make">
         <MSBuild Projects="..\..\Samples\TestVM\VCL_TestVM.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Project1">
+        <MSBuild Projects="..\..\Samples\TestParent\Project1.dproj"/>
+    </Target>
+    <Target Name="Project1:Clean">
+        <MSBuild Projects="..\..\Samples\TestParent\Project1.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Project1:Make">
+        <MSBuild Projects="..\..\Samples\TestParent\Project1.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ImpOrm_MVVM_ALL;IupOrm_MVVM_VCL;IupOrm_MVVM_FMX;IupOrmProject_DesignTime;IupOrmProject;PhoneContacts_Interfaces;PhoneContacts_ioPrototypeBindSource;PhoneContacts_ioActiveBindSourceAdapter;Pizza_ioActiveBindSourceAdapter;Pizza_List;Pizza_ioPrototypeBindSource;SpeedTest;RVMan_Interface;RVMan;PA;VCL_TestVM"/>
+        <CallTarget Targets="ImpOrm_MVVM_ALL;IupOrm_MVVM_VCL;IupOrm_MVVM_FMX;IupOrmProject_DesignTime;IupOrmProject;PhoneContacts_Interfaces;PhoneContacts_ioPrototypeBindSource;PhoneContacts_ioActiveBindSourceAdapter;Pizza_ioActiveBindSourceAdapter;Pizza_List;Pizza_ioPrototypeBindSource;SpeedTest;RVMan_Interface;RVMan;PA;VCL_TestVM;Project1"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ImpOrm_MVVM_ALL:Clean;IupOrm_MVVM_VCL:Clean;IupOrm_MVVM_FMX:Clean;IupOrmProject_DesignTime:Clean;IupOrmProject:Clean;PhoneContacts_Interfaces:Clean;PhoneContacts_ioPrototypeBindSource:Clean;PhoneContacts_ioActiveBindSourceAdapter:Clean;Pizza_ioActiveBindSourceAdapter:Clean;Pizza_List:Clean;Pizza_ioPrototypeBindSource:Clean;SpeedTest:Clean;RVMan_Interface:Clean;RVMan:Clean;PA:Clean;VCL_TestVM:Clean"/>
+        <CallTarget Targets="ImpOrm_MVVM_ALL:Clean;IupOrm_MVVM_VCL:Clean;IupOrm_MVVM_FMX:Clean;IupOrmProject_DesignTime:Clean;IupOrmProject:Clean;PhoneContacts_Interfaces:Clean;PhoneContacts_ioPrototypeBindSource:Clean;PhoneContacts_ioActiveBindSourceAdapter:Clean;Pizza_ioActiveBindSourceAdapter:Clean;Pizza_List:Clean;Pizza_ioPrototypeBindSource:Clean;SpeedTest:Clean;RVMan_Interface:Clean;RVMan:Clean;PA:Clean;VCL_TestVM:Clean;Project1:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ImpOrm_MVVM_ALL:Make;IupOrm_MVVM_VCL:Make;IupOrm_MVVM_FMX:Make;IupOrmProject_DesignTime:Make;IupOrmProject:Make;PhoneContacts_Interfaces:Make;PhoneContacts_ioPrototypeBindSource:Make;PhoneContacts_ioActiveBindSourceAdapter:Make;Pizza_ioActiveBindSourceAdapter:Make;Pizza_List:Make;Pizza_ioPrototypeBindSource:Make;SpeedTest:Make;RVMan_Interface:Make;RVMan:Make;PA:Make;VCL_TestVM:Make"/>
+        <CallTarget Targets="ImpOrm_MVVM_ALL:Make;IupOrm_MVVM_VCL:Make;IupOrm_MVVM_FMX:Make;IupOrmProject_DesignTime:Make;IupOrmProject:Make;PhoneContacts_Interfaces:Make;PhoneContacts_ioPrototypeBindSource:Make;PhoneContacts_ioActiveBindSourceAdapter:Make;Pizza_ioActiveBindSourceAdapter:Make;Pizza_List:Make;Pizza_ioPrototypeBindSource:Make;SpeedTest:Make;RVMan_Interface:Make;RVMan:Make;PA:Make;VCL_TestVM:Make;Project1:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

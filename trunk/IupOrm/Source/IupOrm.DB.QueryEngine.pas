@@ -92,7 +92,7 @@ class function TioQueryEngine.GetQueryInsert(AContext:IioContext): IioQuery;
 var
   AProp: IioContextProperty;
   AQuery: IioQuery;
-begin
+ begin
   // Init
   AContext.LastInsertNullID := False;
   // Get the query object and if does not contain an SQL text (come from QueryContainer)

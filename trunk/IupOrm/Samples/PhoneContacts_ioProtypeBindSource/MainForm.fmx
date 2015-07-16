@@ -509,8 +509,8 @@ object Form1: TForm1
     end
   end
   object ActionList1: TActionList
-    Left = 320
-    Top = 232
+    Left = 216
+    Top = 240
     object NextTabAction1: TNextTabAction
       Category = 'Tab'
       TabControl = TabControl1
@@ -519,5 +519,7 @@ object Form1: TForm1
       Category = 'Tab'
       TabControl = TabControl1
     end
+  end
+  object OWPinBindingManager1: TOWPinBindingManager
   end
 end

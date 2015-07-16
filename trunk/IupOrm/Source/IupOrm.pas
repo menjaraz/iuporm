@@ -35,16 +35,16 @@ type
   // TIupOrm
   TIupOrm = class
   strict protected
-    class procedure PersistObject(AContext:IioContext; ARelationPropertyName:String=''; ARelationOID:Integer=0);
-    class procedure InsertObject(AContext:IioContext);
-    class procedure UpdateObject(AContext:IioContext);
-    class procedure DeleteObject(AContext:IioContext);
-    class procedure PreProcessRelationChild(AContext:IioContext);
-    class procedure PostProcessRelationChild(AContext:IioContext);
-    class procedure PersistRelationChildList(AMasterContext:IioContext; AMasterProperty:IioContextProperty);
-    class procedure PersistRelationChildObject(AMasterContext:IioContext; AMasterProperty:IioContextProperty);
-    class procedure PersistCollection_Internal(ACollection:TObject; ARelationPropertyName:String=''; ARelationOID:Integer=0);
-    class function ObjectExists(AContext:IioContext): Boolean;
+    class procedure PersistObject(const AContext:IioContext; const ARelationPropertyName:String=''; const ARelationOID:Integer=0);
+    class procedure InsertObject(const AContext:IioContext);
+    class procedure UpdateObject(const AContext:IioContext);
+    class procedure DeleteObject(const AContext:IioContext);
+    class procedure PreProcessRelationChild(const AContext:IioContext);
+    class procedure PostProcessRelationChild(const AContext:IioContext);
+    class procedure PersistRelationChildList(const AMasterContext:IioContext; const AMasterProperty:IioContextProperty);
+    class procedure PersistRelationChildObject(const AMasterContext:IioContext; const AMasterProperty:IioContextProperty);
+    class procedure PersistCollection_Internal(const ACollection:TObject; const ARelationPropertyName:String=''; const ARelationOID:Integer=0);
+    class function ObjectExists(const AContext:IioContext): Boolean;
   public
     class function GlobalFactory: TioGlobalFactoryRef;
     class function DependencyInjection: TioDependencyInjectionRef;
@@ -54,15 +54,15 @@ type
     class function Load(const ATypeName:String; const ATypeAlias:String=''): TioWhere; overload;
     class function Load(const AClassRef:TioClassRef; const ATypeAlias:String=''): TioWhere; overload;
     class function Load<T>(const ATypeAlias:String=''): TioWhere<T>; overload;
-    class procedure Delete(AObj: TObject); overload;
-    class procedure Delete(AIntfObj: IInterface); overload;
-    class procedure Persist(AObj: TObject); overload;
-    class procedure Persist(AIntfObj: IInterface); overload;
-    class procedure PersistCollection(ACollection: TObject); overload;
-    class procedure PersistCollection(AIntfCollection: IInterface); overload;
-    class procedure StartTransaction(AConnectionName:String='');
-    class procedure CommitTransaction(AConnectionName:String='');
-    class procedure RollbackTransaction(AConnectionName:String='');
+    class procedure Delete(const AObj: TObject); overload;
+    class procedure Delete(const AIntfObj: IInterface); overload;
+    class procedure Persist(const AObj: TObject; const ARelationPropertyName:String=''; const ARelationOID:Integer=0); overload;
+    class procedure Persist(const AIntfObj: IInterface); overload;
+    class procedure PersistCollection(const ACollection: TObject); overload;
+    class procedure PersistCollection(const AIntfCollection: IInterface); overload;
+    class procedure StartTransaction(const AConnectionName:String='');
+    class procedure CommitTransaction(const AConnectionName:String='');
+    class procedure RollbackTransaction(const AConnectionName:String='');
     class procedure AutoCreateDatabase;
     class function ConnectionManager: TioConnectionManagerRef;
   end;
@@ -97,7 +97,7 @@ begin
   Result.SetType(TioRttiUtilities.GenericToString<T>, ATypeAlias);
 end;
 
-class function TIupOrm.ObjectExists(AContext: IioContext): Boolean;
+class function TIupOrm.ObjectExists(const AContext: IioContext): Boolean;
 var
   AQuery: IioQuery;
 begin
@@ -108,7 +108,7 @@ begin
   Result := AQuery.Fields[0].AsInteger <> 0;
 end;
 
-class procedure TIupOrm.Persist(AObj: TObject);
+class procedure TIupOrm.Persist(const AObj: TObject; const ARelationPropertyName:String; const ARelationOID:Integer);
 var
   AContext: IioContext;
 begin
@@ -117,27 +117,27 @@ begin
   // Create Context
   AContext := TioContextFactory.Context(AObj.ClassName, nil, AObj);
   // Execute
-  Self.PersistObject(AContext);
+  Self.PersistObject(AContext, ARelationPropertyName, ARelationOID);
 end;
 
-class procedure TIupOrm.Persist(AIntfObj: IInterface);
+class procedure TIupOrm.Persist(const AIntfObj: IInterface);
 begin
   Self.Persist(AIntfObj as TObject);
 end;
 
-class procedure TIupOrm.PersistCollection(ACollection: TObject);
+class procedure TIupOrm.PersistCollection(const ACollection: TObject);
 begin
   // Redirect to the internal PersistCollection_Internal (same of PersistRelationChildList)
   PersistCollection_Internal(ACollection);
 end;
 
-class procedure TIupOrm.PersistCollection(AIntfCollection: IInterface);
+class procedure TIupOrm.PersistCollection(const AIntfCollection: IInterface);
 begin
   Self.PersistCollection(AIntfCollection as TObject);
 end;
 
-class procedure TIupOrm.PersistCollection_Internal(ACollection: TObject;
-  ARelationPropertyName: String; ARelationOID: Integer);
+class procedure TIupOrm.PersistCollection_Internal(const ACollection: TObject;
+  const ARelationPropertyName: String; const ARelationOID: Integer);
 var
   ADuckTypedList: IioDuckTypedList;
   AObj: TObject;
@@ -183,7 +183,7 @@ begin
   end;
 end;
 
-class procedure TIupOrm.PersistRelationChildList(AMasterContext:IioContext; AMasterProperty:IioContextProperty);
+class procedure TIupOrm.PersistRelationChildList(const AMasterContext:IioContext; const AMasterProperty:IioContextProperty);
 begin
   // Redirect to the internal PersistCollection_Internal (same of PersistCollection)
   PersistCollection_Internal( AMasterProperty.GetRelationChildObject(AMasterContext.DataObject)  // The collection
@@ -192,8 +192,8 @@ begin
                             );
 end;
 
-class procedure TIupOrm.PersistRelationChildObject(AMasterContext: IioContext;
-  AMasterProperty: IioContextProperty);
+class procedure TIupOrm.PersistRelationChildObject(const AMasterContext: IioContext;
+  const AMasterProperty: IioContextProperty);
 var
   AObj: TObject;
   AContext: IioContext;
@@ -209,7 +209,7 @@ begin
                     );
 end;
 
-class procedure TIupOrm.PreProcessRelationChild(AContext: IioContext);
+class procedure TIupOrm.PreProcessRelationChild(const AContext: IioContext);
 var
   Prop: IioContextProperty;
 begin
@@ -232,7 +232,7 @@ begin
   end;
 end;
 
-class procedure TIupOrm.PostProcessRelationChild(AContext: IioContext);
+class procedure TIupOrm.PostProcessRelationChild(const AContext: IioContext);
 var
   Prop: IioContextProperty;
 begin
@@ -252,7 +252,7 @@ begin
   end;
 end;
 
-class procedure TIupOrm.PersistObject(AContext:IioContext; ARelationPropertyName:String=''; ARelationOID:Integer=0);
+class procedure TIupOrm.PersistObject(const AContext:IioContext; const ARelationPropertyName:String=''; const ARelationOID:Integer=0);
 begin
   Self.StartTransaction(AContext.GetConnectionDefName);
   try
@@ -311,17 +311,17 @@ begin
   Result := Self.Load<T>(ATypeAlias);
 end;
 
-class procedure TIupOrm.RollbackTransaction(AConnectionName:String);
+class procedure TIupOrm.RollbackTransaction(const AConnectionName:String);
 begin
   TioDBFactory.Connection(AConnectionName).Rollback;
 end;
 
-class procedure TIupOrm.StartTransaction(AConnectionName:String);
+class procedure TIupOrm.StartTransaction(const AConnectionName:String);
 begin
   TioDBFactory.Connection(AConnectionName).StartTransaction;
 end;
 
-class procedure TIupOrm.UpdateObject(AContext: IioContext);
+class procedure TIupOrm.UpdateObject(const AContext: IioContext);
 var
   AQuery: IioQuery;
 begin
@@ -334,7 +334,7 @@ begin
   TioDBCreatorFactory.GetDBCreator.AutoCreateDatabase;
 end;
 
-class procedure TIupOrm.CommitTransaction(AConnectionName:String);
+class procedure TIupOrm.CommitTransaction(const AConnectionName:String);
 begin
   TioDBFactory.Connection(AConnectionName).Commit;
 end;
@@ -344,7 +344,7 @@ begin
   Result := Self.GlobalFactory.DBFactory.ConnectionManager;
 end;
 
-class procedure TIupOrm.Delete(AObj: TObject);
+class procedure TIupOrm.Delete(const AObj: TObject);
 var
   AContext: IioContext;
 begin
@@ -356,12 +356,12 @@ begin
   Self.DeleteObject(AContext);
 end;
 
-class procedure TIupOrm.Delete(AIntfObj: IInterface);
+class procedure TIupOrm.Delete(const AIntfObj: IInterface);
 begin
   Self.Delete(AIntfObj as TObject);
 end;
 
-class procedure TIupOrm.DeleteObject(AContext: IioContext);
+class procedure TIupOrm.DeleteObject(const AContext: IioContext);
 begin
   // Create and execute query
   TioDbFactory.QueryEngine.GetQueryDelete(AContext).ExecSQL;
@@ -377,7 +377,7 @@ begin
   Result := TioGlobalFactory;
 end;
 
-class procedure TIupOrm.InsertObject(AContext: IioContext);
+class procedure TIupOrm.InsertObject(const AContext: IioContext);
 var
   AQuery: IioQuery;
   LastInsertID: Integer;
@@ -440,7 +440,6 @@ initialization
 
   // Initialize the dependency injection container
   TioDependencyInjectionContainer.Build;
-  TioViewModelShuttle.Build;
 
   // Register as default DuckTypedStreamObject invoker
   //  NB: L'ho messo qui perchè altrimenti nella unit dove è dichiarata la classe non

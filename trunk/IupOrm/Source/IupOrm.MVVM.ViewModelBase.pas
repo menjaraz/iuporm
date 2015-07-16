@@ -45,6 +45,8 @@ type
     function _Release: Integer; stdcall;
 // ---------------- End: section added for IInterface support ---------------
     procedure ioLoadViewData;
+    procedure SetMasterViewModel(AMasterViewModel: IioViewModel);
+    function GetMasterViewModel: IioViewModel;
   public
     { Public declarations }
 
@@ -176,6 +178,11 @@ begin
   Result := FIoMasterPropertyName;
 end;
 
+function TioViewModelBase.GetMasterViewModel: IioViewModel;
+begin
+  Result := FioMasterViewModel;
+end;
+
 function TioViewModelBase.GetTypeAlias: String;
 begin
   Result := FioTypeAlias;
@@ -274,6 +281,11 @@ begin
   FIoMasterPropertyName := Value;
 end;
 
+procedure TioViewModelBase.SetMasterViewModel(AMasterViewModel: IioViewModel);
+begin
+  FioMasterViewModel := AMasterViewModel;
+end;
+
 procedure TioViewModelBase.SetTypeAlias(const Value: String);
 begin
   FioTypeAlias := Value;
@@ -359,8 +371,6 @@ end;
 procedure TioViewModelBase.ioLoadViewData;
 var
   AObj: TObject;
-  ABindSourceAdapter: TBindSourceAdapter;
-  AActiveBindSourceAdapter: IioActiveBindSourceAdapter;
 begin
   // Checks
   if Assigned(FViewData) then
@@ -406,9 +416,6 @@ end;
 
 constructor TioViewModelBase.Create(const AMasterViewModelTypeName, AMasterViewModelTypeAlias,
   AMasterViewModelMasterPropertyName: String);
-var
-  AObj: TObject;
-  AMasterViewModel: IioViewModel;
 begin
   inherited Create(nil);
   FioMasterViewModelTypeName := AMasterViewModelTypeName;

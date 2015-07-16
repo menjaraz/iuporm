@@ -6,7 +6,25 @@ inherited paViewDataCedentePrestatoreType: TpaViewDataCedentePrestatoreType
     Top = 0
     Width = 809
     Height = 170
+    ParentCustomHint = False
     Align = alTop
+    BiDiMode = bdLeftToRight
+    DoubleBuffered = False
+    Color = clBtnFace
+    Ctl3D = True
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentBackground = False
+    ParentBiDiMode = False
+    ParentColor = False
+    ParentCtl3D = False
+    ParentDoubleBuffered = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = False
     TabOrder = 0
   end
   object BSCedentePrestatoreType: TioPrototypeBindSource
@@ -19,7 +37,7 @@ inherited paViewDataCedentePrestatoreType: TpaViewDataCedentePrestatoreType
     ioAutoPersist = False
     ioViewDataType = dtSingle
     ioAutoRefreshOnNotification = arEnabledNoReload
-    ioVM_Interface = 'IpaViewModelForDataView'
+    ioVM_Interface = 'IpaViewModelForViewData'
     ioVM_Alias = '1.2:CedentePrestatore'
     ioVM_UseBSPropsOnCreate = False
     Left = 616

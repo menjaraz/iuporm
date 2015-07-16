@@ -122,7 +122,7 @@ inherited paViewDataAnagraficaType: TpaViewDataAnagraficaType
     ioAutoPersist = False
     ioViewDataType = dtSingle
     ioAutoRefreshOnNotification = arEnabledNoReload
-    ioVM_Interface = 'IpaViewModelForDataView'
+    ioVM_Interface = 'IpaViewModelForViewData'
     ioVM_Alias = '1.2.1.3:Anagrafica'
     ioVM_UseBSPropsOnCreate = False
     Left = 624

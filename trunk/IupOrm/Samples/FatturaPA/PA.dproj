@@ -107,8 +107,8 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="PA.VM.ViewModelForMasterView.pas">
-            <Form>paViewModelForMasterView</Form>
+        <DCCReference Include="PA.VM.ViewModelForViewService.pas">
+            <Form>paViewModelForViewService</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
@@ -134,11 +134,6 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="PA.V.ViewDataProva.pas">
-            <Form>paViewDataProva</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
         <DCCReference Include="PA.V.ViewDataAnagraficaType.pas">
             <Form>paViewDataAnagraficaType</Form>
             <FormType>dfm</FormType>
@@ -159,20 +154,62 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="PA.V.FatturaElettronicaType.pas">
+        <DCCReference Include="PA.V.ViewDataFatturaElettronicaType.pas">
             <Form>paViewDataFatturaElettronicaType</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="PA.V.Master.pas">
-            <Form>paViewDataMaster</Form>
+        <DCCReference Include="PA.V.ViewService.pas">
+            <Form>paViewService</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="PA.VM.ViewModelForDataView.pas">
-            <Form>paViewModelForDataView</Form>
+        <DCCReference Include="PA.VM.ViewModelForViewData.pas">
+            <Form>paViewModelForViewdata</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="PA.U.DuckTyped.XMLList.pas"/>
+        <DCCReference Include="PA.U.DuckTyped.Interfaces.pas"/>
+        <DCCReference Include="PA.VM.ViewModelForViewContainer.pas">
+            <Form>paViewModelForViewContainer</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="PA.V.ViewContainer.pas">
+            <Form>paViewContainer</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="PA.V.ViewContainerTab.pas">
+            <Form>paViewContainerTab</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="PA.V.ViewContainerTabFatturaElettronicaBody.pas">
+            <Form>paViewContainerTabFatturaElettronicaBody</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="PA.V.ViewDataFatturaElettronicaBody.pas">
+            <Form>paViewDataFatturaElettronicaBody</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\TestParent\Frame.pas">
+            <Form>Frame1</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="PA.V.ViewDataDatiGeneraliType.pas">
+            <Form>paViewDataDatiGenerali</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="PA.V.ViewDataDatiGeneraliDocumentoType.pas">
+            <Form>paViewDataDatiGeneraliDocumento</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

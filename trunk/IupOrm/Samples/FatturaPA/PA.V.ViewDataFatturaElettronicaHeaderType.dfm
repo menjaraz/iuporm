@@ -14,6 +14,10 @@ inherited paViewDataFatturaElettronicaHeaderType: TpaViewDataFatturaElettronicaH
     object TabSheet2: TTabSheet
       Caption = 'Dati trasmissione'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
     object TabSheet1: TTabSheet
       Caption = 'Cedente/Prestatore'
@@ -22,7 +26,25 @@ inherited paViewDataFatturaElettronicaHeaderType: TpaViewDataFatturaElettronicaH
         Top = 0
         Width = 826
         Height = 341
+        ParentCustomHint = False
         Align = alTop
+        BiDiMode = bdLeftToRight
+        DoubleBuffered = False
+        Color = clBtnFace
+        Ctl3D = True
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentBackground = False
+        ParentBiDiMode = False
+        ParentColor = False
+        ParentCtl3D = False
+        ParentDoubleBuffered = False
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = False
         TabOrder = 0
         ExplicitWidth = 826
         inherited paViewDataDataAnagraficiCedenteType1: TpaViewDataDataAnagraficiCedenteType
@@ -34,210 +56,6 @@ inherited paViewDataFatturaElettronicaHeaderType: TpaViewDataFatturaElettronicaH
             inherited eIdCodice: TEdit
               Width = 612
               ExplicitWidth = 612
-            end
-            inherited eIdPaese: TComboBox
-              Text = 'Bitmap20'
-              Items.Strings = (
-                'Bitmap1'
-                'Bitmap1'
-                'Bitmap1'
-                'Bitmap1'
-                'Bitmap10'
-                'Bitmap10'
-                'Bitmap10'
-                'Bitmap10'
-                'Bitmap11'
-                'Bitmap11'
-                'Bitmap11'
-                'Bitmap11'
-                'Bitmap12'
-                'Bitmap12'
-                'Bitmap12'
-                'Bitmap12'
-                'Bitmap13'
-                'Bitmap13'
-                'Bitmap13'
-                'Bitmap13'
-                'Bitmap14'
-                'Bitmap14'
-                'Bitmap14'
-                'Bitmap14'
-                'Bitmap15'
-                'Bitmap15'
-                'Bitmap15'
-                'Bitmap15'
-                'Bitmap16'
-                'Bitmap16'
-                'Bitmap16'
-                'Bitmap16'
-                'Bitmap17'
-                'Bitmap17'
-                'Bitmap17'
-                'Bitmap17'
-                'Bitmap18'
-                'Bitmap18'
-                'Bitmap18'
-                'Bitmap18'
-                'Bitmap19'
-                'Bitmap19'
-                'Bitmap19'
-                'Bitmap19'
-                'Bitmap2'
-                'Bitmap2'
-                'Bitmap2'
-                'Bitmap2'
-                'Bitmap20'
-                'Bitmap20'
-                'Bitmap20'
-                'Bitmap20'
-                'Bitmap21'
-                'Bitmap21'
-                'Bitmap21'
-                'Bitmap21'
-                'Bitmap22'
-                'Bitmap22'
-                'Bitmap22'
-                'Bitmap22'
-                'Bitmap23'
-                'Bitmap23'
-                'Bitmap23'
-                'Bitmap23'
-                'Bitmap24'
-                'Bitmap24'
-                'Bitmap24'
-                'Bitmap24'
-                'Bitmap25'
-                'Bitmap25'
-                'Bitmap25'
-                'Bitmap25'
-                'Bitmap26'
-                'Bitmap26'
-                'Bitmap26'
-                'Bitmap26'
-                'Bitmap27'
-                'Bitmap27'
-                'Bitmap27'
-                'Bitmap27'
-                'Bitmap28'
-                'Bitmap28'
-                'Bitmap28'
-                'Bitmap28'
-                'Bitmap29'
-                'Bitmap29'
-                'Bitmap29'
-                'Bitmap29'
-                'Bitmap3'
-                'Bitmap3'
-                'Bitmap3'
-                'Bitmap3'
-                'Bitmap30'
-                'Bitmap30'
-                'Bitmap30'
-                'Bitmap30'
-                'Bitmap31'
-                'Bitmap31'
-                'Bitmap31'
-                'Bitmap31'
-                'Bitmap32'
-                'Bitmap32'
-                'Bitmap32'
-                'Bitmap32'
-                'Bitmap33'
-                'Bitmap33'
-                'Bitmap33'
-                'Bitmap33'
-                'Bitmap34'
-                'Bitmap34'
-                'Bitmap34'
-                'Bitmap34'
-                'Bitmap35'
-                'Bitmap35'
-                'Bitmap35'
-                'Bitmap35'
-                'Bitmap36'
-                'Bitmap36'
-                'Bitmap36'
-                'Bitmap36'
-                'Bitmap37'
-                'Bitmap37'
-                'Bitmap37'
-                'Bitmap37'
-                'Bitmap38'
-                'Bitmap38'
-                'Bitmap38'
-                'Bitmap38'
-                'Bitmap39'
-                'Bitmap39'
-                'Bitmap39'
-                'Bitmap39'
-                'Bitmap4'
-                'Bitmap4'
-                'Bitmap4'
-                'Bitmap4'
-                'Bitmap40'
-                'Bitmap40'
-                'Bitmap40'
-                'Bitmap40'
-                'Bitmap41'
-                'Bitmap41'
-                'Bitmap41'
-                'Bitmap41'
-                'Bitmap42'
-                'Bitmap42'
-                'Bitmap42'
-                'Bitmap42'
-                'Bitmap43'
-                'Bitmap43'
-                'Bitmap43'
-                'Bitmap43'
-                'Bitmap44'
-                'Bitmap44'
-                'Bitmap44'
-                'Bitmap44'
-                'Bitmap45'
-                'Bitmap45'
-                'Bitmap45'
-                'Bitmap45'
-                'Bitmap46'
-                'Bitmap46'
-                'Bitmap46'
-                'Bitmap46'
-                'Bitmap47'
-                'Bitmap47'
-                'Bitmap47'
-                'Bitmap47'
-                'Bitmap48'
-                'Bitmap48'
-                'Bitmap48'
-                'Bitmap48'
-                'Bitmap49'
-                'Bitmap49'
-                'Bitmap49'
-                'Bitmap49'
-                'Bitmap5'
-                'Bitmap5'
-                'Bitmap5'
-                'Bitmap5'
-                'Bitmap50'
-                'Bitmap50'
-                'Bitmap50'
-                'Bitmap50'
-                'Bitmap6'
-                'Bitmap6'
-                'Bitmap6'
-                'Bitmap6'
-                'Bitmap7'
-                'Bitmap7'
-                'Bitmap7'
-                'Bitmap7'
-                'Bitmap8'
-                'Bitmap8'
-                'Bitmap8'
-                'Bitmap8'
-                'Bitmap9'
-                'Bitmap9'
-                'Bitmap9'
-                'Bitmap9')
             end
           end
           inherited paViewDataAnagraficaType1: TpaViewDataAnagraficaType
@@ -254,18 +72,34 @@ inherited paViewDataFatturaElettronicaHeaderType: TpaViewDataFatturaElettronicaH
     object TabSheet3: TTabSheet
       Caption = 'Rappresentante fiscale'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
     object TabSheet4: TTabSheet
       Caption = 'Cessionario/Committente'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
     object TabSheet5: TTabSheet
       Caption = 'Terzo intermediario/Sogg. emittente'
       ImageIndex = 4
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
     object TabSheet6: TTabSheet
       Caption = 'Soggetto emittente'
       ImageIndex = 5
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
   end
   object BSFatturaElettronicaHeaderType: TioPrototypeBindSource
@@ -278,7 +112,7 @@ inherited paViewDataFatturaElettronicaHeaderType: TpaViewDataFatturaElettronicaH
     ioAutoPersist = False
     ioViewDataType = dtSingle
     ioAutoRefreshOnNotification = arEnabledNoReload
-    ioVM_Interface = 'IpaViewModelForDataView'
+    ioVM_Interface = 'IpaViewModelForViewData'
     ioVM_Alias = '1:FatturaElettronicaHeader'
     ioVM_UseBSPropsOnCreate = False
     Left = 620
