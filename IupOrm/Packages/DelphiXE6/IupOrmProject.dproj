@@ -144,8 +144,6 @@
         <DCCReference Include="FireDAC.dcp"/>
         <DCCReference Include="FireDACCommonDriver.dcp"/>
         <DCCReference Include="fmxFireDAC.dcp"/>
-        <DCCReference Include="vcl.dcp"/>
-        <DCCReference Include="vclFireDAC.dcp"/>
         <DCCReference Include="DbxCommonDriver.dcp"/>
         <DCCReference Include="soaprtl.dcp"/>
         <DCCReference Include="..\..\Source\IupOrm.Attributes.pas"/>
@@ -242,6 +240,8 @@
         <DCCReference Include="..\..\ExtLibs\DMVC\DuckPropFieldU.pas"/>
         <DCCReference Include="..\..\ExtLibs\DMVC\ObjMapper.pas"/>
         <DCCReference Include="..\..\ExtLibs\DMVC\ObjMapperAttributes.pas"/>
+        <DCCReference Include="..\..\Source\IupOrm.DependencyInjection.ViewModelShuttleContainer.pas"/>
+        <DCCReference Include="..\..\Source\IupOrm.DependencyInjection.Singletons.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -36,16 +36,6 @@ type
   // The common ancestor for all PrototypeBindSource components
   TioBaseBindSource = TBaseObjectBindSource;
 
-  // Bind source adapter container
-  IioDetailBindSourceAdaptersContainer = interface
-    ['{B374E226-D7A9-4A44-9BB6-DF85AC283598}']
-    procedure Free;
-    procedure SetMasterObject(AMasterObj: TObject);
-    function GetBindSourceAdapter(AOwner:TComponent; AMasterClassName:String; AMasterPropertyName:String): TBindSourceAdapter;
-    procedure Notify(Sender:TObject; ANotification:IioBSANotification);
-    procedure RemoveBindSourceAdapter(ABindSourceAdapter: IioContainedBindSourceAdapter);
-  end;
-
   IioActiveBindSourceAdapter = interface
     ['{F407B515-AE0B-48FD-B8C3-0D0C81774A58}']
     procedure Edit(AForce: Boolean = False);
@@ -62,6 +52,7 @@ type
     function GetDataObject: TObject;
     procedure SetDataObject(const AObj:TObject; const AOwnsObject:Boolean=True);
     procedure ClearDataObject;
+    function GetCurrentOID: Integer;
     // Current property
     function GetCurrent: TObject;
     property Current: TObject read GetCurrent;
@@ -69,6 +60,17 @@ type
     procedure SetioAutoPersist(const Value: Boolean);
     function GetioAutoPersist: Boolean;
     property ioAutoPersist:Boolean read GetioAutoPersist write SetioAutoPersist;
+  end;
+
+  // Bind source adapter container
+  IioDetailBindSourceAdaptersContainer = interface
+    ['{B374E226-D7A9-4A44-9BB6-DF85AC283598}']
+    procedure Free;
+    procedure SetMasterObject(AMasterObj: TObject);
+    function GetBindSourceAdapter(AOwner:TComponent; AMasterClassName:String; AMasterPropertyName:String): TBindSourceAdapter;
+    procedure Notify(Sender:TObject; ANotification:IioBSANotification);
+    procedure RemoveBindSourceAdapter(ABindSourceAdapter: IioContainedBindSourceAdapter);
+    function GetMasterBindSourceAdapter: IioActiveBindSourceAdapter;
   end;
 
   IioContainedBindSourceAdapter = interface

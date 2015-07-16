@@ -15,7 +15,6 @@ type
   private
     FWhereStr: String;
     FTypeName, FTypeAlias: String;
-    FUseObjStatus: Boolean;  // Not use directly, use UseObjStatus function or property even for internal use
     FLocalOwnsObject: Boolean;
     FAutoLoadData: Boolean;
     FAutoPersist: Boolean;
@@ -49,7 +48,7 @@ type
     function UseObjStatus: Boolean;
     procedure DoNotify(ANotification:IioBSANotification);
   public
-    constructor Create(const ATypeName, ATypeAlias, AWhereStr:String; const AOwner: TComponent; const AList:TObject; const AutoLoadData, AUseObjStatus: Boolean; const AOwnsObject: Boolean = True); overload;
+    constructor Create(const ATypeName, ATypeAlias, AWhereStr:String; const AOwner: TComponent; const AList:TObject; const AutoLoadData: Boolean; const AOwnsObject: Boolean = True); overload;
     destructor Destroy; override;
     procedure SetMasterAdapterContainer(AMasterAdapterContainer:IioDetailBindSourceAdaptersContainer);
     procedure SetMasterProperty(AMasterProperty: IioContextProperty);
@@ -65,6 +64,7 @@ type
     function GetDataObject: TObject;
     procedure SetDataObject(const AObj: TObject; const AOwnsObject:Boolean=True);
     procedure ClearDataObject;
+    function GetCurrentOID: Integer;
 
     property ioAutoPersist:Boolean read GetioAutoPersist write SetioAutoPersist;
     property ioOnNotify:TioBSANotificationEvent read FonNotify write FonNotify;
@@ -94,12 +94,11 @@ begin
 end;
 
 constructor TioActiveInterfaceListBindSourceAdapter.Create(const ATypeName, ATypeAlias, AWhereStr: String; const AOwner: TComponent;
-  const AList: TObject; const AutoLoadData, AUseObjStatus, AOwnsObject: Boolean);
+  const AList: TObject; const AutoLoadData, AOwnsObject: Boolean);
 begin
   FAutoPersist := True;
   FAutoLoadData := AutoLoadData;
   FReloadDataOnRefresh := True;
-  FUseObjStatus := AUseObjStatus;
   inherited Create(AOwner, AList, ATypeAlias, ATypeName, AOwnsObject);
   FLocalOwnsObject := AOwnsObject;
   FWhereStr := AWhereStr;
@@ -164,13 +163,9 @@ end;
 procedure TioActiveInterfaceListBindSourceAdapter.DoAfterPost;
 begin
   inherited;
-  // IF AutoPersist is enabled
-  if Self.FAutoPersist then
-  begin
-    if Self.UseObjStatus
-      then Self.SetObjStatus(osDirty)
-      else TIupOrm.Persist(Self.Current);
-  end;
+  Self.SetObjStatus(osDirty);
+  // If AutoPersist is enabled then persist
+  if Self.FAutoPersist then TIupOrm.Persist(Self.Current);
   // Send a notification to other ActiveBindSourceAdapters & BindSource
   Notify(
          Self,
@@ -187,15 +182,14 @@ end;
 procedure TioActiveInterfaceListBindSourceAdapter.DoBeforeDelete;
 begin
 inherited;
-  // IF AutoPersist is enabled
-  if Self.FAutoPersist then
+  // If ObjectStatus exists in the class then set it as osDirty
+  if Self.UseObjStatus then
   begin
-    if Self.UseObjStatus then
-    begin
-      Self.SetObjStatus(osDeleted);
-      Abort;
-    end else TIupOrm.Delete(Self.Current);
+    Self.SetObjStatus(osDeleted);
+    Abort;
   end;
+  // If AutoPersist is enabled then persist
+  if Self.FAutoPersist then TIupOrm.Delete(Self.Current);
 end;
 
 procedure TioActiveInterfaceListBindSourceAdapter.DoBeforeOpen;
@@ -262,6 +256,15 @@ begin
     then ADetailObj := ALazyLoadableObj.GetInternalObject;
   // Set it to the Adapter itself
   Self.SetDataObject(ADetailObj, False);  // 2° parameter false ABSOLUTELY!!!!!!!
+end;
+
+function TioActiveInterfaceListBindSourceAdapter.GetCurrentOID: Integer;
+var
+  AMap: IioMap;
+begin
+  // Create context for current child object
+  AMap := TioContextFactory.Map(Self.Current.ClassType);
+  Result := AMap.GetProperties.GetIdProperty.GetValue(Self.Current).AsInteger;
 end;
 
 function TioActiveInterfaceListBindSourceAdapter.GetDataObject: TObject;
@@ -406,7 +409,7 @@ end;
 
 function TioActiveInterfaceListBindSourceAdapter.UseObjStatus: Boolean;
 begin
-  Result := FUseObjStatus;
+  Result := TioContextFactory.Context(Self.Current.ClassName, nil, Self.Current).ObjStatusExist;
 end;
 
 function TioActiveInterfaceListBindSourceAdapter._AddRef: Integer;

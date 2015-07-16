@@ -8,7 +8,7 @@ uses FMX.ListView.Types, Data.Bind.Controls, System.Rtti, Data.Bind.GenData,
   System.Actions, FMX.ActnList, Data.Bind.Components, Data.Bind.Grid,
   Data.Bind.ObjectScope, IupOrm.LiveBindings.PrototypeBindSource, FMX.Edit,
   FMX.StdCtrls, FMX.Layouts, FMX.Grid, Fmx.Bind.Navigator, FMX.ListView,
-  FMX.Controls, FMX.Types, FMX.Forms;
+  FMX.Controls, FMX.Types, FMX.Forms, OWPinBindingManager;
 
 type
 
@@ -59,6 +59,7 @@ type
     LinkControlToField6: TLinkControlToField;
     Button8: TButton;
     Button9: TButton;
+    OWPinBindingManager1: TOWPinBindingManager;
     procedure FormCreate(Sender: TObject);
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);

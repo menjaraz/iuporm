@@ -39,7 +39,6 @@ begin
                    AOwner,
                    ASourceAdapter.GetCurrent,
                    False,
-                   ASourceAdapter.UseObjStatus,
                    False
                   );
   FSourceAdapter := ASourceAdapter;

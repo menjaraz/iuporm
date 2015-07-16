@@ -26,7 +26,7 @@ type
     FioMasterPropertyName: String;
     FioWhere: TStrings;
     FioAutoRefreshOnNotification: TioAutoRefreshType;
-    FioVM_Interface, FioVM_Alias: String;
+    FioVM_Interface, FioVM_Alias, FioVM_Marker: String;
     FioMasterVM_Interface, FioMasterVM_Alias: String;
     FioVM_UseBSPropsOnCreate: Boolean;
     FioViewModel: IioViewModel;
@@ -90,6 +90,7 @@ type
     property ioAutoRefreshOnNotification:TioAutoRefreshType read FioAutoRefreshOnNotification write FioAutoRefreshOnNotification;
     property ioVM_Interface:String read FioVM_Interface write FioVM_Interface;
     property ioVM_Alias:String read FioVM_Alias write FioVM_Alias;
+    property ioVM_Marker:String read FioVM_Marker write FioVM_Marker;
     property ioVM_UseBSPropsOnCreate:Boolean read FioVM_UseBSPropsOnCreate write FioVM_UseBSPropsOnCreate;
     property ioMasterVM_Interface:String read FioMasterVM_Interface write FioMasterVM_Interface;
     property ioMasterVM_Alias:String read FioMasterVM_Alias write FioMasterVM_Alias;
@@ -100,7 +101,8 @@ implementation
 uses
   System.SysUtils, IupOrm.Exceptions, IupOrm.RttiContext.Factory,
   IupOrm.Attributes, IupOrm.DependencyInjection, IupOrm,
-  IupOrm.Context.Container, IupOrm.LiveBindings.Factory;
+  IupOrm.Context.Container, IupOrm.LiveBindings.Factory,
+  IupOrm.DependencyInjection.ViewModelShuttleContainer;
 
 { TioPrototypeBindSource }
 
@@ -194,9 +196,10 @@ begin
   // If a LockedViewModel is present in the DIContainer (an external prepared ViewModel) and the BindSource is not
   //  a detail (is Master) then Get that ViewModel  , assign it to itself (and to the View later during its creating),
   //  and get the BindSourceAdapter from it.
-  if TioViewModelShuttle.Exist and not Self.IsDetail then
-    // Get the ViewModel
-    ioViewModel := TioViewModelShuttle.Get
+  if (not Self.IsDetail)
+  and TioViewModelShuttleContainer.TryGet(FioViewModel, FioVM_Marker)
+  then
+     // Nothing (non fa nulla)
   // ===============================================================================================================================
   // ===============================================================================================================================
   // VIEW MODEL FROM THE DEPENDENCY INJECTION CONTAINER
@@ -328,7 +331,8 @@ end;
 
 function TioPrototypeBindSource.GetIsDetail: Boolean;
 begin
-  Result := Assigned(FioMasterBindSource);
+  Result := Assigned(FioMasterBindSource)
+            or (   Assigned(Self.ioViewModel) and Assigned(Self.ioViewModel.ioMasterBindSource)   );
 end;
 
 function TioPrototypeBindSource.GetViewDataType: TioViewDataType;

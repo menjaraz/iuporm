@@ -3,8 +3,7 @@ unit PA.V.ViewData;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, PA.V.View, PA.V.Interfaces;
+  PA.V.View, PA.V.Interfaces;
 
 type
   TpaViewData = class(TpaView, IpaViewData)
@@ -13,9 +12,6 @@ type
   public
     { Public declarations }
   end;
-
-var
-  paViewData: TpaViewData;
 
 implementation
 

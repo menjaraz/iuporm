@@ -3,5 +3,42 @@ object paView: TpaView
   Top = 0
   Width = 429
   Height = 341
+  ParentCustomHint = False
+  BiDiMode = bdLeftToRight
+  DoubleBuffered = False
+  Color = clBtnFace
+  Ctl3D = True
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  ParentBackground = False
+  ParentBiDiMode = False
+  ParentColor = False
+  ParentCtl3D = False
+  ParentDoubleBuffered = False
+  ParentFont = False
+  ParentShowHint = False
+  ShowHint = False
   TabOrder = 0
+  object SidePanel: TPanel
+    Left = 0
+    Top = 0
+    Width = 25
+    Height = 341
+    Align = alLeft
+    BevelKind = bkFlat
+    BevelOuter = bvNone
+    Color = 14342874
+    ParentBackground = False
+    TabOrder = 0
+    object CheckBox1: TCheckBox
+      Left = 4
+      Top = 155
+      Width = 97
+      Height = 17
+      TabOrder = 0
+    end
+  end
 end

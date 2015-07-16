@@ -422,8 +422,7 @@ begin
         Self.GetSql(AContext.GetProperties, False),
         AOwner,
         TList<IInterface>.Create,
-        AAutoLoadData,
-        False)
+        AAutoLoadData)
     end
     // else if the master property type is a class...
     else
@@ -437,8 +436,7 @@ begin
         AOwner,
         TObjectList<TObject>.Create(AOwnsObject),
 //        TList<TObject>.Create,
-        AAutoLoadData,
-        False);
+        AAutoLoadData);
     end;
   finally
     // Destroy itself at the end to avoid memory leak
@@ -469,8 +467,7 @@ begin
         Self.GetSql(AContext.GetProperties, False),
         AOwner,
         nil,   // AObject:TObject
-        AAutoLoadData,  // AutoLoadData
-        AContext.ObjStatusExist);  // Use ObjStatus async persist
+        AAutoLoadData)  // AutoLoadData
     end
     // else if the master property type is a class...
     else
@@ -484,7 +481,6 @@ begin
         AOwner,
         nil,   // AObject:TObject
         AAutoLoadData,  // AutoLoadData := True
-        AContext.ObjStatusExist,  // Use ObjStatus async persist
         False);
     end;
   finally
@@ -1047,3 +1043,4 @@ begin
 end;
 
 end.
+

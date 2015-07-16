@@ -160,7 +160,7 @@ procedure TioContext.SetObjectStatus(AValue: TIupOrmObjectStatus);
 var
   PropValue: TValue;
 begin
-  // If ObjectStatus property non exist then exit
+  // If ObjectStatus property not exist then exit
   if not Self.GetProperties.ObjStatusExist then Exit;
   // If exist set the property value
   PropValue := TValue.From<TIupOrmObjectStatus>(AValue);

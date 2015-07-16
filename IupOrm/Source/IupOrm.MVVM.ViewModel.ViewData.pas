@@ -51,6 +51,9 @@ end;
 
 constructor TioViewData.Create(const ADataIntf: IInterface; const AViewDataType:TioViewDataType);
 begin
+  Create(ADataIntf as TObject, AViewDataType);
+{
+  // Create the BindSourceAdapter
   Self.Create(
     (ADataIntf as TObject).ClassName,  // TypeName
     '',  // TypeAlias
@@ -58,10 +61,14 @@ begin
     AViewDataType,  // ViewDataType
     False  // AutoLoadData
   );
+  // Set the DataObject
+  FBindSourceAdapter.SetDataObject(ADataIntf as TObject, False);  // OwnsObject = False for externally received objects
+}
 end;
 
 constructor TioViewData.Create(const ADataObj: TObject; const AViewDataType:TioViewDataType);
 begin
+  // Create the BindSourceAdapter
   Self.Create(
     ADataObj.ClassName,  // TypeName
     '',  // TypeAlias
@@ -69,6 +76,8 @@ begin
     AViewDataType,  // ViewDataType
     False  // AutoLoadData
   );
+  // Set the DataObject
+  FBindSourceAdapter.SetDataObject(ADataObj, False);  // OwnsObject = False for externally received objects
 end;
 
 constructor TioViewData.Create(const ABindSourceAdapter: IioActiveBindSourceAdapter);
