@@ -10,7 +10,10 @@ uses
 type
   TpaViewModelForViewContainer = class(TpaViewModelBase, IpaViewModelForViewContainer)
     acAdd: TAction;
+    acDelete: TAction;
     procedure acAddExecute(Sender: TObject);
+    procedure acDeleteExecute(Sender: TObject);
+    procedure acDeleteUpdate(Sender: TObject);
   private
     { Private declarations }
     FChildView_Interface, FChildView_Alias: String;
@@ -26,7 +29,9 @@ type
     procedure CheckChildViewsContainer;
     procedure ClearAllChildViews;
     procedure CreateAllChildViews;
-    procedure CreateChildView(const ADataObject:IInterface; const AContainedIndex:Integer);
+    procedure CreateChildView(const ADataObject:IInterface);
+    procedure DeleteSelectedChildViews;
+    function CanDelete: Boolean;
     // OnAfterOpen event handler for the BindSourceAdapter
     procedure OnAfterOpenEventHandler(Adapter: TBindSourceAdapter);
     // Property ChildView_Interface
@@ -44,7 +49,8 @@ type
   public
     { Public declarations }
     function ChildViews: IioList<IpaView>;
-    procedure Delete(const Index: Integer);
+    procedure UnselectAllChildViews;
+    procedure SelectChildView(AIndex:Integer);
     procedure SetOnAfterOpenEventHandler;
     // Property ChildView_Interface
     property ChildView_Interface:String read GetChildView_Interface write SetChildView_Interface;
@@ -75,7 +81,7 @@ begin
   // Create the new data object
   ADataObj := Self._Add;
   // Create a new View+VieModel for the new data object
-  Self.CreateChildView(ADataObj, Self._Count-1);
+  Self.CreateChildView(ADataObj);
   // Recalc the View layout because changes occours
   Self.ChildViewResized;
 end;
@@ -83,6 +89,29 @@ end;
 function TpaViewModelForViewContainer._Add: IInterface;
 begin
   Result := Self._CurrentDuck.Add;
+end;
+
+procedure TpaViewModelForViewContainer.acDeleteExecute(Sender: TObject);
+begin
+  inherited;
+  // Delete all selected views
+  Self.DeleteSelectedChildViews;
+end;
+
+procedure TpaViewModelForViewContainer.acDeleteUpdate(Sender: TObject);
+begin
+  inherited;
+  (Sender as TAction).Enabled := Self.CanDelete;
+end;
+
+function TpaViewModelForViewContainer.CanDelete: Boolean;
+var
+  AChildView: IpaView;
+begin
+  Result := False;
+  for AChildView in FChildViews do
+    if AChildView.Selected then
+      Exit(True);
 end;
 
 procedure TpaViewModelForViewContainer.CheckChildViewsContainer;
@@ -116,11 +145,11 @@ begin
     // Get the current child object as IInterface
     ACurrent := Self._GetItem(I);
     // Create the View+ViewModel
-    Self.CreateChildView(ACurrent, I);
+    Self.CreateChildView(ACurrent);
   end;
 end;
 
-procedure TpaViewModelForViewContainer.CreateChildView(const ADataObject:IInterface; const AContainedIndex:Integer);
+procedure TpaViewModelForViewContainer.CreateChildView(const ADataObject:IInterface);
 var
   AViewObj: TObject;
   AView: IpaView;
@@ -131,14 +160,13 @@ begin
   // New level for singleton lifetime manager
   TIupOrm.DependencyInjection.Singletons.NextLevel;
   try
-    // Get the child ViewModel and set the ContainedIndex
+    // Get the child ViewModel
     AViewModel := TIupOrm.DependencyInjection
                          .Locate(FChildVM_Interface, FChildVM_Alias)
                          .ConstructorMarker('CreateByDataInterface')
                          .ConstructorParams([TValue.From<IInterface>(ADataObject), TValue.From<TioViewDataType>(dtSingle)])
                          .Get
                          .ioAsInterface<IpaViewModel>;
-    AViewModel.ContainedIndex := AContainedIndex;
     // Get the child View
     AView := TIupOrm.DependencyInjection
                     .Locate(FChildView_Interface, FChildView_Alias)
@@ -160,10 +188,14 @@ begin
     raise Exception.Create(Self.ClassName + ': IInterface not implemented.');
 end;
 
-procedure TpaViewModelForViewContainer.Delete(const Index: Integer);
+procedure TpaViewModelForViewContainer.DeleteSelectedChildViews;
+var
+  I: Integer;
 begin
-  // Delete the data object
-  Self._Delete(Index);
+  // Loop for all selected views and delete it
+  for I := FChildViews.Count-1 downto 0 do
+    if FChildViews.Items[I].Selected then
+      Self._Delete(I);
   // Recreate the View+ViewModel list
   Self.CreateAllChildViews;
   // Recalc the View layout because changes occours
@@ -199,6 +231,11 @@ begin
   Self.ChildViewResized;
 end;
 
+procedure TpaViewModelForViewContainer.SelectChildView(AIndex: Integer);
+begin
+  FChildViews[AIndex].Selected := True;
+end;
+
 procedure TpaViewModelForViewContainer.SetChildView_Alias(AValue: String);
 begin
   FChildView_Alias := AValue;
@@ -222,6 +259,14 @@ end;
 procedure TpaViewModelForViewContainer.SetOnAfterOpenEventHandler;
 begin
   Self.ViewData.BindSourceAdapter.AfterOpen := OnAfterOpenEventHandler
+end;
+
+procedure TpaViewModelForViewContainer.UnselectAllChildViews;
+var
+  AChildView: IpaView;
+begin
+  for AChildView in FChildViews do
+    AChildView.Selected := False;
 end;
 
 function TpaViewModelForViewContainer._CurrentDuck: IDuckTypedXMLList;

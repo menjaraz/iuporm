@@ -1,25 +1,21 @@
 inherited paViewContainerTab: TpaViewContainerTab
-  Width = 878
   Height = 519
-  ExplicitWidth = 878
   ExplicitHeight = 519
-  object ChildsArea: TPageControl [0]
-    Left = 25
-    Top = 19
-    Width = 853
+  inherited LeftSidePanel: TPanel
     Height = 500
-    Align = alClient
-    TabOrder = 0
-    ExplicitLeft = 209
-    ExplicitTop = 176
+    ExplicitHeight = 500
   end
-  inherited Panel1: TPanel
-    Width = 878
-    TabOrder = 1
-    ExplicitWidth = 878
-  end
-  inherited SidePanel: TPanel
+  inherited WorkSpace: TScrollBox
     Height = 500
-    TabOrder = 2
+    ExplicitHeight = 500
+    object ChildsArea: TPageControl
+      Left = 0
+      Top = 0
+      Width = 783
+      Height = 500
+      Align = alClient
+      TabOrder = 0
+      OnChange = ChildsAreaChange
+    end
   end
 end

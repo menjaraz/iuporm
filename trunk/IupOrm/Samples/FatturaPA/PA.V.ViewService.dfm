@@ -3,7 +3,12 @@ inherited paViewService: TpaViewService
   Height = 593
   ExplicitWidth = 931
   ExplicitHeight = 593
-  object PanelTools: TPanel
+  inherited LeftSidePanel: TPanel
+    Top = 41
+    Height = 552
+    TabOrder = 2
+  end
+  object PanelTools: TPanel [1]
     Left = 0
     Top = 0
     Width = 931
@@ -43,21 +48,13 @@ inherited paViewService: TpaViewService
       TabOrder = 3
     end
   end
-  object ClientArea: TPanel
-    Left = 0
+  inherited WorkSpace: TScrollBox
     Top = 41
-    Width = 931
+    Width = 914
     Height = 552
-    Align = alClient
-    BevelOuter = bvNone
-    Caption = 'Nessuna fattura caricata'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clGray
-    Font.Height = -13
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 1
+    ExplicitTop = 41
+    ExplicitWidth = 914
+    ExplicitHeight = 552
   end
   object BSService: TioPrototypeBindSource
     AutoActivate = True

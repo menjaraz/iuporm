@@ -1,54 +1,13 @@
 inherited paViewDataDataAnagraficiCedenteType: TpaViewDataDataAnagraficiCedenteType
-  Width = 809
-  Height = 170
-  ExplicitWidth = 809
-  ExplicitHeight = 170
-  object Label2: TLabel
-    Left = 11
-    Top = 119
-    Width = 67
-    Height = 13
-    Caption = 'Codice Fiscale'
-  end
-  object Label1: TLabel
-    Left = 11
-    Top = 146
-    Width = 88
-    Height = 13
-    Caption = 'Albo professionale'
-  end
-  object Label5: TLabel
-    Left = 259
-    Top = 146
-    Width = 49
-    Height = 13
-    Caption = 'Prov. albo'
-  end
-  object Label3: TLabel
-    Left = 387
-    Top = 146
-    Width = 65
-    Height = 13
-    Caption = 'N'#176' iscriz. albo'
-  end
-  object Label4: TLabel
-    Left = 611
-    Top = 146
-    Width = 76
-    Height = 13
-    Caption = 'Data iscriz. albo'
-  end
-  object Label6: TLabel
-    Left = 342
-    Top = 119
-    Width = 68
-    Height = 13
-    Caption = 'Regime fiscale'
-  end
-  inline paViewDataIdFiscaleType1: TpaViewDataIdFiscaleType
+  Width = 451
+  Height = 305
+  Align = alClient
+  ExplicitWidth = 451
+  ExplicitHeight = 305
+  inline paViewDataIdFiscaleType1: TpaViewDataIdFiscaleType [0]
     Left = 0
     Top = 0
-    Width = 809
+    Width = 451
     Height = 28
     ParentCustomHint = False
     Align = alTop
@@ -69,17 +28,136 @@ inherited paViewDataDataAnagraficiCedenteType: TpaViewDataDataAnagraficiCedenteT
     ParentFont = False
     ParentShowHint = False
     ShowHint = False
-    TabOrder = 0
-    ExplicitWidth = 809
-    inherited eIdCodice: TEdit
-      Width = 595
-      ExplicitWidth = 595
+    TabOrder = 2
+    ExplicitHeight = 28
+    inherited LeftSidePanel: TPanel
+      Height = 28
+    end
+    inherited WorkSpace: TScrollBox
+      Height = 28
+      ExplicitHeight = 28
+    end
+    inherited BindingsList1: TBindingsList
+      inherited LinkControlToField2: TLinkControlToField
+        Control = nil
+      end
+    end
+  end
+  inherited LeftSidePanel: TPanel [1]
+    Top = 110
+    Height = 195
+    ExplicitTop = 110
+    ExplicitHeight = 195
+  end
+  inherited WorkSpace: TScrollBox
+    Top = 110
+    Width = 434
+    Height = 195
+    TabOrder = 3
+    ExplicitTop = 110
+    ExplicitWidth = 434
+    ExplicitHeight = 195
+    object Label2: TLabel
+      Left = 11
+      Top = 5
+      Width = 67
+      Height = 13
+      Caption = 'Codice Fiscale'
+    end
+    object Label6: TLabel
+      Left = 342
+      Top = 5
+      Width = 68
+      Height = 13
+      Caption = 'Regime fiscale'
+    end
+    object Label1: TLabel
+      Left = 11
+      Top = 32
+      Width = 88
+      Height = 13
+      Caption = 'Albo professionale'
+    end
+    object Label5: TLabel
+      Left = 256
+      Top = 32
+      Width = 49
+      Height = 13
+      Caption = 'Prov. albo'
+    end
+    object Label3: TLabel
+      Left = 383
+      Top = 32
+      Width = 65
+      Height = 13
+      Caption = 'N'#176' iscriz. albo'
+    end
+    object Label4: TLabel
+      Left = 592
+      Top = 32
+      Width = 76
+      Height = 13
+      Caption = 'Data iscriz. albo'
+    end
+    object eCodiceFiscale: TEdit
+      Left = 89
+      Top = 2
+      Width = 244
+      Height = 21
+      MaxLength = 80
+      TabOrder = 0
+      Text = 'Bitmap28'
+    end
+    object eRegimeFiscale: TEdit
+      Left = 420
+      Top = 2
+      Width = 69
+      Height = 21
+      MaxLength = 80
+      TabOrder = 1
+      Text = 'Bitmap28'
+    end
+    object eAlboProfessionale: TEdit
+      Left = 105
+      Top = 29
+      Width = 136
+      Height = 21
+      MaxLength = 80
+      TabOrder = 2
+      Text = 'Bitmap28'
+    end
+    object eProvinciaAlbo: TEdit
+      Left = 313
+      Top = 29
+      Width = 53
+      Height = 21
+      MaxLength = 17
+      TabOrder = 3
+      Text = 'Bitmap28'
+    end
+    object eNumIscrizAlbo: TEdit
+      Left = 454
+      Top = 29
+      Width = 127
+      Height = 21
+      MaxLength = 17
+      TabOrder = 4
+      Text = 'Bitmap28'
+    end
+    object eDataIscrizAlbo: TEdit
+      Left = 672
+      Top = 29
+      Width = 106
+      Height = 21
+      MaxLength = 17
+      TabOrder = 5
+      Text = '01/11/2015'
     end
   end
   inline paViewDataAnagraficaType1: TpaViewDataAnagraficaType
     Left = 0
     Top = 28
-    Width = 809
+    Width = 451
     Height = 82
     ParentCustomHint = False
     Align = alTop
@@ -102,65 +180,22 @@ inherited paViewDataDataAnagraficiCedenteType: TpaViewDataDataAnagraficiCedenteT
     ShowHint = False
     TabOrder = 1
     ExplicitTop = 28
-    ExplicitWidth = 809
-    inherited eDenominazione: TEdit
-      Width = 711
-      ExplicitWidth = 711
+    ExplicitHeight = 82
+    inherited LeftSidePanel: TPanel
+      Height = 82
+      ExplicitHeight = 82
     end
-  end
-  object eCodiceFiscale: TEdit
-    Left = 89
-    Top = 116
-    Width = 244
-    Height = 21
-    MaxLength = 80
-    TabOrder = 2
-    Text = 'Bitmap28'
-  end
-  object eAlboProfessionale: TEdit
-    Left = 105
-    Top = 143
-    Width = 136
-    Height = 21
-    MaxLength = 80
-    TabOrder = 3
-    Text = 'Bitmap28'
-  end
-  object eProvinciaAlbo: TEdit
-    Left = 316
-    Top = 143
-    Width = 53
-    Height = 21
-    MaxLength = 17
-    TabOrder = 4
-    Text = 'Bitmap28'
-  end
-  object eNumIscrizAlbo: TEdit
-    Left = 458
-    Top = 143
-    Width = 127
-    Height = 21
-    MaxLength = 17
-    TabOrder = 5
-    Text = 'Bitmap28'
-  end
-  object eDataIscrizAlbo: TEdit
-    Left = 693
-    Top = 143
-    Width = 107
-    Height = 21
-    MaxLength = 17
-    TabOrder = 6
-    Text = '01/11/2015'
-  end
-  object eRegimeFiscale: TEdit
-    Left = 420
-    Top = 116
-    Width = 69
-    Height = 21
-    MaxLength = 80
-    TabOrder = 7
-    Text = 'Bitmap28'
+    inherited WorkSpace: TScrollBox
+      Height = 82
+      ExplicitHeight = 82
+      DesignSize = (
+        434
+        82)
+      inherited eDenominazione: TEdit
+        Width = 1038
+        ExplicitWidth = 1038
+      end
+    end
   end
   object BSDatiAnagraficiCedenteType: TioPrototypeBindSource
     AutoActivate = True
@@ -214,46 +249,46 @@ inherited paViewDataDataAnagraficiCedenteType: TpaViewDataDataAnagraficiCedenteT
     OutputConverters = <>
     Left = 20
     Top = 5
-    object LinkControlToField1: TLinkControlToField
+    object LinkControlToField7: TLinkControlToField
       Category = 'Quick Bindings'
       DataSource = BSDatiAnagraficiCedenteType
       FieldName = 'CodiceFiscale'
       Control = eCodiceFiscale
       Track = True
     end
-    object LinkControlToField2: TLinkControlToField
-      Category = 'Quick Bindings'
-      DataSource = BSDatiAnagraficiCedenteType
-      FieldName = 'AlboProfessionale'
-      Control = eAlboProfessionale
-      Track = True
-    end
-    object LinkControlToField3: TLinkControlToField
-      Category = 'Quick Bindings'
-      DataSource = BSDatiAnagraficiCedenteType
-      FieldName = 'ProvinciaAlbo'
-      Control = eProvinciaAlbo
-      Track = True
-    end
-    object LinkControlToField4: TLinkControlToField
-      Category = 'Quick Bindings'
-      DataSource = BSDatiAnagraficiCedenteType
-      FieldName = 'NumeroIscrizioneAlbo'
-      Control = eNumIscrizAlbo
-      Track = True
-    end
-    object LinkControlToField5: TLinkControlToField
+    object LinkControlToField8: TLinkControlToField
       Category = 'Quick Bindings'
       DataSource = BSDatiAnagraficiCedenteType
       FieldName = 'DataIscrizioneAlbo'
       Control = eDataIscrizAlbo
       Track = True
     end
-    object LinkControlToField6: TLinkControlToField
+    object LinkControlToField9: TLinkControlToField
       Category = 'Quick Bindings'
       DataSource = BSDatiAnagraficiCedenteType
       FieldName = 'RegimeFiscale'
       Control = eRegimeFiscale
+      Track = True
+    end
+    object LinkControlToField10: TLinkControlToField
+      Category = 'Quick Bindings'
+      DataSource = BSDatiAnagraficiCedenteType
+      FieldName = 'NumeroIscrizioneAlbo'
+      Control = eNumIscrizAlbo
+      Track = True
+    end
+    object LinkControlToField11: TLinkControlToField
+      Category = 'Quick Bindings'
+      DataSource = BSDatiAnagraficiCedenteType
+      FieldName = 'AlboProfessionale'
+      Control = eAlboProfessionale
+      Track = True
+    end
+    object LinkControlToField12: TLinkControlToField
+      Category = 'Quick Bindings'
+      DataSource = BSDatiAnagraficiCedenteType
+      FieldName = 'ProvinciaAlbo'
+      Control = eProvinciaAlbo
       Track = True
     end
   end

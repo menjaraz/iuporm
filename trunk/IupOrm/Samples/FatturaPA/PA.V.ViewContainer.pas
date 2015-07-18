@@ -4,13 +4,15 @@ interface
 
 uses
   PA.V.ViewData, PA.V.Interfaces, Vcl.ExtCtrls, Vcl.StdCtrls, System.Classes, Vcl.Controls,
-  IupOrm.Attributes;
+  IupOrm.Attributes, Vcl.Forms, Vcl.Buttons;
 
 type
   TpaViewContainer = class(TpaViewData, IpaViewContainer)
     Panel1: TPanel;
     [ioAction('acAdd')]
-    ButtonAdd: TButton;
+    ButtonAdd: TSpeedButton;
+    [ioAction('acDelete')]
+    ButtonDelete: TSpeedButton;
   private
     { Private declarations }
   public

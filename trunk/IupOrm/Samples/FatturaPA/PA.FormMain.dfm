@@ -40,15 +40,18 @@ object MainForm: TMainForm
     TabOrder = 0
     ExplicitWidth = 943
     ExplicitHeight = 610
+    inherited LeftSidePanel: TPanel
+      Height = 569
+    end
+    inherited WorkSpace: TScrollBox
+      Width = 926
+      Height = 569
+      ExplicitWidth = 926
+      ExplicitHeight = 569
+    end
     inherited PanelTools: TPanel
       Width = 943
       ExplicitWidth = 943
-    end
-    inherited ClientArea: TPanel
-      Width = 943
-      Height = 569
-      ExplicitWidth = 943
-      ExplicitHeight = 569
     end
     inherited BSService: TioPrototypeBindSource
       ioOnNeedViewModel = paViewService1BSServiceioOnNeedViewModel

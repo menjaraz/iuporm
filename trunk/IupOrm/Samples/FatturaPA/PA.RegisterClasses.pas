@@ -16,7 +16,7 @@ uses
   IupOrm.MVVM.Interfaces, System.Rtti, fatturapa_v11, PA.VM.ViewModelForViewData,
   PA.U.DuckTyped.XMLList, PA.U.DuckTyped.Interfaces, IupOrm.Containers.List, IupOrm.Containers.Interfaces,
   PA.V.Interfaces, PA.VM.ViewModelForViewContainer, PA.V.ViewDataFatturaElettronicaBody,
-  Unit1, Vcl.Controls, PA.V.ViewDataFatturaElettronicaType;
+  Vcl.Controls, PA.V.ViewDataFatturaElettronicaType;
 
 { TDIClassRegister }
 
@@ -49,7 +49,12 @@ begin
   // VIEWS REGISTRATION
   // ------------------------------------------------
   TIupOrm.DependencyInjection.RegisterClass<TpaViewDataFatturaElettronicaType>.Implements<IpaViewData>('0:FatturaElettronica').AsSingleton.Execute;
-  TIupOrm.DependencyInjection.RegisterClass<TpaViewDataFatturaElettronicaBody>.Implements<IpaViewData>('2:FatturaElettronicaBody').AsSingleton.Execute;
+  // Fattura elettronica body view
+  TIupOrm.DependencyInjection.
+    RegisterClass<TpaViewDataFatturaElettronicaBody>.
+    Implements<IpaViewData>('2:FatturaElettronicaBody').
+//    InjectProperty('SelectedVisible', True).
+    AsSingleton.Execute;
   // ================================================
 
 

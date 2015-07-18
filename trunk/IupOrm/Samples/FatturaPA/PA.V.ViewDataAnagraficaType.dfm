@@ -1,91 +1,101 @@
 inherited paViewDataAnagraficaType: TpaViewDataAnagraficaType
-  Width = 836
-  Height = 82
-  ExplicitWidth = 836
-  ExplicitHeight = 82
-  DesignSize = (
-    836
-    82)
-  object Label2: TLabel
-    Left = 11
-    Top = 6
-    Width = 72
-    Height = 13
-    Caption = 'Denominazione'
+  Width = 451
+  Height = 305
+  Align = alClient
+  ExplicitWidth = 451
+  ExplicitHeight = 305
+  inherited LeftSidePanel: TPanel
+    Height = 305
   end
-  object Label3: TLabel
-    Left = 11
-    Top = 33
-    Width = 27
-    Height = 13
-    Caption = 'Nome'
-  end
-  object Label4: TLabel
-    Left = 363
-    Top = 33
-    Width = 45
-    Height = 13
-    Caption = 'Cognome'
-  end
-  object Label1: TLabel
-    Left = 11
-    Top = 60
-    Width = 26
-    Height = 13
-    Caption = 'Titolo'
-  end
-  object Label5: TLabel
-    Left = 363
-    Top = 60
-    Width = 51
-    Height = 13
-    Caption = 'Cod. EORI'
-  end
-  object eDenominazione: TEdit
-    Left = 89
-    Top = 3
-    Width = 738
-    Height = 21
-    Anchors = [akLeft, akTop, akRight]
-    MaxLength = 80
-    TabOrder = 0
-    Text = 'Bitmap28'
-  end
-  object eNome: TEdit
-    Left = 89
-    Top = 30
-    Width = 244
-    Height = 21
-    MaxLength = 60
-    TabOrder = 1
-    Text = 'Bitmap28'
-  end
-  object eCognome: TEdit
-    Left = 420
-    Top = 30
-    Width = 285
-    Height = 21
-    MaxLength = 60
-    TabOrder = 2
-    Text = 'Bitmap28'
-  end
-  object eTitolo: TEdit
-    Left = 89
-    Top = 57
-    Width = 244
-    Height = 21
-    MaxLength = 10
-    TabOrder = 3
-    Text = 'Bitmap28'
-  end
-  object eCodEORI: TEdit
-    Left = 420
-    Top = 57
-    Width = 265
-    Height = 21
-    MaxLength = 17
-    TabOrder = 4
-    Text = 'Bitmap28'
+  inherited WorkSpace: TScrollBox
+    Width = 434
+    Height = 305
+    ExplicitWidth = 434
+    ExplicitHeight = 305
+    DesignSize = (
+      434
+      305)
+    object Label2: TLabel
+      Left = 11
+      Top = 6
+      Width = 72
+      Height = 13
+      Caption = 'Denominazione'
+    end
+    object Label3: TLabel
+      Left = 11
+      Top = 33
+      Width = 27
+      Height = 13
+      Caption = 'Nome'
+    end
+    object Label1: TLabel
+      Left = 11
+      Top = 60
+      Width = 26
+      Height = 13
+      Caption = 'Titolo'
+    end
+    object Label4: TLabel
+      Left = 363
+      Top = 33
+      Width = 45
+      Height = 13
+      Caption = 'Cognome'
+    end
+    object Label5: TLabel
+      Left = 363
+      Top = 60
+      Width = 51
+      Height = 13
+      Caption = 'Cod. EORI'
+    end
+    object eDenominazione: TEdit
+      Left = 89
+      Top = 3
+      Width = 340
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      MaxLength = 80
+      TabOrder = 0
+      Text = 'Bitmap28'
+    end
+    object eNome: TEdit
+      Left = 89
+      Top = 30
+      Width = 244
+      Height = 21
+      MaxLength = 60
+      TabOrder = 1
+      Text = 'Bitmap28'
+    end
+    object eTitolo: TEdit
+      Left = 89
+      Top = 57
+      Width = 244
+      Height = 21
+      MaxLength = 10
+      TabOrder = 2
+      Text = 'Bitmap28'
+    end
+    object eCognome: TEdit
+      Left = 420
+      Top = 30
+      Width = 285
+      Height = 21
+      MaxLength = 60
+      TabOrder = 3
+      Text = 'Bitmap28'
+    end
+    object eCodEORI: TEdit
+      Left = 420
+      Top = 57
+      Width = 265
+      Height = 21
+      MaxLength = 17
+      TabOrder = 4
+      Text = 'Bitmap28'
+    end
   end
   object BSAnagraficaType: TioPrototypeBindSource
     AutoActivate = True
@@ -131,7 +141,7 @@ inherited paViewDataAnagraficaType: TpaViewDataAnagraficaType
   object BindingsList1: TBindingsList
     Methods = <>
     OutputConverters = <>
-    Left = 724
+    Left = 220
     Top = 29
     object LinkControlToField1: TLinkControlToField
       Category = 'Quick Bindings'

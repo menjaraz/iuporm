@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, PA.V.ViewData, Vcl.ComCtrls, PA.V.View, PA.V.ViewDataFatturaElettronicaHeaderType,
   Data.Bind.Components, Data.Bind.ObjectScope, IupOrm.LiveBindings.PrototypeBindSource, Vcl.Bind.GenData, Vcl.StdCtrls, System.Rtti,
   System.Bindings.Outputs, Vcl.Bind.Editors, Data.Bind.EngExt, Vcl.Bind.DBEngExt, PA.V.ViewContainer, PA.V.ViewContainerTab,
-  PA.V.ViewContainerTabFatturaElettronicaBody;
+  PA.V.ViewContainerTabFatturaElettronicaBody, Vcl.ExtCtrls;
 
 type
   TpaViewDataFatturaElettronicaType = class(TpaViewData)
