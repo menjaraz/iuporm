@@ -9,8 +9,10 @@ uses
 
 type
   TpaView = class(TFrame, IpaView)
-    SidePanel: TPanel;
-    CheckBox1: TCheckBox;
+    LeftSidePanel: TPanel;
+    CheckBoxViewSelection: TCheckBox;
+    WorkSpace: TScrollBox;
+    procedure LeftSidePanelResize(Sender: TObject);
   private
     { Private declarations }
     function GetHeight: Integer;
@@ -18,6 +20,12 @@ type
     procedure SetBSOnNeedViewModelEventHandler;
     // Event handler for all TioPrototypeBindSources
     procedure BSOnNeedViewModel(Sender: TioPrototypeBindSource; var AViewModel: IioViewModel);
+    // LeftSidePanelVisible property
+    function GetSelectedVisible: Boolean;
+    procedure SetSelectedVisible(const Value: Boolean);
+    // Selected property
+    function GetSelected: Boolean;
+    procedure SetSelected(const Value: Boolean);
   protected
     // Get the TioPrototypeBindSource of the view
     function GetBindSource: TioPrototypeBindSource;
@@ -35,6 +43,10 @@ type
     constructor Create(AOwner: TComponent); override;
     // Parent property
     property Parent: TWinControl read GetParent write SetParent;
+    // LeftSidePanelVisible property
+    property SelectedVisible:Boolean read GetSelectedVisible write SetSelectedVisible;
+    // Selected property
+    property Selected:Boolean read GetSelected write SetSelected;
   end;
 
 implementation
@@ -51,6 +63,8 @@ begin
   inherited;
   // Set the Viewmodel anonimous method for size recalculation of the view itself.
   SetBSOnNeedViewModelEventHandler;
+  // LeftSidePanel not visible by default
+  SelectedVisible := False;
 end;
 
 function TpaView.GetBindSource: TioPrototypeBindSource;
@@ -81,9 +95,19 @@ begin
   Result := inherited Height;
 end;
 
+function TpaView.GetSelectedVisible: Boolean;
+begin
+  Result := LeftSidePanel.Visible;
+end;
+
 function TpaView.GetParent: TWinControl;
 begin
   Result := inherited Parent;
+end;
+
+function TpaView.GetSelected: Boolean;
+begin
+  Result := CheckBoxViewSelection.Checked;
 end;
 
 function TpaView.GetViewModel: IpaViewModel;
@@ -103,6 +127,21 @@ procedure TpaView.SetBSOnNeedViewModelEventHandler;
 begin
   if Self.GetBindSource <> nil then
     Self.GetBindSource.ioOnNeedViewModel := BSOnNeedViewModel;
+end;
+
+procedure TpaView.SetSelectedVisible(const Value: Boolean);
+begin
+  LeftSidePanel.Visible := Value;
+end;
+
+procedure TpaView.SetSelected(const Value: Boolean);
+begin
+  CheckBoxViewSelection.Checked := Value;
+end;
+
+procedure TpaView.LeftSidePanelResize(Sender: TObject);
+begin
+  CheckBoxViewSelection.Top := ((Sender as TPanel).Height - CheckBoxViewSelection.Height) div 2;
 end;
 
 procedure TpaView.BSOnNeedViewModel(Sender: TioPrototypeBindSource; var AViewModel: IioViewModel);

@@ -29,7 +29,6 @@ uses
   PA.V.ViewContainerTab in 'PA.V.ViewContainerTab.pas' {paViewContainerTab: TFrame},
   PA.V.ViewContainerTabFatturaElettronicaBody in 'PA.V.ViewContainerTabFatturaElettronicaBody.pas' {paViewContainerTabFatturaElettronicaBody: TFrame},
   PA.V.ViewDataFatturaElettronicaBody in 'PA.V.ViewDataFatturaElettronicaBody.pas' {paViewDataFatturaElettronicaBody: TFrame},
-  Frame in '..\TestParent\Frame.pas' {Frame1: TFrame},
   PA.V.ViewDataDatiGeneraliType in 'PA.V.ViewDataDatiGeneraliType.pas' {paViewDataDatiGenerali: TFrame},
   PA.V.ViewDataDatiGeneraliDocumentoType in 'PA.V.ViewDataDatiGeneraliDocumentoType.pas' {paViewDataDatiGeneraliDocumento: TFrame};
 

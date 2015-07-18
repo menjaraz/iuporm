@@ -21,6 +21,14 @@ type
     // Handle property
     function GetHandle: HWND;
     property Handle: HWND read GetHandle;
+    // LeftSidePanelVisible property
+    function GetSelectedVisible: Boolean;
+    procedure SetSelectedVisible(const Value: Boolean);
+    property SelectedVisible:Boolean read GetSelectedVisible write SetSelectedVisible;
+    // Selected property
+    function GetSelected: Boolean;
+    procedure SetSelected(const Value: Boolean);
+    property Selected:Boolean read GetSelected write SetSelected;
   end;
 
   // Interface for any view containing data

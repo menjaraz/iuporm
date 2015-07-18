@@ -1,34 +1,46 @@
-﻿[Label5]
-Coordinates=154,420,46,51
-
-[eNumero]
-Coordinates=255,343,58,51
-
-[Label1]
-Coordinates=10,420,46,51
-
-[Label7]
-Coordinates=82,420,46,51
-
-[Label6]
-Coordinates=226,420,46,51
-
-[BSDatiGeneraliDocumento]
-Coordinates=10,140,145,123
+﻿[BSDatiGeneraliDocumento]
+Coordinates=10,143,169,146
 Visible=True
 
 []
-Coordinates=466,10,50,51
+Coordinates=255,343,58,51
 
 [BindingsList1]
 Coordinates=367,153,91,36
 
-[eTipoDocumento]
-Coordinates=235,10,98,51
+[SidePanel]
+Coordinates=89,448,73,58
 
-[eDivisa]
-Coordinates=259,121,50,51
+[CheckBoxViewSelection]
+Coordinates=188,448,154,58
+
+[Label6]
+Coordinates=10,448,53,58
+
+[eNumero]
+Coordinates=282,128,67,58
+
+[Label1]
+Coordinates=368,448,53,58
 
 [eData]
-Coordinates=263,232,42,51
+Coordinates=291,246,49,58
+
+[eDivisa]
+Coordinates=287,364,57,58
+
+[eTipoDocumento]
+Coordinates=259,10,112,58
+
+[Label7]
+Coordinates=447,448,53,58
+
+[Button1]
+Coordinates=526,448,59,58
+
+[Label5]
+Coordinates=397,10,53,58
+
+[WorkSpace]
+Coordinates=10,532,81,36
 

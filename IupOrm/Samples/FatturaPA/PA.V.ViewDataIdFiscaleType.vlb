@@ -1,22 +1,31 @@
-﻿[Label1]
-Coordinates=10,160,46,51
-
-[Label2]
-Coordinates=89,160,46,51
-
-[BSIdFiscaleType]
-Coordinates=191,21,96,105
+﻿[BSIdFiscaleType]
+Coordinates=10,47,112,102
 Visible=True
 
-[eIdCodice]
-Coordinates=383,43,63,51
-
 []
-Coordinates=296,1,82,33
+Coordinates=0,0,91,36
+
+[SidePanel]
+Coordinates=169,198,73,58
+
+[CheckBoxViewSelection]
+Coordinates=10,198,154,58
+
+[Label1]
+Coordinates=275,10,53,58
+
+[Label2]
+Coordinates=258,198,53,58
+
+[WorkSpace]
+Coordinates=330,198,81,36
+
+[eIdCodice]
+Coordinates=186,121,72,58
 
 [eIdPaese]
-Coordinates=10,10,84,105
+Coordinates=188,10,69,58
 
 [BindingsList1]
-Coordinates=296,1,82,33
+Coordinates=0,0,91,36
 

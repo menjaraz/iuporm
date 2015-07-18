@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, PA.V.ViewData, Vcl.ComCtrls, Data.Bind.Components, Data.Bind.ObjectScope,
-  IupOrm.LiveBindings.PrototypeBindSource, PA.V.View, PA.V.ViewDataDatiGeneraliDocumentoType;
+  IupOrm.LiveBindings.PrototypeBindSource, PA.V.View, PA.V.ViewDataDatiGeneraliDocumentoType, Vcl.StdCtrls, Vcl.ExtCtrls;
 
 type
   TpaViewDataDatiGenerali = class(TpaViewData)

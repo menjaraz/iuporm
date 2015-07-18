@@ -4,7 +4,7 @@ interface
 
 uses
   PA.V.ViewData, System.Classes, Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls, Data.Bind.Components, Data.Bind.ObjectScope,
-  IupOrm.LiveBindings.PrototypeBindSource, Vcl.Forms, PA.V.View, PA.V.ViewDataDatiGeneraliType;
+  IupOrm.LiveBindings.PrototypeBindSource, Vcl.Forms, PA.V.View, PA.V.ViewDataDatiGeneraliType, Vcl.ExtCtrls;
 
 type
   TpaViewDataFatturaElettronicaBody = class(TpaViewData)

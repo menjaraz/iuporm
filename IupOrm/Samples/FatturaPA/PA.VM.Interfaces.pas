@@ -16,10 +16,6 @@ type
     procedure SetFunctionResizeView(AFunctionResizeView: TFunctionResizeView);
     procedure ChildViewResized;
     procedure ViewResized;
-    // ContainedIndex property
-    function GetContainedIndex: Integer;
-    procedure SetContainedIndex(const Value: Integer);
-    property ContainedIndex: Integer read GetContainedIndex write SetContainedIndex;
   end;
 
   IpaViewModelForViewData = interface(IpaViewModel)
@@ -29,7 +25,8 @@ type
   IpaViewModelForViewContainer = interface(IpaViewModel)
     ['{02B550D0-C281-4627-BF28-28C8F0D911C7}']
     function ChildViews: IioList<IpaView>;
-    procedure Delete(const Index: Integer);
+    procedure UnselectAllChildViews;
+    procedure SelectChildView(AIndex:Integer);
     procedure SetOnAfterOpenEventHandler;
     // Property ChildView_Interface
     procedure SetChildView_Interface(AValue: String);

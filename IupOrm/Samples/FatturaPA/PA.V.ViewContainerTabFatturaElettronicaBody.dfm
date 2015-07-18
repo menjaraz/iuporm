@@ -4,15 +4,25 @@ inherited paViewContainerTabFatturaElettronicaBody: TpaViewContainerTabFatturaEl
   Align = alClient
   ExplicitWidth = 451
   ExplicitHeight = 305
-  inherited ChildsArea: TPageControl
-    Width = 451
-    Height = 282
-    ExplicitWidth = 451
-    ExplicitHeight = 282
-  end
   inherited Panel1: TPanel
     Width = 451
     ExplicitWidth = 451
+  end
+  inherited LeftSidePanel: TPanel
+    Height = 288
+    ExplicitHeight = 288
+  end
+  inherited WorkSpace: TScrollBox
+    Width = 434
+    Height = 288
+    ExplicitWidth = 434
+    ExplicitHeight = 288
+    inherited ChildsArea: TPageControl
+      Width = 434
+      Height = 288
+      ExplicitWidth = 434
+      ExplicitHeight = 288
+    end
   end
   object BSFatturaElettronicaBodyList: TioPrototypeBindSource
     AutoActivate = True

@@ -119,13 +119,9 @@
     <Transaction>2015/06/27 19:00:41.000.767,C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\FatturaPA\PA.V.ViewDataDatiGeneraliDocumentoType.dfm=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\FatturaPA\Unit2.dfm</Transaction>
     <Transaction>2015/06/27 19:00:41.000.767,C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\FatturaPA\PA.V.ViewDataDatiGeneraliDocumentoType.pas=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\FatturaPA\Unit2.pas</Transaction>
     <Transaction>2015/07/07 11:18:13.000.343,=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\FatturaPA\Unit2.pas</Transaction>
-    <Transaction>2015/07/16 10:45:02.417,C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\FatturaPA\Unit1.pas=</Transaction>
+    <Transaction>2015/07/16 10:45:02.000.417,C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\FatturaPA\Unit1.pas=</Transaction>
   </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
-    <File Path="..\..\Samples"/>
-    <File Path="..\TestParent"/>
-    <File Path="..\TestParent\Frame.pas"/>
-    <File Path="..\TestParent\Frame.dfm"/>
     <File Path="..\..\..\IupOrm"/>
     <File Path="..\..\Source"/>
     <File Path="..\..\Source\IupOrm.MVVM.ALL.ViewModel.pas"/>

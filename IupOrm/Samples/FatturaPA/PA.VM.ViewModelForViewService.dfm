@@ -1,15 +1,15 @@
 inherited paViewModelForViewService: TpaViewModelForViewService
   Height = 251
   inherited Commands: TActionList
-    object acNew: TAction [0]
+    object acNew: TAction
       Caption = 'acNew'
       OnExecute = acNewExecute
     end
-    object acLoadFromFile: TAction [1]
+    object acLoadFromFile: TAction
       Caption = 'acLoad'
       OnExecute = acLoadFromFileExecute
     end
-    object acSaveToFile: TAction [2]
+    object acSaveToFile: TAction
       Caption = 'acSaveToFile'
       OnExecute = acSaveToFileExecute
       OnUpdate = acSaveToFileUpdate

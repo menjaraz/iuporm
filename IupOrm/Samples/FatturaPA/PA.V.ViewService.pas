@@ -20,7 +20,6 @@ type
     [ioAction('acClose')]
     ButtonClose: TButton;
     BSService: TioPrototypeBindSource;
-    ClientArea: TPanel;
     procedure BSServiceioOnNeedViewModel(Sender: TioPrototypeBindSource; var AViewModel: IioViewModel);
   private
     { Private declarations }
@@ -44,7 +43,7 @@ begin
   // Extract the IpaViewModelForViewService
   if not Supports(AViewModel, IpaViewModelForViewService, AViewModelForViewService) then
     raise Exception.Create('"ViewModelForViewService" interface is not implemented by object.');
-  AViewModelForViewService.SetClientArea(ClientArea);
+  AViewModelForViewService.SetClientArea(WorkSpace);
 end;
 
 end.
