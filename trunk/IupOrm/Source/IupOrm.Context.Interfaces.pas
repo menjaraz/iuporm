@@ -19,6 +19,7 @@ type
     function RttiContext: TRttiContext;
     function RttiType: TRttiInstanceType;
     function WhereExist: Boolean;
+    function IDIsNull: Boolean;
     // Blob field present
     function BlobFieldExists: Boolean;
     // DataObject
@@ -41,10 +42,6 @@ type
     function GetJoin: IioJoins;
     // ConnectionDefName
     function GetConnectionDefName: String;
-    // LastInsertNullID
-    procedure SetLastInsertNullID(AValue:Boolean);
-    function GetLastInsertNullID: Boolean;
-    property LastInsertNullID:Boolean read GetLastInsertNullID write SetLastInsertNullID;
   end;
 
 implementation

@@ -1,19 +1,20 @@
 inherited paViewDataAnagraficaType: TpaViewDataAnagraficaType
-  Width = 451
+  Width = 778
   Height = 305
   Align = alClient
   ExplicitWidth = 451
   ExplicitHeight = 305
   inherited LeftSidePanel: TPanel
     Height = 305
+    ExplicitHeight = 305
   end
   inherited WorkSpace: TScrollBox
-    Width = 434
+    Width = 761
     Height = 305
     ExplicitWidth = 434
     ExplicitHeight = 305
     DesignSize = (
-      434
+      761
       305)
     object Label2: TLabel
       Left = 11
@@ -53,12 +54,13 @@ inherited paViewDataAnagraficaType: TpaViewDataAnagraficaType
     object eDenominazione: TEdit
       Left = 89
       Top = 3
-      Width = 340
+      Width = 667
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       MaxLength = 80
       TabOrder = 0
       Text = 'Bitmap28'
+      ExplicitWidth = 340
     end
     object eNome: TEdit
       Left = 89

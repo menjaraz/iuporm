@@ -13,6 +13,7 @@ type
   //  Select/Update/Insert/Delete
   TioQueryEngine = class
   protected
+    class procedure SetIntegerToQueryParamNullIfZero(const AParam:TioParam; const AValue:Integer);
     class function ComposeQueryIdentity(AContext:IioContext; APreIdentity:String; AIdentity:String=''): String;
     class procedure FillQueryWhereParams(AContext:IioContext; AQuery:IioQuery);
 //    class procedure PersistRelationChildObject(AMasterContext: IioContext;
@@ -21,7 +22,7 @@ type
     class function GetQuerySelectForObject(AContext:IioContext): IioQuery;
     class function GetQuerySelectForList(AContext:IioContext): IioQuery;
     class function GetQueryInsert(AContext:IioContext): IioQuery;
-    class function GetQueryLastInsertRowID(AContext:IioContext): IioQuery;
+    class function GetQueryNextID(AContext:IioContext): IioQuery;
     class function GetQueryUpdate(AContext:IioContext): IioQuery;
     class function GetQueryDelete(AContext:IioContext): IioQuery;
     class function GetQueryForExists(AContext:IioContext): IioQuery;
@@ -32,7 +33,7 @@ implementation
 uses
   IupOrm.DB.Factory, IupOrm.Context.Properties.Interfaces, IupOrm.CommonTypes,
   IupOrm.Attributes, Data.DB, IupOrm.Interfaces, SysUtils,
-  IupOrm.Where.SqlItems.Interfaces;
+  IupOrm.Where.SqlItems.Interfaces, IupOrm.DB.ConnectionContainer;
 
 { TioQueryEngine }
 
@@ -93,8 +94,6 @@ var
   AProp: IioContextProperty;
   AQuery: IioQuery;
  begin
-  // Init
-  AContext.LastInsertNullID := False;
   // Get the query object and if does not contain an SQL text (come from QueryContainer)
   //  then call the sql query generator
   AQuery := TioDbFactory.Query(AContext.GetTable.GetConnectionDefName, ComposeQueryIdentity(AContext, 'INS'));
@@ -107,10 +106,9 @@ var
     if not AProp.IsSqlRequestCompliant(ioInsert) then Continue;
     // If current property is the ID property and its value is null (0)
     //  then skip its value (always NULL)
-    if  AProp.IsID and (AProp.GetValue(AContext.DataObject).AsInteger = IO_INTEGER_NULL_VALUE) then
+    if  AProp.IsID and AContext.IDIsNull then
     begin
       AQuery.SetParamValueToNull(AProp, ftLargeInt);
-      AContext.LastInsertNullID := True;
       Continue;
     end;
     // Relation type
@@ -119,7 +117,7 @@ var
       // If RelationType = ioRTEmbedded save the current property value normally (serialization is into the called method
       ioRTNone, ioRTEmbeddedHasMany, ioRTEmbeddedHasOne: AQuery.SetParamValueByContext(AProp, AContext);
       // else if RelationType = ioRTBelongsTo then save the ID
-      ioRTBelongsTo: AQuery.ParamByProp(AProp).Value := AProp.GetRelationChildObjectID(AContext.DataObject);
+      ioRTBelongsTo: Self.SetIntegerToQueryParamNullIfZero(   AQuery.ParamByProp(AProp), AProp.GetRelationChildObjectID(AContext.DataObject)   );
       // else if RelationType = ioRTHasOne
       ioRTHasOne: {Nothing};
       // else if RelationType = ioRTHasMany
@@ -131,12 +129,15 @@ var
     AQuery.ParamByName(AContext.ClassFromField.GetSqlParamName).Value := AContext.ClassFromField.GetValue;
 end;
 
-class function TioQueryEngine.GetQueryLastInsertRowID(AContext: IioContext): IioQuery;
+class function TioQueryEngine.GetQueryNextID(AContext: IioContext): IioQuery;
 begin
   // Get the query object and if does not contain an SQL text (come from QueryContainer)
   //  then call the sql query generator
   Result := TioDbFactory.Query(AContext.GetTable.GetConnectionDefName, ComposeQueryIdentity(AContext, 'LID'));
-  if Result.IsSqlEmpty then TioDBFactory.SqlGenerator.GenerateSqlLastInsertRowID(Result);
+  if Result.IsSqlEmpty then TioDBFactory.SqlGenerator.GenerateSqlNextID(Result, AContext);
+  // If the current connection is for Firebird then set the Generator name param
+  if TioConnectionManager.GetConnectionType(AContext.GetConnectionDefName) = cdtFirebird then
+    Result.ParamByName('KeyGenerator').Value := AContext.GetTable.GetKeyGenerator;
 end;
 
 class function TioQueryEngine.GetQuerySelectForList(AContext: IioContext): IioQuery;
@@ -194,7 +195,7 @@ begin
       // If RelationType = ioRTEmbedded save the current property value normally (serialization is into the called method
       ioRTNone, ioRTEmbeddedHasMany, ioRTEmbeddedHasOne: AQuery.SetParamValueByContext(AProp, AContext);
       // else if RelationType = ioRTBelongsTo then save the ID
-      ioRTBelongsTo: AQuery.ParamByProp(AProp).Value := AProp.GetRelationChildObjectID(AContext.DataObject);
+      ioRTBelongsTo: Self.SetIntegerToQueryParamNullIfZero(   AQuery.ParamByProp(AProp), AProp.GetRelationChildObjectID(AContext.DataObject)   );
       // else if RelationType = ioRTHasOne
       ioRTHasOne: {Nothing};
       // else if RelationType = ioRTHasMany
@@ -206,6 +207,14 @@ begin
   then AQuery.ParamByName(AContext.ClassFromField.GetSqlParamName).Value := AContext.ClassFromField.GetValue;
   // Where conditions
   AQuery.ParamByProp(AContext.GetProperties.GetIdProperty).Value := AContext.GetProperties.GetIdProperty.GetValue(AContext.DataObject).AsVariant;
+end;
+
+class procedure TioQueryEngine.SetIntegerToQueryParamNullIfZero(const AParam: TioParam; const AValue: Integer);
+begin
+  if AValue <> 0 then
+    AParam.Value := Avalue
+  else
+    AParam.Clear;
 end;
 
 end.

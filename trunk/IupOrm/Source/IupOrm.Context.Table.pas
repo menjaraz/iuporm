@@ -76,13 +76,15 @@ type
     FJoins: IioJoins;
     FGroupBy: IioGroupBy;
     FConnectionDefName: String;
+    FKeyGenerator: String;
   public
-    constructor Create(const ASqlText:String; const AClassFromField:IioClassFromField;
+    constructor Create(const ASqlText, AKeyGenerator:String; const AClassFromField:IioClassFromField;
     const AJoins:IioJoins; const AGroupBy:IioGroupBy; const AConnectionDefName:String;
     const AMapMode:TioMapModeType); overload;
     function GetClassFromField: IioClassFromField;
     function IsClassFromField: Boolean;
     function TableName: String;
+    function GetKeyGenerator: String;
     function GetJoin: IioJoins;
     function GetGroupBy: IioGroupBy;
     function GetConnectionDefName: String;
@@ -96,11 +98,12 @@ uses
 
 { TioContextTable }
 
-constructor TioContextTable.Create(const ASqlText:String; const AClassFromField:IioClassFromField;
+constructor TioContextTable.Create(const ASqlText, AKeyGenerator:String; const AClassFromField:IioClassFromField;
     const AJoins:IioJoins; const AGroupBy:IioGroupBy; const AConnectionDefName:String;
     const AMapMode:TioMapModeType);
 begin
   inherited Create(ASqlText);
+  FKeyGenerator := AKeyGenerator;
   FClassFromField := AClassFromField;
   FJoins := AJoins;
   FGroupBy := AGroupBy;
@@ -126,6 +129,11 @@ end;
 function TioContextTable.GetJoin: IioJoins;
 begin
   Result := FJoins;
+end;
+
+function TioContextTable.GetKeyGenerator: String;
+begin
+  Result := FKeyGenerator;
 end;
 
 function TioContextTable.GetMapMode: TioMapModeType;

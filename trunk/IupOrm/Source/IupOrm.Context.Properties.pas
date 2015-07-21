@@ -66,7 +66,7 @@ type
     function GetRelationChildPropertyName: String;
     function GetRelationLoadType: TioLoadType;
     function GetRelationChildObject(Instance: Pointer): TObject;
-    function GetRelationChildObjectID(Instance: Pointer): String;
+    function GetRelationChildObjectID(const Instance: Pointer): Integer;
     procedure SetTable(ATable:IioContextTable);
     procedure SetFieldData;
     procedure SetLoadSqlData;
@@ -135,7 +135,7 @@ implementation
 uses
   System.TypInfo, IupOrm.Context.Interfaces, IupOrm.Context.Factory,
   IupOrm.DB.Factory, IupOrm.Exceptions, System.SysUtils, IupOrm.SqlTranslator,
-  System.StrUtils, System.Classes;
+  System.StrUtils, System.Classes, IupOrm.Context.Map.Interfaces;
 
 { TioProperty }
 
@@ -169,9 +169,37 @@ end;
 
 function TioProperty.GetFieldType: String;
 begin
-  if FFieldType.IsEmpty
-    then Result := TioDbFactory.SqlDataConverter.PropertyToFieldType(Self)
-    else Result := FFieldType;
+  // ================================================================================
+  // NB: Questa funzione è usata solo da questa classe stessa (Self.IsBlob) e dalla
+  //      creazione automatica del DB per determinare il tipo di campo. Siccome
+  //      l'unicoDB per il quale è disponibile la creazione automatica del DB è SQLite
+  //      non è necessario che questa funzione si adatti ai diversi RDBMS e quindi la lascio
+  //      fissa così. Questo va bene anche all'interno della funzione Self.IsBlob
+  //      perchè questa verifica solo se il tipo comincia per BLOB e uesto va bene per
+  //      qualunque DB.
+  // ================================================================================
+  // If the FField is not empty then return it
+  if not FFieldType.IsEmpty then
+    Exit(FFieldType);
+  // According to the RelationType of the property...
+  case Self.GetRelationType of
+    // Normal property, no relation, field type is by TypeKind of the property itself
+    ioRTNone: begin
+      case Self.GetRttiType.TypeKind of
+        tkInt64, tkInteger, tkEnumeration: Result := 'INTEGER';
+        tkFloat: Result := 'REAL';
+        tkString, tkUString, tkWChar, tkLString, tkWString, tkChar: Result := 'TEXT';
+        tkClass, tkInterface: Result := 'BLOB';
+      end;
+    end;
+    // If it is an ioRTEmbedded property then the field type is always BLOB
+    ioRTEmbeddedHasMany, ioRTEmbeddedHasOne: Result := 'BLOB';
+    // If it's a BelongsTo relation property then field type is always INTEGER
+    //  because the ID fields always are INTEGERS values
+    ioRTBelongsTo: Result := 'INTEGER';
+    // Otherwise return NULL field type
+    else Result := 'NULL';
+  end;
 end;
 
 function TioProperty.GetLoadSql: String;
@@ -213,21 +241,20 @@ begin
   end;
 end;
 
-function TioProperty.GetRelationChildObjectID(Instance: Pointer): String;
+function TioProperty.GetRelationChildObjectID(const Instance: Pointer): Integer;
 var
-  ChildContext: IioContext;
+  ChildMap: IioMap;
   ChildObject: TObject;
-  AValue: TValue;
 begin
   // Init
-  Result := 'NULL';
+  Result := IO_INTEGER_NULL_VALUE;
   // Extract the child related object
   ChildObject := Self.GetRelationChildObject(Instance);
-  // If the related child object non exists then exit (return 'NULL')
+  // If the related child object not exists then exit (return 'NULL')
   if not Assigned(ChildObject) then Exit;
   // Else create the ioContext for the object and return the ID
-  ChildContext := TioContextFactory.Context(ChildObject.ClassName, nil);
-  Result := ChildContext.GetProperties.GetIdProperty.GetSqlValue(ChildObject);
+  ChildMap := TioContextFactory.Map(ChildObject.ClassType);
+  Result := ChildMap.GetProperties.GetIdProperty.GetValue(ChildObject).AsInteger;
 end;
 
 function TioProperty.GetRelationChildPropertyName: String;

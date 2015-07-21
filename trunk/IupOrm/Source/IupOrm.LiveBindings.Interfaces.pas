@@ -53,6 +53,7 @@ type
     procedure SetDataObject(const AObj:TObject; const AOwnsObject:Boolean=True);
     procedure ClearDataObject;
     function GetCurrentOID: Integer;
+    function IsDetail: Boolean;
     // Current property
     function GetCurrent: TObject;
     property Current: TObject read GetCurrent;

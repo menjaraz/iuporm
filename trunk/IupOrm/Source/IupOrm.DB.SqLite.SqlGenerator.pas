@@ -10,16 +10,14 @@ type
 
   // Classe che si occupa di generare il codice SQL delle varie query
   TioSqlGeneratorSqLite = class(TioSqlGenerator)
-  strict protected
-    class procedure LoadSqlParamsFromContext(AQuery:IioQuery; AContext:IioContext);
   public
-    class procedure GenerateSqlSelect(AQuery:IioQuery; AContext:IioContext); override;
-    class procedure GenerateSqlInsert(AQuery:IioQuery; AContext:IioContext); override;
-    class procedure GenerateSqlLastInsertRowID(AQuery:IioQuery); override;
-    class procedure GenerateSqlUpdate(AQuery:IioQuery; AContext:IioContext); override;
-    class procedure GenerateSqlDelete(AQuery:IioQuery; AContext:IioContext); override;
-    class procedure GenerateSqlForExists(AQuery:IioQuery; AContext:IioContext); override;
-    class function GenerateSqlJoinSectionItem(AJoinItem: IioJoinItem): String; override;
+    class procedure GenerateSqlSelect(const AQuery:IioQuery; const AContext:IioContext); override;
+    class procedure GenerateSqlInsert(const AQuery:IioQuery; const AContext:IioContext); override;
+    class procedure GenerateSqlNextID(const AQuery:IioQuery; const AContext:IioContext); override;
+    class procedure GenerateSqlUpdate(const AQuery:IioQuery; const AContext:IioContext); override;
+    class procedure GenerateSqlDelete(const AQuery:IioQuery; const AContext:IioContext); override;
+    class procedure GenerateSqlForExists(const AQuery:IioQuery; const AContext:IioContext); override;
+    class function GenerateSqlJoinSectionItem(const AJoinItem: IioJoinItem): String; override;
   end;
 
 implementation
@@ -31,7 +29,7 @@ uses
 
 { TioSqlGeneratorSqLite }
 
-class procedure TioSqlGeneratorSqLite.GenerateSqlDelete(AQuery:IioQuery; AContext:IioContext);
+class procedure TioSqlGeneratorSqLite.GenerateSqlDelete(const AQuery:IioQuery; const AContext:IioContext);
 begin
   // Build the query text
   // -----------------------------------------------------------------
@@ -45,7 +43,7 @@ begin
   // -----------------------------------------------------------------
 end;
 
-class procedure TioSqlGeneratorSqLite.GenerateSqlForExists(AQuery:IioQuery; AContext: IioContext);
+class procedure TioSqlGeneratorSqLite.GenerateSqlForExists(const AQuery:IioQuery; const AContext:IioContext);
 begin
   // Build the query text
   // -----------------------------------------------------------------
@@ -58,7 +56,7 @@ begin
   // -----------------------------------------------------------------
 end;
 
-class procedure TioSqlGeneratorSqLite.GenerateSqlInsert(AQuery:IioQuery; AContext: IioContext);
+class procedure TioSqlGeneratorSqLite.GenerateSqlInsert(const AQuery:IioQuery; const AContext:IioContext);
 var
   Comma: Char;
   Prop: IioContextProperty;
@@ -95,7 +93,7 @@ begin
 end;
 
 class function TioSqlGeneratorSqLite.GenerateSqlJoinSectionItem(
-  AJoinItem: IioJoinItem): String;
+  const AJoinItem: IioJoinItem): String;
 begin
   // Join
   case AJoinItem.GetJoinType of
@@ -113,13 +111,13 @@ begin
     then Result := Result + ' ON (' + AJoinItem.GetJoinCondition + ')';
 end;
 
-class procedure TioSqlGeneratorSqLite.GenerateSqlLastInsertRowID(AQuery:IioQuery);
+class procedure TioSqlGeneratorSqLite.GenerateSqlNextID(const AQuery:IioQuery; const AContext:IioContext);
 begin
   // Build the query text
   AQuery.SQL.Add('SELECT last_insert_rowid()');
 end;
 
-class procedure TioSqlGeneratorSqLite.GenerateSqlSelect(AQuery:IioQuery; AContext:IioContext);
+class procedure TioSqlGeneratorSqLite.GenerateSqlSelect(const AQuery:IioQuery; const AContext:IioContext);
 begin
   // Build the query text
   // -----------------------------------------------------------------
@@ -141,7 +139,7 @@ begin
   // -----------------------------------------------------------------
 end;
 
-class procedure TioSqlGeneratorSqLite.GenerateSqlUpdate(AQuery:IioQuery; AContext:IioContext);
+class procedure TioSqlGeneratorSqLite.GenerateSqlUpdate(const AQuery:IioQuery; const AContext:IioContext);
 var
   Comma: Char;
   Prop: IioContextProperty;
@@ -169,17 +167,6 @@ begin
 //  AQuery.SQL.Add(AContext.Where.GetSql);
   AQuery.SQL.Add('WHERE ' + AContext.GetProperties.GetIdProperty.GetSqlFieldName + '=:' + AContext.GetProperties.GetIdProperty.GetSqlParamName);
   // -----------------------------------------------------------------
-end;
-
-class procedure TioSqlGeneratorSqLite.LoadSqlParamsFromContext(AQuery: IioQuery;
-  AContext: IioContext);
-var
-  Prop: IioContextProperty;
-begin
-  // Load query parameters from context
-  for Prop in AContext.GetProperties do
-    if Prop.IsBlob then
-      AQuery.SaveStreamObjectToSqlParam(Prop.GetValue(AContext.DataObject).AsObject, Prop);
 end;
 
 end.

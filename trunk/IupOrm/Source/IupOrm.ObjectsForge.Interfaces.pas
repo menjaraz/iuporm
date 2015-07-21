@@ -282,8 +282,7 @@ begin
     )
     // Fill the list
     else TIupOrm.Load(AProperty.GetRelationChildTypeName, AProperty.GetRelationChildTypeAlias)._Where
-      ._Property(AProperty.GetRelationChildPropertyName)
-      ._EqualTo(AQuery.GetValue(AContext.GetProperties.GetIdProperty))
+      ._PropertyEqualsTo(AProperty.GetRelationChildPropertyName, AQuery.GetValue(AContext.GetProperties.GetIdProperty))
       .ToList(Result);
 end;
 
@@ -295,8 +294,7 @@ begin
   Result := Self.CheckOrCreateRelationChildObject(AContext, AProperty);
   // Load the relation child object
   TIupOrm.Load(AProperty.GetRelationChildTypeName, AProperty.GetRelationChildTypeAlias)._Where
-    ._Property(AProperty.GetRelationChildPropertyName)
-    ._EqualTo(AQuery.GetValue(AContext.GetProperties.GetIdProperty))
+    ._PropertyEqualsTo(AProperty.GetRelationChildPropertyName, AQuery.GetValue(AContext.GetProperties.GetIdProperty))
     .ToObject(Result);
 end;
 

@@ -13,11 +13,11 @@ type
   TioSqlDataConverterSqLite = class(TioSqlDataConverter)
   strict protected
   public
-    class function StringToSQL(AString:String): String; override;
-    class function FloatToSQL(AFloat:Extended): String; override;
-    class function PropertyToFieldType(AProp:IioContextProperty): String; override;
-    class function TValueToSql(AValue:TValue): String; override;
-    class function QueryToTValue(AQuery:IioQuery; AProperty:IioContextProperty): TValue; override;
+    class function StringToSQL(const AString:String): String; override;
+    class function FloatToSQL(const AFloat:Extended): String; override;
+//    class function PropertyToFieldType(const AProp:IioContextProperty): String; override;
+    class function TValueToSql(const AValue:TValue): String; override;
+    class function QueryToTValue(const AQuery:IioQuery; const AProperty:IioContextProperty): TValue; override;
   end;
 
 implementation
@@ -27,7 +27,7 @@ uses
 
 { TioSqlConverterSqLite }
 
-class function TioSqlDataConverterSqLite.FloatToSQL(AFloat: Extended): String;
+class function TioSqlDataConverterSqLite.FloatToSQL(const AFloat: Extended): String;
 var
   Sign, IntegerPart, DecimalPart: String;
   FormatSettings: TFormatSettings;
@@ -38,31 +38,31 @@ begin
   Result := ReplaceText(Result, FormatSettings.DecimalSeparator, Char('.'));
 end;
 
-class function TioSqlDataConverterSqLite.PropertyToFieldType(
-  AProp: IioContextProperty): String;
-begin
-  // According to the RelationType of the property...
-  case AProp.GetRelationType of
-    // Normal property, no relation, field type is by TypeKind of the property itself
-    ioRTNone: begin
-      case AProp.GetRttiType.TypeKind of
-        tkInt64, tkInteger, tkEnumeration: Result := 'INTEGER';
-        tkFloat: Result := 'REAL';
-        tkString, tkUString, tkWChar, tkLString, tkWString, tkChar: Result := 'TEXT';
-        tkClass, tkInterface: Result := 'BLOB';
-      end;
-    end;
-    // If it is an ioRTEmbedded property then the feld type is always BLOB
-    ioRTEmbeddedHasMany, ioRTEmbeddedHasOne: Result := 'BLOB';
-    // If it's a BelongsTo relation property then field type is always INTEGER
-    //  because the ID fields always are INTEGERS values
-    ioRTBelongsTo: Result := 'INTEGER';
-    // Otherwise return NULL field type
-    else Result := 'NULL';
-  end;
-end;
+//class function TioSqlDataConverterSqLite.PropertyToFieldType(
+//  const AProp: IioContextProperty): String;
+//begin
+//  // According to the RelationType of the property...
+//  case AProp.GetRelationType of
+//    // Normal property, no relation, field type is by TypeKind of the property itself
+//    ioRTNone: begin
+//      case AProp.GetRttiType.TypeKind of
+//        tkInt64, tkInteger, tkEnumeration: Result := 'INTEGER';
+//        tkFloat: Result := 'REAL';
+//        tkString, tkUString, tkWChar, tkLString, tkWString, tkChar: Result := 'TEXT';
+//        tkClass, tkInterface: Result := 'BLOB';
+//      end;
+//    end;
+//    // If it is an ioRTEmbedded property then the feld type is always BLOB
+//    ioRTEmbeddedHasMany, ioRTEmbeddedHasOne: Result := 'BLOB';
+//    // If it's a BelongsTo relation property then field type is always INTEGER
+//    //  because the ID fields always are INTEGERS values
+//    ioRTBelongsTo: Result := 'INTEGER';
+//    // Otherwise return NULL field type
+//    else Result := 'NULL';
+//  end;
+//end;
 
-class function TioSqlDataConverterSqLite.QueryToTValue(AQuery: IioQuery; AProperty: IioContextProperty): TValue;
+class function TioSqlDataConverterSqLite.QueryToTValue(const AQuery: IioQuery; const AProperty: IioContextProperty): TValue;
 begin
   // If the field is null
   // HO levato questo controllo perchè nel caso in cui il campo fosse NULL mi dava un errore
@@ -86,14 +86,14 @@ begin
   end;
 end;
 
-class function TioSqlDataConverterSqLite.StringToSQL(AString: String): String;
+class function TioSqlDataConverterSqLite.StringToSQL(const AString: String): String;
 begin
   Result := QuotedStr(AString);
 end;
 
-class function TioSqlDataConverterSqLite.TValueToSql(AValue: TValue): String;
+class function TioSqlDataConverterSqLite.TValueToSql(const AValue: TValue): String;
 begin
-// ######BLOB
+  inherited;
   // Default
   Result := 'NULL';
   // In base al tipo

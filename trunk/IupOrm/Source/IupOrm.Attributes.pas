@@ -154,6 +154,10 @@ type
   ioEntity = class(ioTable)
   end;
 
+  // KeyGeneratorName attribute
+  ioKeyGenerator = class(TioCustomStringAttribute)
+  end;
+
   // ConnectionDefName attribute
   ioConnectionDefName = class(TioCustomStringAttribute)
   end;

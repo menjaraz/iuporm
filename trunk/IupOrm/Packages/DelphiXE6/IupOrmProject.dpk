@@ -134,6 +134,8 @@ contains
   ObjMapper in '..\..\ExtLibs\DMVC\ObjMapper.pas',
   ObjMapperAttributes in '..\..\ExtLibs\DMVC\ObjMapperAttributes.pas',
   IupOrm.DependencyInjection.ViewModelShuttleContainer in '..\..\Source\IupOrm.DependencyInjection.ViewModelShuttleContainer.pas',
-  IupOrm.DependencyInjection.Singletons in '..\..\Source\IupOrm.DependencyInjection.Singletons.pas';
+  IupOrm.DependencyInjection.Singletons in '..\..\Source\IupOrm.DependencyInjection.Singletons.pas',
+  IupOrm.DB.Firebird.SqlDataConverter in '..\..\Source\IupOrm.DB.Firebird.SqlDataConverter.pas',
+  IupOrm.DB.Firebird.SqlGenerator in '..\..\Source\IupOrm.DB.Firebird.SqlGenerator.pas';
 
 end.
