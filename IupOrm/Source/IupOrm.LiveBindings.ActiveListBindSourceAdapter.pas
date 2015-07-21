@@ -67,6 +67,7 @@ type
     procedure SetDataObject(const AObj:TObject; const AOwnsObject:Boolean=True);
     procedure ClearDataObject;
     function GetCurrentOID: Integer;
+    function IsDetail: Boolean;
 
     property ioAutoPersist:Boolean read GetioAutoPersist write SetioAutoPersist;
     property ioOnNotify:TioBSANotificationEvent read FonNotify write FonNotify;
@@ -162,9 +163,13 @@ begin
   inherited;
   Self.SetObjStatus(osDirty);
   // If AutoPersist is enabled then persist
-  if Self.FAutoPersist then TIupOrm.Persist(Self.Current,
-                                            Self.FMasterProperty.GetRelationChildPropertyName,
-                                            Self.FMasterAdaptersContainer.GetMasterBindSourceAdapter.GetCurrentOID);
+  if FAutoPersist then
+    if Self.IsDetail then
+      TIupOrm.Persist(Self.Current,
+                      Self.FMasterProperty.GetRelationChildPropertyName,
+                      Self.FMasterAdaptersContainer.GetMasterBindSourceAdapter.GetCurrentOID)
+    else
+      TIupOrm.Persist(Self.Current);
   // Send a notification to other ActiveBindSourceAdapters & BindSource
   Notify(
          Self,
@@ -303,6 +308,11 @@ begin
   FInsertObj_NewObj := AObject;
   FInsertObj_Enabled := True;
   Self.Insert;
+end;
+
+function TioActiveListBindSourceAdapter.IsDetail: Boolean;
+begin
+  Result := Assigned(FMasterProperty);
 end;
 
 procedure TioActiveListBindSourceAdapter.Notify(Sender: TObject;

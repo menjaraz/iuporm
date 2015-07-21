@@ -270,7 +270,7 @@ end;
 class function TioContextFactory.Table(const Typ: TRttiInstanceType): IioContextTable;
 var
   Attr: TCustomAttribute;
-  TableName, ConnectionDefName: String;
+  TableName, ConnectionDefName, AKeyGenerator: String;
   ClassFromField: IioClassFromField;
   AJoins: IioJoins;
   AGroupBy: IioGroupBy;
@@ -279,6 +279,7 @@ begin
   // Prop Init
   TableName := Typ.MetaclassType.ClassName.Substring(1);  // Elimina il primo carattere (di solito la T)
   ConnectionDefName := '';
+  AKeyGenerator := '';
   AJoins := Self.Joins;
   AGroupBy := nil;
   AMapMode := ioProperties;
@@ -290,13 +291,16 @@ begin
       if not ioTable(Attr).Value.IsEmpty then TableName := ioTable(Attr).Value;
       AMapMode := ioTable(Attr).MapMode;
     end;
+    if Attr is ioKeyGenerator then AKeyGenerator := ioKeyGenerator(Attr).Value;
     if Attr is ioConnectionDefName then ConnectionDefName := ioConnectionDefName(Attr).Value;
     if Attr is ioClassFromField then ClassFromField := Self.ClassFromField(Typ);
     if Attr is ioJoin then AJoins.Add(Self.JoinItem(   ioJoin(Attr)   ));
     if (Attr is ioGroupBy) and (not Assigned(AGroupBy)) then AGroupBy := Self.GroupBy(   ioGroupBy(Attr).Value   );
   end;
+  // KeyGenerator
+  if AKeyGenerator.IsEmpty then AKeyGenerator := TableName;
   // Create result Properties object
-  Result := TioContextTable.Create(TableName, ClassFromField, AJoins, AGroupBy, ConnectionDefName, AMapMode);
+  Result := TioContextTable.Create(TableName, AKeyGenerator, ClassFromField, AJoins, AGroupBy, ConnectionDefName, AMapMode);
 end;
 
 class function TioContextFactory.Where: TioWhere;

@@ -44,7 +44,7 @@ type
     function GetRelationChildPropertyName: String;
     function GetRelationLoadType: TioLoadType;
     function GetRelationChildObject(Instance: Pointer): TObject;
-    function GetRelationChildObjectID(Instance: Pointer): String;
+    function GetRelationChildObjectID(const Instance: Pointer): Integer;
     procedure SetTable(ATable:IioContextTable);
     procedure SetFieldData;
     procedure SetLoadSqlData;

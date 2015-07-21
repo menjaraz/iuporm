@@ -1,19 +1,20 @@
 inherited paViewDataIdFiscaleType: TpaViewDataIdFiscaleType
-  Width = 451
+  Width = 813
   Height = 305
   Align = alClient
   ExplicitWidth = 451
   ExplicitHeight = 305
   inherited LeftSidePanel: TPanel
     Height = 305
+    ExplicitHeight = 305
   end
   inherited WorkSpace: TScrollBox
-    Width = 434
+    Width = 796
     Height = 305
     ExplicitWidth = 434
     ExplicitHeight = 305
     DesignSize = (
-      434
+      796
       305)
     object Label1: TLabel
       Left = 11
@@ -40,11 +41,12 @@ inherited paViewDataIdFiscaleType: TpaViewDataIdFiscaleType
     object eIdCodice: TEdit
       Left = 216
       Top = 3
-      Width = 213
+      Width = 575
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
       Text = 'Bitmap28'
+      ExplicitWidth = 213
     end
   end
   object BSIdFiscaleType: TioPrototypeBindSource

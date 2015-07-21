@@ -380,27 +380,46 @@ end;
 class procedure TIupOrm.InsertObject(const AContext: IioContext);
 var
   AQuery: IioQuery;
-  LastInsertID: Integer;
+  NextID: Integer;
 begin
-  // Create and execute insert query
-  TioDbFactory.QueryEngine.GetQueryInsert(AContext).ExecSQL;
   // -----------------------------------------------------------
-  // Get and execute a query to retrieve the last ID generated
-  //  in the last insert query.
-  //  If the query is non assigned (not all RDBMS supports it)
-  //  then skip this operation
-  if AContext.LastInsertNullID then
+  // Get and execute a query to retrieve the next ID for the inserting object
+  //  before the insert query (for Firebird/Interbase)
+  if  (TioConnectionManager.GetConnectionType = cdtFirebird) and AContext.IDIsNull then
   begin
-    AQuery := TioDBFActory.QueryEngine.GetQueryLastInsertRowID(AContext);
-    if not Assigned(AQuery) then Exit;
-    AQuery.Open;
+    AQuery := TioDBFActory.QueryEngine.GetQueryNextID(AContext);
     try
-      LastInsertID := AQuery.Fields[0].AsInteger;
+      AQuery.Open;
+      // Set the NextID as the ObjectID
+      AContext.GetProperties.GetIdProperty.SetValue(
+        AContext.DataObject,
+        AQuery.Fields[0].AsInteger
+      );
     finally
       AQuery.Close;
     end;
-    // Set the LastInsertID as the ObjectID
-    AContext.GetProperties.GetIdProperty.SetValue(AContext.DataObject, LastInsertID);
+  end;
+  // -----------------------------------------------------------
+
+  // Create and execute insert query
+  TioDbFactory.QueryEngine.GetQueryInsert(AContext).ExecSQL;
+
+  // -----------------------------------------------------------
+  // Get and execute a query to retrieve the last ID generated
+  //  in the last insert query.
+  if  (TioConnectionManager.GetConnectionType = cdtSQLite) and AContext.IDIsNull then
+  begin
+    AQuery := TioDBFActory.QueryEngine.GetQueryNextID(AContext);
+    try
+      AQuery.Open;
+      // Set the NextID as the ObjectID
+      AContext.GetProperties.GetIdProperty.SetValue(
+        AContext.DataObject,
+        AQuery.Fields[0].AsInteger
+      );
+    finally
+      AQuery.Close;
+    end;
   end;
   // -----------------------------------------------------------
 end;
@@ -448,6 +467,7 @@ initialization
                              .Implements<IioDuckTypedStreamObject>
                              .Execute;
 end.
+
 
 
 

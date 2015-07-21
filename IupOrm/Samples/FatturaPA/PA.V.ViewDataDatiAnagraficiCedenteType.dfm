@@ -1,5 +1,5 @@
 inherited paViewDataDataAnagraficiCedenteType: TpaViewDataDataAnagraficiCedenteType
-  Width = 451
+  Width = 832
   Height = 305
   Align = alClient
   ExplicitWidth = 451
@@ -7,7 +7,7 @@ inherited paViewDataDataAnagraficiCedenteType: TpaViewDataDataAnagraficiCedenteT
   inline paViewDataIdFiscaleType1: TpaViewDataIdFiscaleType [0]
     Left = 0
     Top = 0
-    Width = 451
+    Width = 832
     Height = 28
     ParentCustomHint = False
     Align = alTop
@@ -32,10 +32,15 @@ inherited paViewDataDataAnagraficiCedenteType: TpaViewDataDataAnagraficiCedenteT
     ExplicitHeight = 28
     inherited LeftSidePanel: TPanel
       Height = 28
+      ExplicitHeight = 28
     end
     inherited WorkSpace: TScrollBox
+      Width = 815
       Height = 28
       ExplicitHeight = 28
+      inherited eIdCodice: TEdit
+        Width = 594
+      end
     end
     inherited BindingsList1: TBindingsList
       inherited LinkControlToField2: TLinkControlToField
@@ -51,7 +56,7 @@ inherited paViewDataDataAnagraficiCedenteType: TpaViewDataDataAnagraficiCedenteT
   end
   inherited WorkSpace: TScrollBox
     Top = 110
-    Width = 434
+    Width = 815
     Height = 195
     TabOrder = 3
     ExplicitTop = 110
@@ -157,7 +162,7 @@ inherited paViewDataDataAnagraficiCedenteType: TpaViewDataDataAnagraficiCedenteT
   inline paViewDataAnagraficaType1: TpaViewDataAnagraficaType
     Left = 0
     Top = 28
-    Width = 451
+    Width = 832
     Height = 82
     ParentCustomHint = False
     Align = alTop
@@ -186,14 +191,15 @@ inherited paViewDataDataAnagraficiCedenteType: TpaViewDataDataAnagraficiCedenteT
       ExplicitHeight = 82
     end
     inherited WorkSpace: TScrollBox
+      Width = 815
       Height = 82
       ExplicitHeight = 82
       DesignSize = (
-        434
+        815
         82)
       inherited eDenominazione: TEdit
-        Width = 1038
-        ExplicitWidth = 1038
+        Width = 1092
+        ExplicitWidth = 711
       end
     end
   end

@@ -16,7 +16,6 @@ type
     FMap: IioMap;
     FDataObject: TObject;
     FWhere: TioWhere;
-    FLastInsertNullID: Boolean;
   strict protected
     // Map
     function Map: IioMap;
@@ -29,9 +28,6 @@ type
     // Where
     function GetWhere: TioWhere;
     procedure SetWhere(AWhere: TioWhere);
-    // LastInsertNullID
-    procedure SetLastInsertNullID(AValue:Boolean);
-    function GetLastInsertNullID: Boolean;
   public
     constructor Create(AClassName:String; AMap:IioMap; AWhere:TioWhere=nil; ADataObject:TObject=nil); overload;
     function GetClassRef: TioClassRef;
@@ -42,6 +38,7 @@ type
     function RttiContext: TRttiContext;
     function RttiType: TRttiInstanceType;
     function WhereExist: Boolean;
+    function IDIsNull: Boolean;
     // Blob field present
     function BlobFieldExists: Boolean;
     // ObjStatusExist
@@ -58,8 +55,6 @@ type
     property ObjectStatus:TIupOrmObjectStatus read GetObjectStatus write SetObjectStatus;
     // Where
     property Where:TioWhere read GetWhere write SetWhere;
-    // LastInsertNullID
-    property LastInsertNullID:Boolean read GetLastInsertNullID write SetLastInsertNullID;
   end;
 
 implementation
@@ -119,11 +114,6 @@ begin
   Result := Self.GetTable.GetJoin;
 end;
 
-function TioContext.GetLastInsertNullID: Boolean;
-begin
-  Result := FLastInsertNullID;
-end;
-
 function TioContext.GetObjectStatus: TIupOrmObjectStatus;
 begin
   if Self.GetProperties.ObjStatusExist
@@ -149,11 +139,6 @@ end;
 procedure TioContext.SetDataObject(AValue: TObject);
 begin
   FDataObject := AValue;
-end;
-
-procedure TioContext.SetLastInsertNullID(AValue: Boolean);
-begin
-  FLastInsertNullID := AValue;
 end;
 
 procedure TioContext.SetObjectStatus(AValue: TIupOrmObjectStatus);
@@ -185,6 +170,12 @@ end;
 function TioContext.GetWhere: TioWhere;
 begin
   Result := FWhere;
+end;
+
+function TioContext.IDIsNull: Boolean;
+begin
+  Result := (not Assigned(FDataObject))
+    or (Self.GetProperties.GetIdProperty.GetValue(FDataObject).AsInteger = IO_INTEGER_NULL_VALUE);
 end;
 
 function TioContext.IsClassFromField: Boolean;

@@ -41,7 +41,8 @@ uses
   IupOrm.DB.Connection, IupOrm.DB.SqLite.LogicRelations, IupOrm.DB.Query,
   IupOrm.DB.SqLite.SqlDataConverter, IupOrm.DB.SqLite.SqlGenerator,
   IupOrm.Where.SqlItems, System.SysUtils, IupOrm.DB.QueryContainer,
-  IupOrm.DB.TransactionCollection;
+  IupOrm.DB.TransactionCollection, IupOrm.DB.Firebird.SqlDataConverter,
+  IupOrm.Exceptions, IupOrm.DB.Firebird.SqlGenerator;
 
 { TioDbBuilder }
 
@@ -125,12 +126,22 @@ end;
 
 class function TioDbFactory.SqlDataConverter: TioSqlDataConverterRef;
 begin
-  Result := TioSqlDataConverterSqLite;
+  case TioConnectionManager.GetConnectionType of
+    cdtFirebird: Result := TioSqlDataConverterFirebird;
+    cdtSQLite:   Result := TioSqlDataConverterSqLite;
+  else
+    raise EIupOrmException.Create(ClassName + ': Connection type not found (SqlDataConverter).');
+  end;
 end;
 
 class function TioDbFactory.SqlGenerator: TioSqlGeneratorRef;
 begin
-  Result := TioSqlGeneratorSqLite;
+  case TioConnectionManager.GetConnectionType of
+    cdtFirebird: Result := TioSqlGeneratorFirebird;
+    cdtSQLite:   Result := TioSqlGeneratorSqLite;
+  else
+    raise EIupOrmException.Create(ClassName + ': Connection type not found (SqlGenerator).');
+  end;
 end;
 
 class function TioDbFactory.TransactionCollection: IioTransactionCollection;

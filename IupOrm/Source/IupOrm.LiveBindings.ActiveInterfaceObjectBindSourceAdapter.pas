@@ -65,6 +65,7 @@ type
     procedure SetDataObject(const AObj: TObject; const AOwnsObject:Boolean=True);
     procedure ClearDataObject;
     function GetCurrentOID: Integer;
+    function IsDetail: Boolean;
 
     property ioAutoPersist:Boolean read GetioAutoPersist write SetioAutoPersist;
     property ioOnNotify:TioBSANotificationEvent read FonNotify write FonNotify;
@@ -285,6 +286,11 @@ begin
   FInsertObj_NewObj := AObject;
   FInsertObj_Enabled := True;
   Self.Insert;
+end;
+
+function TioActiveInterfaceObjectBindSourceAdapter.IsDetail: Boolean;
+begin
+  Result := not FMasterPropertyName.IsEmpty;
 end;
 
 //procedure TioActiveInterfaceObjectBindSourceAdapter.NaturalBSA_SetMasterBindSourceAdapter(

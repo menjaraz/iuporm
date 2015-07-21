@@ -356,9 +356,8 @@ object MainForm: TMainForm
                   'Proin mattis interdum tempus. Etiam ac vehicula neque. Donec tem' +
                   'por, velit sit'
                 Position.X = 106.000000000000000000
-                Position.Y = 7.000000000000000000
                 Width = 199.000000000000000000
-                Height = 30.000000000000000000
+                Height = 44.000000000000000000
                 Margins.Right = 10.000000000000000000
               end
             end
@@ -384,9 +383,8 @@ object MainForm: TMainForm
                 TabOrder = 0
                 Text = '01/11/2015 00:58:00'
                 Position.X = 106.000000000000000000
-                Position.Y = 7.000000000000000000
                 Width = 199.000000000000000000
-                Height = 30.000000000000000000
+                Height = 44.000000000000000000
                 Margins.Right = 10.000000000000000000
               end
             end
@@ -403,9 +401,8 @@ object MainForm: TMainForm
                 TabOrder = 0
                 Text = '01/11/2015 00:58:00'
                 Position.X = 106.000000000000000000
-                Position.Y = 7.000000000000000000
                 Width = 199.000000000000000000
-                Height = 30.000000000000000000
+                Height = 44.000000000000000000
                 Margins.Right = 10.000000000000000000
               end
             end
@@ -432,9 +429,8 @@ object MainForm: TMainForm
                 KeyboardType = NumberPad
                 Text = '67'
                 Position.X = 106.000000000000000000
-                Position.Y = 7.000000000000000000
                 Width = 199.000000000000000000
-                Height = 30.000000000000000000
+                Height = 44.000000000000000000
                 Margins.Right = 10.000000000000000000
               end
             end
@@ -453,9 +449,8 @@ object MainForm: TMainForm
                 KeyboardType = NumberPad
                 Text = '67'
                 Position.X = 106.000000000000000000
-                Position.Y = 7.000000000000000000
                 Width = 199.000000000000000000
-                Height = 30.000000000000000000
+                Height = 44.000000000000000000
                 Margins.Right = 10.000000000000000000
               end
             end
@@ -519,7 +514,7 @@ object MainForm: TMainForm
           IsSelected = False
           TabOrder = 0
           Text = 'Cost'
-          Width = 53.000000000000000000
+          Width = 51.000000000000000000
         end
       end
     end
@@ -580,7 +575,7 @@ object MainForm: TMainForm
       StyleLookup = 'tabitembookmarks'
       TabOrder = 0
       Text = 'TabItem4'
-      Width = 80.000000000000000000
+      Width = 78.000000000000000000
       object ToolBar5: TToolBar
         Height = 44.000000000000000000
         TabOrder = 0
@@ -829,7 +824,11 @@ object MainForm: TMainForm
     ScopeMappings = <>
     ioOnNotify = BSTravelsioOnNotify
     ioTypeName = 'ITravelWithCostTypeList'
+    ioAutoLoadData = True
+    ioAutoPersist = True
+    ioViewDataType = dtList
     ioAutoRefreshOnNotification = arEnabledNoReload
+    ioVM_UseBSPropsOnCreate = True
     Left = 224
     Top = 64
   end
@@ -850,9 +849,13 @@ object MainForm: TMainForm
       end>
     ScopeMappings = <>
     ioTypeName = 'ICostTypeWithCostList'
+    ioAutoLoadData = True
+    ioAutoPersist = True
+    ioViewDataType = dtList
     ioMasterBindSource = BSTravels
     ioMasterPropertyName = 'CostTypeList'
     ioAutoRefreshOnNotification = arEnabledNoReload
+    ioVM_UseBSPropsOnCreate = True
     Left = 224
     Top = 112
   end
@@ -872,9 +875,13 @@ object MainForm: TMainForm
       end>
     ScopeMappings = <>
     ioTypeName = 'ICostGeneric'
+    ioAutoLoadData = True
+    ioAutoPersist = True
+    ioViewDataType = dtList
     ioMasterBindSource = BSCostTypes
     ioMasterPropertyName = 'CostList'
     ioAutoRefreshOnNotification = arEnabledNoReload
+    ioVM_UseBSPropsOnCreate = True
     Left = 224
     Top = 160
   end
@@ -889,10 +896,14 @@ object MainForm: TMainForm
       end>
     ScopeMappings = <>
     ioTypeName = 'ICostType'
+    ioAutoLoadData = True
+    ioAutoPersist = True
+    ioViewDataType = dtList
     ioWhere.Strings = (
       '[TCostType.ObjectType] > 0')
     ioMasterBindSource = BSCosts
     ioAutoRefreshOnNotification = arEnabledNoReload
+    ioVM_UseBSPropsOnCreate = True
     Left = 224
     Top = 300
   end

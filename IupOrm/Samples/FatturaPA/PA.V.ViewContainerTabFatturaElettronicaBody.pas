@@ -4,7 +4,7 @@ interface
 
 uses
   PA.V.ViewContainerTab, IupOrm.LiveBindings.PrototypeBindSource, Data.Bind.Components, Data.Bind.ObjectScope, Vcl.StdCtrls,
-  Vcl.Controls, Vcl.ExtCtrls, System.Classes, Vcl.ComCtrls, Vcl.Forms;
+  Vcl.Controls, Vcl.ExtCtrls, System.Classes, Vcl.ComCtrls, Vcl.Forms, Vcl.Buttons;
 
 
 type

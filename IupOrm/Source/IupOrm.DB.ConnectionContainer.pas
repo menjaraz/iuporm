@@ -19,19 +19,24 @@ type
   //  che non indicano una connection esplicitamente utilizzino quella di default e quindi anche che normalmente nelle applicazioni
   //  che utilizzano una sola ConnectionDef non è necessario specificare nulla nella dichiarazione delle classi perchè
   //  tanto utilizzano automaticamente la ConnectionDef di default (l'unica).
+  TioConnectionManagerContainer = TDictionary<String, TioConnectionType>;
   TioConnectionManagerRef = class of TioConnectionManager;
   TioConnectionManager = class
-    strict private
-      class var FDefaultConnectionName: String;
-    public
-      class function NewCustomConnectionDef(const AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME; const AsDefault:Boolean=False): IIoConnectionDef;
-      class function NewSQLiteConnectionDef(const ADatabase: String; const AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME): IIoConnectionDef;
-      class function NewFirebirdConnectionDef(const AServer, ADatabase, AUserName, APassword, ACharSet: String; const AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME): IIoConnectionDef;
-      class function NewSQLServerConnectionDef(const AServer, ADatabase, AUserName, APassword: String; const AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME): IIoConnectionDef;
-      class function NewMySQLConnectionDef(const AServer, ADatabase, AUserName, APassword, ACharSet: String; const AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME): IIoConnectionDef;
-      class function GetConnectionDefByName(AConnectionName:String=''): IIoConnectionDef;
-      class function GetDefaultConnectionName: String;
-      class procedure SetDefaultConnectionName(const AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME);
+  strict private
+    class var FDefaultConnectionName: String;
+    class var FConnectionManagerContainer: TioConnectionManagerContainer;  // NB: Questo container in realtà contiene solo il tipo di DB (cdtFirebird, cdtSQLite ecc.ecc.) in modo da poter fare dei confronti veloci nelle factory e per non dipendere direttamente dal DriverID delle connectionDef di FireDAC
+    class function NewCustomConnectionDef(const AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME; const AsDefault:Boolean=False): IIoConnectionDef;
+  public
+    class procedure CreateInternalContainer;
+    class procedure FreeInternalContainer;
+    class function NewSQLiteConnectionDef(const ADatabase: String; const AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME): IIoConnectionDef;
+    class function NewFirebirdConnectionDef(const AServer, ADatabase, AUserName, APassword, ACharSet: String; const AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME): IIoConnectionDef;
+    class function NewSQLServerConnectionDef(const AServer, ADatabase, AUserName, APassword: String; const AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME): IIoConnectionDef;
+    class function NewMySQLConnectionDef(const AServer, ADatabase, AUserName, APassword, ACharSet: String; const AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME): IIoConnectionDef;
+    class function GetConnectionDefByName(AConnectionName:String=''): IIoConnectionDef;
+    class function GetDefaultConnectionName: String;
+    class function GetConnectionType(AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME): TioConnectionType;
+    class procedure SetDefaultConnectionName(const AConnectionName:String=IO_CONNECTIONDEF_DEFAULTNAME);
   end;
 
   // Il ConnectionContainer contiene le connessioni attive in un dato momento, cioè quelle
@@ -133,6 +138,16 @@ end;
 
 { TioConnectionManager }
 
+class procedure TioConnectionManager.CreateInternalContainer;
+begin
+  FConnectionManagerContainer := TioConnectionManagerContainer.Create;
+end;
+
+class procedure TioConnectionManager.FreeInternalContainer;
+begin
+  Self.FConnectionManagerContainer.Free;
+end;
+
 class function TioConnectionManager.GetConnectionDefByName(AConnectionName: String): IIoConnectionDef;
 begin
   Result := nil;
@@ -143,6 +158,14 @@ begin
   // Connection not found
   if not Assigned(Result) then
     raise EIupOrmException.Create(Self.ClassName + ': ConnectionDef not found.');
+end;
+
+class function TioConnectionManager.GetConnectionType(AConnectionName: String): TioConnectionType;
+begin
+  // If desired ConnectionName is empty then get then Default one.
+  if AConnectionName = '' then AConnectionName := Self.GetDefaultConnectionName;
+  // Return the desired connection type
+  Result := FConnectionManagerContainer.Items[AConnectionName];
 end;
 
 class function TioConnectionManager.GetDefaultConnectionName: String;
@@ -173,6 +196,8 @@ begin
   Result.Params.Values['Password'] := APassword;
   Result.Params.Values['Protocol'] := 'TCPIP';
   if ACharSet <> '' then Result.Params.Values['CharacterSet'] := ACharSet;
+  // Add the connection type to the internal container
+  FConnectionManagerContainer.Add(AConnectionName, cdtFirebird);
 end;
 
 class function TioConnectionManager.NewMySQLConnectionDef(const AServer, ADatabase, AUserName, APassword, ACharSet,
@@ -185,6 +210,8 @@ begin
   Result.Params.Values['User_Name'] := AUserName;
   Result.Params.Values['Password'] := APassword;
   if ACharSet <> '' then Result.Params.Values['CharacterSet'] := ACharSet;
+  // Add the connection type to the internal container
+  FConnectionManagerContainer.Add(AConnectionName, cdtMySQL);
 end;
 
 class function TioConnectionManager.NewSQLiteConnectionDef(const ADatabase, AConnectionName: String): IIoConnectionDef;
@@ -194,6 +221,8 @@ begin
 //  Result.Params.Values['Server'] := 'localhost';
   Result.Params.Values['Database'] := ADatabase;
   Result.Params.Values['FailIfMissing'] := 'False';
+  // Add the connection type to the internal container
+  FConnectionManagerContainer.Add(AConnectionName, cdtSQLite);
 end;
 
 class function TioConnectionManager.NewSQLServerConnectionDef(const AServer, ADatabase, AUserName, APassword,
@@ -205,6 +234,8 @@ begin
   Result.Params.Values['Database'] := ADatabase;
   Result.Params.Values['User_Name'] := AUserName;
   Result.Params.Values['Password'] := APassword;
+  // Add the connection type to the internal container
+  FConnectionManagerContainer.Add(AConnectionName, cdtSQLServer);
 end;
 
 class procedure TioConnectionManager.SetDefaultConnectionName(const AConnectionName: String);
@@ -219,9 +250,11 @@ end;
 initialization
 
   TioConnectionContainer.CreateInternalContainer;
+  TioConnectionManager.CreateInternalContainer;
 
 finalization
 
   TioConnectionContainer.FreeInternalContainer;
+  TioConnectionManager.FreeInternalContainer;
 
 end.

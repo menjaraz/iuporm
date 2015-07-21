@@ -19,6 +19,8 @@ type
   TioParam = TFDParam;
   TioParams = TFDParams;
 
+  TioConnectionType = (cdtFirebird, cdtSQLite, cdtSQLServer, cdtMySQL);
+
   TioCompareOperatorRef = class of TioCompareOperator;
   TioLogicRelationRef = class of TioLogicRelation;
   TioSqlDataConverterRef = class of TioSqlDataConverter;
@@ -94,24 +96,26 @@ type
   //  rappresentazioni degli stessi da inserire nel testo delle query,
   TioSqlDataConverter = class abstract
   public
-    class function StringToSQL(AString:String): String; virtual; abstract;
-    class function FloatToSQL(AFloat:Extended): String; virtual; abstract;
-    class function PropertyToFieldType(AProp:IioContextProperty): String; virtual; abstract;
-    class function TValueToSql(AValue:TValue): String; virtual; abstract;
-    class function QueryToTValue(AQuery:IioQuery; AProperty:IioContextProperty): TValue; virtual; abstract;
+    class function StringToSQL(const AString:String): String; virtual; abstract;
+    class function FloatToSQL(const AFloat:Extended): String; virtual; abstract;
+    class function PropertyToFieldType(const AProp:IioContextProperty): String; virtual; abstract;
+    class function TValueToSql(const AValue:TValue): String; virtual; abstract;
+    class function QueryToTValue(const AQuery:IioQuery; const AProperty:IioContextProperty): TValue; virtual; abstract;
   end;
 
   // INterfaccia per le classi che devono generare i vari tipi di query
   //  Select/Update/Insert/Delete
   TioSqlGenerator = class abstract
+  strict protected
+    class procedure LoadSqlParamsFromContext(const AQuery:IioQuery; const AContext:IioContext);
   public
-    class procedure GenerateSqlSelect(AQuery:IioQuery; AContext:IioContext); virtual; abstract;
-    class procedure GenerateSqlInsert(AQuery:IioQuery; AContext:IioContext); virtual; abstract;
-    class procedure GenerateSqlLastInsertRowID(AQuery:IioQuery); virtual; abstract;
-    class procedure GenerateSqlUpdate(AQuery:IioQuery; AContext:IioContext); virtual; abstract;
-    class procedure GenerateSqlDelete(AQuery:IioQuery; AContext:IioContext); virtual; abstract;
-    class procedure GenerateSqlForExists(AQuery:IioQuery; AContext:IioContext); virtual; abstract;
-  class function GenerateSqlJoinSectionItem(AJoinItem: IioJoinItem): String; virtual; abstract;
+    class procedure GenerateSqlSelect(const AQuery:IioQuery; const AContext:IioContext); virtual; abstract;
+    class procedure GenerateSqlInsert(const AQuery:IioQuery; const AContext:IioContext); virtual; abstract;
+    class procedure GenerateSqlNextID(const AQuery:IioQuery; const AContext:IioContext); virtual; abstract;
+    class procedure GenerateSqlUpdate(const AQuery:IioQuery; const AContext:IioContext); virtual; abstract;
+    class procedure GenerateSqlDelete(const AQuery:IioQuery; const AContext:IioContext); virtual; abstract;
+    class procedure GenerateSqlForExists(const AQuery:IioQuery; const AContext:IioContext); virtual; abstract;
+  class function GenerateSqlJoinSectionItem(const AJoinItem: IioJoinItem): String; virtual; abstract;
   end;
 
   // Interfaccia per le classi che devono generare le LogicRelations
@@ -146,5 +150,17 @@ type
 
 implementation
 
+
+{ TioSqlGenerator }
+
+class procedure TioSqlGenerator.LoadSqlParamsFromContext(const AQuery: IioQuery; const AContext: IioContext);
+var
+  Prop: IioContextProperty;
+begin
+  // Load query parameters from context
+  for Prop in AContext.GetProperties do
+    if Prop.IsBlob then
+      AQuery.SaveStreamObjectToSqlParam(Prop.GetValue(AContext.DataObject).AsObject, Prop);
+end;
 
 end.
