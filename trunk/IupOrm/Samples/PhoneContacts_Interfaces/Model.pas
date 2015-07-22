@@ -33,7 +33,7 @@ type
   end;
 
   [ioTable('Persons', ioFields)]
-  [ioClassFromField]
+//  [ioClassFromField]
   TPerson = class(TInterfacedObject, IPerson)
   private
     FID: Integer;

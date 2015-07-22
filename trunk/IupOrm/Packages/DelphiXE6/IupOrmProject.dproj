@@ -146,6 +146,7 @@
         <DCCReference Include="fmxFireDAC.dcp"/>
         <DCCReference Include="DbxCommonDriver.dcp"/>
         <DCCReference Include="soaprtl.dcp"/>
+        <DCCReference Include="FireDACIBDriver.dcp"/>
         <DCCReference Include="..\..\Source\IupOrm.Attributes.pas"/>
         <DCCReference Include="..\..\Source\IupOrm.CommonTypes.pas"/>
         <DCCReference Include="..\..\Source\IupOrm.Context.Container.pas"/>

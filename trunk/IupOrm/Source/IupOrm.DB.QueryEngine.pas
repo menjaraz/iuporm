@@ -131,13 +131,17 @@ end;
 
 class function TioQueryEngine.GetQueryNextID(AContext: IioContext): IioQuery;
 begin
+  // NB: Ho dovuto togliere la QueryIdentity (messa = '' prima era = 'LID') perchè la query per farsi
+  //      dare il prossimo ID dal genertore (firebird) e di questo tipo "SELECT GEN_ID(GeneratorName, 1) FROM RDB$DATABASE"
+  //      dove "GeneratorName" non può essere un parametro perchè da un errore (ci ho provato) e quindi ho dovuto fare
+  //      che il generatore di SQL genera la query con il nome del generatore hard-coded. Per quanto sopra scritto ho quindi
+  //      dovuto eliminare la QueryIdentity e quindi per questa query non usa il QueryContainer e viene "preparata" ogni volta
+  //      senza parametri.
   // Get the query object and if does not contain an SQL text (come from QueryContainer)
   //  then call the sql query generator
-  Result := TioDbFactory.Query(AContext.GetTable.GetConnectionDefName, ComposeQueryIdentity(AContext, 'LID'));
+//  Result := TioDbFactory.Query(AContext.GetTable.GetConnectionDefName, ComposeQueryIdentity(AContext, 'LID'));
+  Result := TioDbFactory.Query(AContext.GetTable.GetConnectionDefName, ComposeQueryIdentity(AContext, ''));  // NoQueryIdentity
   if Result.IsSqlEmpty then TioDBFactory.SqlGenerator.GenerateSqlNextID(Result, AContext);
-  // If the current connection is for Firebird then set the Generator name param
-  if TioConnectionManager.GetConnectionType(AContext.GetConnectionDefName) = cdtFirebird then
-    Result.ParamByName('KeyGenerator').Value := AContext.GetTable.GetKeyGenerator;
 end;
 
 class function TioQueryEngine.GetQuerySelectForList(AContext: IioContext): IioQuery;

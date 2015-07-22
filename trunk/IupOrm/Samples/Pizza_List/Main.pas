@@ -93,10 +93,12 @@ end;
 procedure TMainForml.acIupOrmInitExecute(Sender: TObject);
 begin
   // ============ IupOrm initialization ====================
-  // Set the directory name (under the Documents folder)
-  TIupOrm.ConnectionManager.NewSQLiteConnectionDef(TPath.Combine(TPath.GetDocumentsPath, 'Pizza.db')).Apply;
+  // Set connection for SQLite (under the Documents folder better for mobile use)
+//  TIupOrm.ConnectionManager.NewSQLiteConnectionDef(TPath.Combine(TPath.GetDocumentsPath, 'Pizza.db')).Apply;
+  // Set connection for Firebird SQL
+  TIupOrm.ConnectionManager.NewFirebirdConnectionDef('localhost', TPath.GetFullPath('..\..\..\SamplesData\Pizza.FDB'), 'SYSDBA', 'masterkey', '').Apply;
   // AutoCreation and AutoUpdate of the database
-  TIupOrm.AutoCreateDatabase;
+  TIupOrm.AutoCreateDatabase(False);
   // ============ IupOrm initialization ====================
 end;
 
