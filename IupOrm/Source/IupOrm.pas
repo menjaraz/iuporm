@@ -63,7 +63,7 @@ type
     class procedure StartTransaction(const AConnectionName:String='');
     class procedure CommitTransaction(const AConnectionName:String='');
     class procedure RollbackTransaction(const AConnectionName:String='');
-    class procedure AutoCreateDatabase;
+    class procedure AutoCreateDatabase(const RaiseExceptionIfNotAvailable:Boolean=True);
     class function ConnectionManager: TioConnectionManagerRef;
   end;
 
@@ -329,9 +329,13 @@ begin
   TioDbFactory.QueryEngine.GetQueryUpdate(AContext).ExecSQL;
 end;
 
-class procedure TIupOrm.AutoCreateDatabase;
+class procedure TIupOrm.AutoCreateDatabase(const RaiseExceptionIfNotAvailable:Boolean);
 begin
-  TioDBCreatorFactory.GetDBCreator.AutoCreateDatabase;
+  // The AutoCreateDatabase feature is available only for SQLite database
+  if TioConnectionManager.GetConnectionType = cdtSQLite then
+    TioDBCreatorFactory.GetDBCreator.AutoCreateDatabase
+  else if RaiseExceptionIfNotAvailable then
+    raise EIupOrmException.Create(ClassName + ':  "AutoCreateDatabase" feature is available for SQLite RDBMS only.');
 end;
 
 class procedure TIupOrm.CommitTransaction(const AConnectionName:String);

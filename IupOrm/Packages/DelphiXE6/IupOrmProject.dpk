@@ -39,7 +39,8 @@ requires
   FireDACCommonDriver,
   fmxFireDAC,
   DbxCommonDriver,
-  soaprtl;
+  soaprtl,
+  FireDACIBDriver;
 
 contains
   IupOrm.Attributes in '..\..\Source\IupOrm.Attributes.pas',

@@ -27,7 +27,7 @@ type
     class function Connection(AConnectionName:String=''): IioConnection;
     class function NewConnection(AConnectionName:String): IioConnection;
     class function TransactionCollection: IioTransactionCollection;
-    class function Query(AConnectionDefName:String; AQueryIdentity:String=''): IioQuery;
+    class function Query(const AConnectionDefName:String; const AQueryIdentity:String=''): IioQuery;
     class function ConnectionContainer: TioConnectionContainerRef;
     class function ConnectionManager: TioConnectionManagerRef;
     class function QueryContainer: IioQueryContainer;
@@ -107,7 +107,7 @@ begin
   Result := TioQueryEngine;
 end;
 
-class function TioDbFactory.Query(AConnectionDefName:String; AQueryIdentity:String=''): IioQuery;
+class function TioDbFactory.Query(const AConnectionDefName:String; const AQueryIdentity:String): IioQuery;
 var
   AConnection: IioConnection;
 begin

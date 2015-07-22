@@ -6,6 +6,7 @@ uses
   IupOrm.DB.Interfaces,
   FireDAC.Stan.Def,
   FireDAC.Phys.SQLite,
+  FireDAC.Phys.FB,
   FireDAC.Stan.ExprFuncs,
   FireDAC.Stan.Intf,
   FireDAC.Phys,

@@ -8,6 +8,7 @@ uses
 type
 
   [ioTable('OtherPersons')]
+  [ioKeyGenerator('PERSONS')]
   [ioClassFromField]
   TAnotherPerson = class(TInterfacedObject, IPerson)
   private

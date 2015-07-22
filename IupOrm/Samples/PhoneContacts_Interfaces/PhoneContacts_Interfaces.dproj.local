@@ -20,12 +20,12 @@
     <Transaction>2015/03/17 21:28:48.000.279,C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\PhoneContacts_Interfaces\Unit1.pas=C:\Users\Maurizio Del Magno\Documents\Projects\IupOrm\Samples\PhoneContacts_Interfaces\AnotherModel.pas</Transaction>
   </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
-    <File Path="AnotherModel.pas"/>
-    <File Path="Interfaces.pas"/>
-    <File Path="Model.pas"/>
-    <File Path="RegisterClassesUnit.pas"/>
-    <File Path="SampleData.pas"/>
     <File Path="TabbedFormwithNavigation.pas"/>
     <File Path="TabbedFormwithNavigation.fmx"/>
+    <File Path="Model.pas"/>
+    <File Path="SampleData.pas"/>
+    <File Path="Interfaces.pas"/>
+    <File Path="RegisterClassesUnit.pas"/>
+    <File Path="AnotherModel.pas"/>
   </ProjectSortOrder>
 </BorlandProject>

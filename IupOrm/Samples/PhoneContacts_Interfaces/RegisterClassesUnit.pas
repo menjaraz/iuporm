@@ -42,3 +42,4 @@ initialization
   TDIClassRegister.RegisterClasses;
 
 end.
+
